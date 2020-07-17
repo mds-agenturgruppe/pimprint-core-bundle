@@ -1,0 +1,5 @@
+mds_pim_print_core:
+    resource: "@MdsPimPrintCoreBundle/Controller/"
+    type:     annotation
+    prefix:   /pimprint-api/
+

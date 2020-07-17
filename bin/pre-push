@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+cd "${BASH_SOURCE%/*}/../.." || exit 1
+
+PATH="/usr/local/bin/:$PATH" && export PATH
+
+exec vendor/bin/mds-code-check

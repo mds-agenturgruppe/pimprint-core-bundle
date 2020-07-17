@@ -1,0 +1,49 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    Mds\PimPrint\CoreBundle\Controller\:
+        resource: '../../Controller'
+        public: true
+        tags: ['controller.service_arguments']
+
+    #Abstract PimPrint rendering project services
+    Mds\PimPrint\CoreBundle\Project\AbstractProject:
+        abstract: true
+        calls:
+            - [setRequestHelper, ['@pimcore.http.request_helper']]
+            - [setPluginParams, ['@mds.pimprint.core.plugin_parameters']]
+            - [setUserHelper, ['@mds.pimprint.core.user_helper']]
+            - [setImageDimensions, ['@mds.pimprint.core.image_dimensions']]
+            - [setSpecialChars, ['@mds.pimprint.core.special_chars']]
+            - [setThumbnailHelper, ['@mds.pimprint.core.thumbnail_helper']]
+
+    #Helper services
+    mds.pimprint.core.user_helper:
+        class: Mds\PimPrint\CoreBundle\Service\UserHelper
+    mds.pimprint.core.plugin_parameters:
+        class: Mds\PimPrint\CoreBundle\Service\PluginParameters
+    mds.pimprint.core.special_chars:
+        class: Mds\PimPrint\CoreBundle\Service\SpecialChars
+    mds.pimprint.core.image_dimensions:
+        class: Mds\PimPrint\CoreBundle\Service\ImageDimensions
+    mds.pimprint.core.thumbnail_helper:
+        class: Mds\PimPrint\CoreBundle\Service\ThumbnailHelper
+
+    #Basic services
+    Mds\PimPrint\CoreBundle\Service\ProjectsManager: ~
+    Mds\PimPrint\CoreBundle\Service\PluginResponseCreator: ~
+    Mds\PimPrint\CoreBundle\Service\JsonRequestDecoder: ~
+
+    #Security
+    Mds\PimPrint\CoreBundle\EventListener\BruteforceProtectionListener: ~
+    Mds\PimPrint\CoreBundle\Security\Guard\AdminSessionAuthenticator: ~
+    Mds\PimPrint\CoreBundle\Security\Guard\InDesignAuthenticator: ~
+
+    #Session
+    mds.pimprint.session.configurator.mds_pimprint:
+        class: Mds\PimPrint\CoreBundle\Session\PimPrintSessionBagConfigurator
+        tags:
+            - { name: pimcore.session.configurator }

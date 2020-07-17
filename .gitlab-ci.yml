@@ -1,0 +1,8 @@
+code check:
+  image: gitlab.mds.eu:2244/mds/php-code-checker
+  script:
+    - echo "Executing mds-code-checker..."
+    - ln -s $(pwd)/src /data/src
+    - ln -s $(pwd)/.mds-code-checker.conf /data/.mds-code-checker.conf
+    - cd /data
+    - vendor/bin/mds-code-check

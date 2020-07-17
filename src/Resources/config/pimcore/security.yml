@@ -1,0 +1,13 @@
+security:
+    always_authenticate_before_granting: true
+
+    firewalls:
+        pimprint_api:
+            pattern: ^/pimprint-api
+            stateless: true
+            provider: pimcore_admin
+            guard:
+                entry_point: Mds\PimPrint\CoreBundle\Security\Guard\AdminSessionAuthenticator
+                authenticators:
+                    - Mds\PimPrint\CoreBundle\Security\Guard\InDesignAuthenticator
+                    - Mds\PimPrint\CoreBundle\Security\Guard\AdminSessionAuthenticator

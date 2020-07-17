@@ -1,0 +1,257 @@
+<?php
+/**
+ * mds PimPrint
+ *
+ * This source file is licensed under GNU General Public License version 3 (GPLv3).
+ *
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ * @copyright  Copyright (c) mds. Agenturgruppe GmbH (https://www.mds.eu)
+ * @license    https://pimprint.mds.eu/license GPLv3
+ */
+
+namespace Mds\PimPrint\CoreBundle\Project\Traits;
+
+use Mds\PimPrint\CoreBundle\Project\AbstractProject;
+use Mds\PimPrint\CoreBundle\Project\Config;
+use Mds\PimPrint\CoreBundle\Service\ImageDimensions;
+use Mds\PimPrint\CoreBundle\Service\PluginParameters;
+use Mds\PimPrint\CoreBundle\Service\SpecialChars;
+use Mds\PimPrint\CoreBundle\Service\ThumbnailHelper;
+use Mds\PimPrint\CoreBundle\Service\UserHelper;
+use Pimcore\Http\RequestHelper;
+use Symfony\Component\HttpFoundation\Request;
+
+/**
+ * Trait HelpersTrait
+ *
+ * @package Mds\PimPrint\CoreBundle\Project\Traits
+ */
+trait HelpersTrait
+{
+    /**
+     * UserHelper service.
+     *
+     * @var UserHelper
+     */
+    protected $userHelper;
+
+    /**
+     * ImageDimensions helper service.
+     *
+     * @var ImageDimensions
+     */
+    protected $imageDimensions;
+
+    /**
+     * SpecialChars helper service.
+     *
+     * @var SpecialChars
+     */
+    protected $specialChars;
+
+    /**
+     * PluginParameters instance.
+     *
+     * @var PluginParameters
+     */
+    protected $pluginParams;
+
+    /**
+     * Pimcore RequestHelper.
+     *
+     * @var RequestHelper
+     */
+    protected $requestHelper;
+
+    /**
+     * ThumbnailHelper service.
+     *
+     * @var ThumbnailHelper
+     */
+    protected $thumbnailHelper;
+
+    /**
+     * Project configuration.
+     *
+     * @var Config
+     */
+    protected $config;
+
+    /**
+     * Sets UserHelper service.
+     *
+     * @param UserHelper $userHelper
+     */
+    public function setUserHelper(UserHelper $userHelper)
+    {
+        $this->userHelper = $userHelper;
+    }
+
+    /**
+     * Sets PluginParameters helper service.
+     *
+     * @param PluginParameters $pluginParameters
+     */
+    public function setPluginParams(PluginParameters $pluginParameters)
+    {
+        $this->pluginParams = $pluginParameters;
+    }
+
+    /**
+     * Sets Pimcore RequestHelper service.
+     */
+    public function setRequestHelper(RequestHelper $requestHelper)
+    {
+        $this->requestHelper = $requestHelper;
+    }
+
+    /**
+     * Returns current request.
+     *
+     * @return Request
+     */
+    public function getRequest()
+    {
+        return $this->requestHelper->getRequest();
+    }
+
+    /**
+     * Returns PluginParameters instance to access parameters from InDesign plugin.
+     *
+     * @return PluginParameters
+     */
+    public function pluginParams()
+    {
+        return $this->pluginParams;
+    }
+
+    /**
+     * Sets ImageDimensions helper service.
+     *
+     * @param ImageDimensions $imageDimensions
+     */
+    public function setImageDimensions(ImageDimensions $imageDimensions)
+    {
+        $this->imageDimensions = $imageDimensions;
+    }
+
+    /**
+     * Returns ImageDimensions helper service.
+     *
+     * @return ImageDimensions
+     */
+    public function imageDimensions(): ImageDimensions
+    {
+        return $this->imageDimensions;
+    }
+
+    /**
+     * Sets SpecialChars helper service.
+     *
+     * @param SpecialChars $specialChars
+     */
+    public function setSpecialChars(SpecialChars $specialChars)
+    {
+        $this->specialChars = $specialChars;
+    }
+
+    /**
+     * Returns SpecialChars helper service.
+     *
+     * @return SpecialChars
+     */
+    public function specialChars(): SpecialChars
+    {
+        return $this->specialChars;
+    }
+
+    /**
+     * Sets ThumbnailHelper service.
+     *
+     * @param ThumbnailHelper $thumbnailHelper
+     */
+    public function setThumbnailHelper(ThumbnailHelper $thumbnailHelper)
+    {
+        /* @var AbstractProject $this */
+        $thumbnailHelper->setProject($this);
+        $this->thumbnailHelper = $thumbnailHelper;
+    }
+
+    /**
+     * Returns ThumbnailHelper service.
+     *
+     * @return ThumbnailHelper
+     */
+    public function thumbnailHelper(): ThumbnailHelper
+    {
+        return $this->thumbnailHelper;
+    }
+
+    /**
+     * Sets $config project configuration.
+     *
+     * @param Config $config
+     */
+    final public function setConfig(Config $config)
+    {
+        $this->config = $config;
+    }
+
+    /**
+     * Returns project configuration
+     *
+     * @return Config
+     */
+    public function config(): Config
+    {
+        return $this->config;
+    }
+
+    /**
+     * Returns absolute host url.
+     * Convenience method to have Request parameter added automatically.
+     *
+     * @return string
+     * @throws \Exception
+     */
+    public function getHostUrl()
+    {
+        return $this->config()
+                    ->getHostUrl($this->getRequest());
+    }
+
+    /**
+     * Asserts that service service is initialized correctly.
+     * Integrated to show appropriate exception, when concrete project service hasn't right parent configuration.
+     *
+     * @throws \Exception
+     */
+    final public function assertServiceInitialized()
+    {
+        $services = [
+            $this->requestHelper,
+            $this->imageDimensions,
+            $this->specialChars,
+            $this->pluginParams,
+            $this->userHelper,
+            $this->thumbnailHelper,
+            $this->config,
+        ];
+        foreach ($services as $service) {
+            if (null === $service) {
+                throw new \Exception(
+                    sprintf(
+                        "PimPrint project service '%s' not defined correctly. Service must use parent '%s'.",
+                        $this->config()
+                             ->offsetGet('service'),
+                        AbstractProject::class
+                    )
+                );
+            }
+        }
+
+        $this->thumbnailHelper->validateAssetThumbnail();
+    }
+}

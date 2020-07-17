@@ -1,0 +1,35 @@
+{
+  "name": "mds-agenturgruppe/pimprint-core-bundle",
+  "type": "pimcore-bundle",
+  "description": "mds PimPrint CoreBundle - The InDesign Printing Solution for Pimcore.",
+  "license": "GPL-3.0-or-later",
+  "homepage": "https://pimprint.mds.eu/",
+  "support": {
+    "source": "https://github.com/mds-agenturgruppe/pimprint-core-bundle"
+  },
+  "keywords": [
+    "Pimcore",
+    "Pimcore-Plugin",
+    "InDesign",
+    "PimPrint",
+    "Database Publishing"
+  ],
+  "autoload": {
+    "psr-4": {
+      "Mds\\PimPrint\\CoreBundle\\": "src/"
+    }
+  },
+  "require": {
+    "ext-dom": "*"
+  },
+  "require-dev": {
+    "mds-agenturgruppe/php-code-checker": "^1.0"
+  },
+  "extra": {
+    "pimcore": {
+      "bundles": [
+        "Mds\\PimPrint\\CoreBundle\\MdsPimPrintCoreBundle"
+      ]
+    }
+  }
+}

@@ -1,0 +1,75 @@
+<?php
+/**
+ * mds PimPrint
+ *
+ * This source file is licensed under GNU General Public License version 3 (GPLv3).
+ *
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ * @copyright  Copyright (c) mds. Agenturgruppe GmbH (https://www.mds.eu)
+ * @license    https://pimprint.mds.eu/license GPLv3
+ */
+
+namespace Mds\PimPrint\CoreBundle\InDesign\Traits;
+
+use Mds\PimPrint\CoreBundle\Service\ProjectsManager;
+
+/**
+ * Trait MissingAssetNotifier
+ *
+ * @package Mds\PimPrint\CoreBundle\InDesign\Traits
+ */
+trait MissingAssetNotifier
+{
+    /**
+     * Adds $message as notification for missing asset for $assetId.
+     * If config variable imageWarningsOnPage is true a onPage message will be generated.
+     * Otherwise a offPage message will be generated.
+     *
+     * @param string $message
+     *
+     * @throws \Exception
+     */
+    protected function notifyMissingAsset(string $message, int $assetId)
+    {
+        $project = ProjectsManager::getProject();
+        $project->getCommandQueue()
+                ->incrementMissingAssetCounter($assetId);
+        $project->addPageMessage(
+            $message,
+            $project->config()
+                    ->isAssetWarningOnPage()
+        );
+    }
+
+    /**
+     * Adds preMessage if notification for first missing asset is added.
+     */
+    protected function addMissingAssetPreMessage()
+    {
+        try {
+            $project = ProjectsManager::getProject();
+        } catch (\Exception $e) {
+            return;
+        }
+        $missingAssets = $project->getCommandQueue()
+                                 ->getMissingAssets();
+        if (0 == $missingAssets['elements']) {
+            return;
+        }
+        $amountMissingAssets = count($missingAssets['assetIds']);
+        $message = sprintf(
+            '%s %s used in %s %s missing.',
+            $amountMissingAssets,
+            $amountMissingAssets == 1 ? 'asset' : 'assets',
+            $missingAssets['elements'],
+            $missingAssets['elements'] == 1 ? 'box' : 'boxes'
+        );
+        if (true === $project->config()
+                             ->isAssetWarningOnPage()) {
+            $message .= '<br>Messages are rendered directly on the page.';
+        }
+        $project->addPreMessage($message);
+    }
+}
