@@ -20,7 +20,6 @@ use Mds\PimPrint\CoreBundle\InDesign\Text\Characters;
 use Mds\PimPrint\CoreBundle\InDesign\Text\Paragraph;
 use Mds\PimPrint\CoreBundle\InDesign\Text\ParagraphComponent;
 use Mds\PimPrint\CoreBundle\InDesign\Traits\MissingAssetNotifier;
-use Mds\PimPrint\CoreBundle\Service\ProjectsManager;
 use Pimcore\Model\Asset;
 
 /**

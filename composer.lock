@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "88ac811092917fe7a29defd0dbe4b245",
+    "content-hash": "48786857bde6cc3caa49738fe0a876b0",
     "packages": [],
     "packages-dev": [
         {
@@ -758,16 +758,16 @@
         },
         {
             "name": "mds-agenturgruppe/php-code-checker",
-            "version": "v1.0.0",
+            "version": "v1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mds-agenturgruppe/php-code-checker.git",
-                "reference": "fa8b7baea68799d88f0835017626a2a88a8afd2d"
+                "reference": "427cb70b5d7186a83d7918e20cbf716a9fbf3c85"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mds-agenturgruppe/php-code-checker/zipball/fa8b7baea68799d88f0835017626a2a88a8afd2d",
-                "reference": "fa8b7baea68799d88f0835017626a2a88a8afd2d",
+                "url": "https://api.github.com/repos/mds-agenturgruppe/php-code-checker/zipball/427cb70b5d7186a83d7918e20cbf716a9fbf3c85",
+                "reference": "427cb70b5d7186a83d7918e20cbf716a9fbf3c85",
                 "shasum": ""
             },
             "require": {
@@ -788,7 +788,7 @@
                 "GPL-3.0-or-later"
             ],
             "description": "CLI tool for running PHP code checks",
-            "time": "2020-06-08T11:55:37+00:00"
+            "time": "2020-07-22T14:47:41+00:00"
         },
         {
             "name": "myclabs/deep-copy",

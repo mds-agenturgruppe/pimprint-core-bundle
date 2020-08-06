@@ -8,11 +8,11 @@
     "source": "https://github.com/mds-agenturgruppe/pimprint-core-bundle"
   },
   "keywords": [
-    "Pimcore",
-    "Pimcore-Plugin",
-    "InDesign",
-    "PimPrint",
-    "Database Publishing"
+    "pimcore",
+    "pimcore-plugin",
+    "indesign",
+    "pimprint",
+    "database-publishing"
   ],
   "autoload": {
     "psr-4": {

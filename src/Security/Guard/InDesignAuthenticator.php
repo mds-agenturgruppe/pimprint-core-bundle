@@ -13,6 +13,7 @@
 
 namespace Mds\PimPrint\CoreBundle\Security\Guard;
 
+use Mds\PimPrint\CoreBundle\Security\Traits\InDesignRequestDetector;
 use Mds\PimPrint\CoreBundle\Service\JsonRequestDecoder;
 use Mds\PimPrint\CoreBundle\Session\PimPrintSessionBagConfigurator;
 use Pimcore\Bundle\AdminBundle\Security\BruteforceProtectionHandler;
@@ -28,6 +29,7 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
+use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 
 /**
  * Authenticator used for user authentication from InDesign-Plugin.
@@ -36,8 +38,10 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
  *
  * @package Mds\PimPrint\CoreBundle\Security
  */
-class InDesignAuthenticator extends AbstractAuthenticator
+class InDesignAuthenticator extends AbstractGuardAuthenticator
 {
+    use InDesignRequestDetector;
+
     /**
      * HTTP username param.
      *

@@ -13,6 +13,7 @@
 
 namespace Mds\PimPrint\CoreBundle\Security\Guard;
 
+use Mds\PimPrint\CoreBundle\Security\Traits\InDesignRequestDetector;
 use Pimcore\Bundle\AdminBundle\Security\User\User as AdminUser;
 use Pimcore\Model\User;
 use Pimcore\Tool\Authentication;
@@ -22,6 +23,7 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
+use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 
 /**
  * Authenticator used for user authentication against Pimcore backend-session.
@@ -29,8 +31,10 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
  *
  * @package Mds\PimPrint\CoreBundle\Security
  */
-class AdminSessionAuthenticator extends AbstractAuthenticator
+class AdminSessionAuthenticator extends AbstractGuardAuthenticator
 {
+    use InDesignRequestDetector;
+
     /**
      * {@inheritDoc}
      *

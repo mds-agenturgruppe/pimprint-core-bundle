@@ -13,6 +13,7 @@
 
 namespace Mds\PimPrint\CoreBundle\EventListener;
 
+use Mds\PimPrint\CoreBundle\Security\Traits\InDesignRequestDetector;
 use Pimcore\Bundle\AdminBundle\Security\Exception\BruteforceProtectionException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -29,6 +30,8 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 class BruteforceProtectionListener implements EventSubscriberInterface
 {
+    use InDesignRequestDetector;
+
     /**
      * Subscribe event listener with priority 70, to have it run earlier than Pimcore BruteforceProtectionListener.
      *
@@ -48,13 +51,16 @@ class BruteforceProtectionListener implements EventSubscriberInterface
      */
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
+        if (false === $this->isInDesignRequest($event->getRequest())) {
+            return;
+        }
         $exception = $event->getException();
         if ($exception instanceof BruteforceProtectionException) {
             $response = new JsonResponse(
                 [
                     'success'   => false,
                     'debugMode' => false,
-                    'message'   => [$exception->getMessage()]
+                    'messages'  => [$exception->getMessage()]
                 ],
                 Response::HTTP_UNAUTHORIZED
             );

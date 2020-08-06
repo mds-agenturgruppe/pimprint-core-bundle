@@ -53,7 +53,7 @@ trait PositionTrait
     /**
      * Sets the left position in mm where the element should be placed in the document.
      *
-     * @param float $left Left position in mm.
+     * @param float|string $left Left position in mm.
      *
      * @return PositionTrait|AbstractBox
      */
@@ -68,7 +68,7 @@ trait PositionTrait
     /**
      * Sets the top position in mm where the element should be placed in the document.
      *
-     * @param float $top Top position in mm.
+     * @param float|string $top Top position in mm.
      *
      * @return PositionTrait|AbstractBox
      */
@@ -95,8 +95,9 @@ trait PositionTrait
         $this->validateRelataivePosition($position);
         $this->relativePositionVariables[$position] = $variable;
         $method = 'set' . ucfirst($position);
+        $margin = str_replace(',', '.', (string)$margin);
 
-        return $this->$method("=[$variable] + $margin");
+        return $this->$method("=[$variable] + " . $margin);
     }
 
     /**

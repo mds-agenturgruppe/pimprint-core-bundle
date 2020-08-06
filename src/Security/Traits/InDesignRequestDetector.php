@@ -11,17 +11,16 @@
  * @license    https://pimprint.mds.eu/license GPLv3
  */
 
-namespace Mds\PimPrint\CoreBundle\Security\Guard;
+namespace Mds\PimPrint\CoreBundle\Security\Traits;
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 
 /**
- * Class AbstractAuthenticator
+ * Trait InDesignRequestDetector
  *
- * @package Mds\PimPrint\CoreBundle\Security\Guard
+ * @package Mds\PimPrint\CoreBundle\Security\Traits
  */
-abstract class AbstractAuthenticator extends AbstractGuardAuthenticator
+trait InDesignRequestDetector
 {
     /**
      * Returns true if $request comes from PimPrint InDesign-Plugin.
