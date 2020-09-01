@@ -201,7 +201,7 @@ class Config implements \ArrayAccess
             return false;
         }
 
-        return $this->offsetGet('assets')['preDownload'];
+        return $this->offsetGet('assets')['pre_download'];
     }
 
     /**
@@ -212,6 +212,6 @@ class Config implements \ArrayAccess
      */
     public function isAssetWarningOnPage()
     {
-        return $this->offsetGet('assets')['warningsOnPage'];
+        return $this->offsetGet('assets')['warnings_on_page'];
     }
 }

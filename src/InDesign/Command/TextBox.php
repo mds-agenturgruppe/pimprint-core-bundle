@@ -29,13 +29,6 @@ class TextBox extends AbstractBox implements ImageCollectorInterface
     use ImageCollectorTrait;
 
     /**
-     * Default value for automatic text language layers.
-     *
-     * @var bool
-     */
-    protected static $useLanguageLayer = true;
-
-    /**
      * Command name.
      *
      * @var string
@@ -74,6 +67,13 @@ class TextBox extends AbstractBox implements ImageCollectorInterface
         self::FIT_FRAME_TO_CONTENT,
         self::FIT_FRAME_TO_CONTENT_HEIGHT
     );
+
+    /**
+     * Default value for automatic text language layers.
+     *
+     * @var bool
+     */
+    protected static $useLanguageLayer = true;
 
     /**
      * {@inheritDoc}

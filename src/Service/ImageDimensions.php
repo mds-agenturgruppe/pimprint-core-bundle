@@ -16,9 +16,7 @@ namespace Mds\PimPrint\CoreBundle\Service;
 use Pimcore\Model\Asset\Image;
 
 /**
- * Class ImageDimensions
- *
- * Helper service to get dimensions of image assets
+ * Helper service to get dimensions of image assets.
  *
  * @package Mds\PimPrint\CoreBundle\Service
  */

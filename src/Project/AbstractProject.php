@@ -15,12 +15,23 @@ namespace Mds\PimPrint\CoreBundle\Project;
 
 use Mds\PimPrint\CoreBundle\InDesign\Command\AbstractCommand;
 use Mds\PimPrint\CoreBundle\InDesign\CommandQueue;
+use Mds\PimPrint\CoreBundle\Project\Traits\FormFieldsTrait;
 use Mds\PimPrint\CoreBundle\Project\Traits\HelpersTrait;
 use Mds\PimPrint\CoreBundle\Project\Traits\RenderingTrait;
+use Mds\PimPrint\CoreBundle\Service\PluginParameters;
 use Pimcore\Tool;
 
 /**
- * Class AbstractProject
+ * AbstractProject all concrete rendering project services must extend.
+ *
+ * Class is registered as abstract service in 'src/Resources/config/services.yml'
+ * and aliased as 'mds.pimprint.core.abstract_project' to be used in concrete service definitions as parent.
+ *
+ * Example:
+ * {code}
+ * Mds\PimPrint\DemoBundle\Service\CommandDemo:
+ *   parent: mds.pimprint.core.abstract_project
+ * {code}
  *
  * @package Mds\PimPrint\CoreBundle\Project
  */
@@ -28,6 +39,7 @@ abstract class AbstractProject
 {
     use HelpersTrait;
     use RenderingTrait;
+    use FormFieldsTrait;
 
     /**
      * Default PHP time_limit.
@@ -131,17 +143,6 @@ abstract class AbstractProject
     }
 
     /**
-     * Returns options for InDesign Plugin.
-     * Method is in AbstractProject to allow project specific overwrites.
-     *
-     * @return array
-     */
-    public function getOptions(): array
-    {
-        return $this->pluginParams->getOptions();
-    }
-
-    /**
      * Builds project settings for InDesign plugin.
      *
      * @return array
@@ -150,13 +151,15 @@ abstract class AbstractProject
     final public function getSettings()
     {
         return [
-            'assets'   => [
+            'createUpdateInfoBox' => $this->config()
+                                          ->offsetGet('create_update_info'),
+            'assets'              => [
                 'download'    => $this->config()
                                       ->offsetGet('assets')['download'],
                 'preDownload' => $this->config()
-                                      ->offsetGet('assets')['preDownload']
+                                      ->offsetGet('assets')['pre_download']
             ],
-            'template' => [
+            'template'            => [
                 'download' => $this->config()
                                    ->offsetGet('template')['download'],
             ],
@@ -204,6 +207,18 @@ abstract class AbstractProject
         } else {
             return $user->getContentLanguages();
         }
+    }
+
+    /**
+     * Convenience method to access current rendered language.
+     *
+     * @return string
+     * @throws \Exception
+     */
+    protected function getLanguage()
+    {
+        return $this->pluginParams()
+                    ->get(PluginParameters::PARAM_LANGUAGE);
     }
 
     /**

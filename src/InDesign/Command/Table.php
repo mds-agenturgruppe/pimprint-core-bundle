@@ -239,7 +239,7 @@ class Table extends AbstractBox implements ImageCollectorInterface
 
     /**
      * Sets the default row height in table.
-     * This height is used, when a row is added without a explicit height,
+     * This height is used, when a row is added without a explicit height.
      *
      * @param float|int $height Default row height in mm.
      *
@@ -411,6 +411,18 @@ class Table extends AbstractBox implements ImageCollectorInterface
         }
 
         return count($idents) + 1;
+    }
+
+    /**
+     * Returns true if column $ident is defined in table. Otherwise false is returned.
+     *
+     * @param string $ident
+     *
+     * @return bool
+     */
+    public function hasColumn($ident)
+    {
+        return isset($this->columns[$ident]);
     }
 
     /**

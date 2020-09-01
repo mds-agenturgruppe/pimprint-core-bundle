@@ -17,6 +17,9 @@ use Mds\PimPrint\CoreBundle\InDesign\Command\GoToPage;
 use Mds\PimPrint\CoreBundle\InDesign\Command\OpenDocument;
 use Mds\PimPrint\CoreBundle\InDesign\Command\RemoveEmptyLayers;
 use Mds\PimPrint\CoreBundle\Project\AbstractProject;
+use Pimcore\Localization\IntlFormatter;
+use Pimcore\Localization\LocaleService;
+use Pimcore\Tool;
 
 /**
  * Trait RenderingTrait
@@ -48,11 +51,51 @@ trait RenderingTrait
      */
     protected function startRendering($openFirstPage = true)
     {
+        $this->initFrontend();
         $this->initRenderMode()
              ->initInDesignDocument();
 
         if ($openFirstPage) {
             $this->addCommand(new GoToPage());
+        }
+    }
+
+    /**
+     * Initializes Pimcore frontend for rendered publication.
+     *
+     * @throws \Exception
+     */
+    protected function initFrontend()
+    {
+        $this->setPimcoreLocales();
+    }
+
+    /**
+     * Sets current rendered language as locale in Request and Pimcore services.
+     *
+     * @throws \Exception
+     */
+    protected function setPimcoreLocales()
+    {
+        $locale = $this->getLanguage();
+        if (false === Tool::isValidLanguage($locale)) {
+            throw new \Exception("Language '$locale' is no valid Pimcore language.");
+        }
+        $this->requestHelper->getRequest()
+                            ->setLocale($locale);
+
+        $localeService = \Pimcore::getKernel()
+                                 ->getContainer()
+                                 ->get('pimcore.locale');
+        if ($localeService instanceof LocaleService) {
+            $localeService->setLocale($locale);
+        }
+
+        $service = \Pimcore::getKernel()
+                           ->getContainer()
+                           ->get('pimcore.locale.intl_formatter');
+        if ($service instanceof IntlFormatter) {
+            $service->setLocale($locale);
         }
     }
 
@@ -78,6 +121,18 @@ trait RenderingTrait
      */
     protected function initRenderMode(): AbstractProject
     {
+        $this->setPhpSettings();
+        $this->setNumericLocale();
+
+        /* @var AbstractProject $this */
+        return $this;
+    }
+
+    /**
+     * Sets PHP settings.
+     */
+    protected function setPhpSettings()
+    {
         set_time_limit(
             $this->config()
                  ->offsetGet('php_time_limit', self::DEFAULT_TIME_LIMIT)
@@ -87,9 +142,19 @@ trait RenderingTrait
             $this->config()
                  ->offsetGet('php_memory_limit', self::DEFAULT_MEMORY_LIMIT)
         );
+    }
 
-        /* @var AbstractProject $this */
-        return $this;
+    /**
+     * Sets locale for LC_NUMERIC according to to PimPrint configuration.
+     */
+    protected function setNumericLocale()
+    {
+        $locales = $this->config()
+                        ->offsetGet('lc_numeric', []);
+        if (empty($locales)) {
+            return;
+        }
+        setlocale(LC_NUMERIC, $locales);
     }
 
     /**

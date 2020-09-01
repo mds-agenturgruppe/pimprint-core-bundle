@@ -16,7 +16,7 @@ namespace Mds\PimPrint\CoreBundle\Security\Traits;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Trait InDesignRequestDetector
+ * Trait to detect requests from PimPrint InDesign Plugin.
  *
  * @package Mds\PimPrint\CoreBundle\Security\Traits
  */

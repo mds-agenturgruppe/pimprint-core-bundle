@@ -51,12 +51,12 @@ class GroupEnd extends AbstractCommand implements DependentInterface
      * GroupEnd constructor.
      *
      * @param CheckNewPage|null $cmd
-     * @param bool              $ungroupAfter
      * @param bool              $moveTo
+     * @param bool              $ungroupAfter
      *
      * @throws \Exception
      */
-    public function __construct(CheckNewPage $cmd = null, bool $ungroupAfter = false, bool $moveTo = false)
+    public function __construct(CheckNewPage $cmd = null, bool $moveTo = false, bool $ungroupAfter = false)
     {
         $this->initParams($this->availableParams);
         $this->setNewPageCmd($cmd);

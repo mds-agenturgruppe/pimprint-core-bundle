@@ -102,8 +102,8 @@ class InDesignController extends FrontendController
 
             return $this->pluginResponse->success(
                 [
+                    'formFields'   => $project->getFormFields(),
                     'languages'    => $project->getLanguages(),
-                    'options'      => $project->getOptions(),
                     'publications' => $project->getPublicationsTree(),
                 ]
             );

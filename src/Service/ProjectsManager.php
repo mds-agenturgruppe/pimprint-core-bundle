@@ -17,8 +17,8 @@ use Mds\PimPrint\CoreBundle\Project\AbstractProject;
 use Mds\PimPrint\CoreBundle\Project\Config;
 
 /**
- * Projects service registers all configured PimPrint rendering project services defined in configuration
- * and acts as a factory for accessing the concrete rendering services.
+ * ProjectsManager registers all configured PimPrint rendering project services defined in
+ * mds_pim_print_core configuration and acts as a factory for accessing the concrete rendering services.
  *
  * @package Mds\PimPrint\CoreBundle\Service
  */

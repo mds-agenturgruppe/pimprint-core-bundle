@@ -95,9 +95,8 @@ trait PositionTrait
         $this->validateRelataivePosition($position);
         $this->relativePositionVariables[$position] = $variable;
         $method = 'set' . ucfirst($position);
-        $margin = str_replace(',', '.', (string)$margin);
 
-        return $this->$method("=[$variable] + " . $margin);
+        return $this->$method("=[$variable] + $margin");
     }
 
     /**

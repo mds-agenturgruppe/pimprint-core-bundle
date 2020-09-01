@@ -19,7 +19,7 @@ use Pimcore\Model\User\Workspace\DataObject as DataObjectWorkspace;
 use Pimcore\Tool\Admin;
 
 /**
- * Service to access logged in User information.
+ * Service to access the currently logged in User.
  *
  * @package Mds\PimPrint\CoreBundle\Service
  */
@@ -62,7 +62,7 @@ class UserHelper
      * If user is admin, all activates languages are returned.
      *
      * @return array
-     * @todo Possible storing in session for performance enhancement. Currently ynot added to have minimal impact.
+     * @todo Possible storing in session for performance enhancement. Currently not added to have minimal impact.
      */
     public function getVisibleWorkspaceLanguages()
     {

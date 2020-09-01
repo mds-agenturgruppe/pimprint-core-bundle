@@ -41,7 +41,7 @@ abstract class AbstractPublicationTreeBuilder
     }
 
     /**
-     * Builds and publication tree element array for $object.
+     * Builds an publication tree element array for $object.
      *
      * @param AbstractObject $object
      *
@@ -49,9 +49,25 @@ abstract class AbstractPublicationTreeBuilder
      */
     protected function buildTreeElementFromObject(AbstractObject $object)
     {
+        return $this->buildTreeElement(
+            $this->getObjectIdentifier($object),
+            $this->getObjectLabel($object)
+        );
+    }
+
+    /**
+     * Builds publication tree element with $identifier and $label.
+     *
+     * @param string $identifier
+     * @param string $label
+     *
+     * @return array
+     */
+    protected function buildTreeElement($identifier, $label)
+    {
         return [
-            'identifier' => $object->getId(),
-            'label'      => $object->getKey(),
+            'identifier' => $identifier,
+            'label'      => $label,
             'children'   => [],
         ];
     }
@@ -69,5 +85,32 @@ abstract class AbstractPublicationTreeBuilder
     protected function showObjectInTree(AbstractObject $object)
     {
         return $object->isAllowed('view');
+    }
+
+    /**
+     * Template method.
+     * Returns identifier used in publication tree and publicationIdent generation parameter.
+     * As default the object id is used.
+     *
+     * @param AbstractObject $object
+     *
+     * @return int|string
+     */
+    protected function getObjectIdentifier(AbstractObject $object)
+    {
+        return $object->getId();
+    }
+
+    /**
+     * Template method.
+     * Returns label displayed in publication tree. As Default in this implementation key is used.
+     *
+     * @param AbstractObject $object
+     *
+     * @return string
+     */
+    protected function getObjectLabel(AbstractObject $object)
+    {
+        return $object->getKey();
     }
 }

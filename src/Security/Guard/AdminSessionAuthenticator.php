@@ -27,7 +27,9 @@ use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 
 /**
  * Authenticator used for user authentication against Pimcore backend-session.
- * Only used in 'dev' environment and useful for developing and debugging PimPrint.
+ * Accessing the /pimprint-api/... routes via Browser is useful for developing and debugging PimPrint.
+ *
+ * @see \Mds\PimPrint\CoreBundle\Controller\InDesignController
  *
  * @package Mds\PimPrint\CoreBundle\Security
  */

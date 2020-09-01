@@ -81,18 +81,18 @@ class Template extends AbstractCommand implements ImageCollectorInterface
      * Adds $commands to template.
      *
      * @param AbstractCommand[] $commands
-     * @param string            $site use
+     * @param string            $side Use SIDE_ class constants.
      *
      * @return Template
      * @throws \Exception
      */
-    public function addCommands(array $commands, $site = Template::SIDE_BOTH)
+    public function addCommands(array $commands, $side = Template::SIDE_BOTH)
     {
         foreach ($commands as $command) {
             if (false === $command instanceof AbstractCommand) {
                 throw new \Exception(sprintf("Command must be instance of '%s'.", AbstractCommand::class));
             }
-            $this->addCommand($command, $site);
+            $this->addCommand($command, $side);
         }
 
         return $this;
@@ -102,16 +102,16 @@ class Template extends AbstractCommand implements ImageCollectorInterface
      * Adds $command to template.
      *
      * @param AbstractCommand $command
-     * @param string          $site
+     * @param string          $side Use SIDE_ class constants.
      *
      * @return Template
      * @throws \Exception
      */
-    public function addCommand(AbstractCommand $command, $site = Template::SIDE_BOTH)
+    public function addCommand(AbstractCommand $command, $side = Template::SIDE_BOTH)
     {
         $this->createBoxIdent($command);
         $this->collectImageCommand($command);
-        switch ($site) {
+        switch ($side) {
             case Template::SIDE_BOTH:
                 $this->params['cmds'][] = $command->buildCommand();
                 break;

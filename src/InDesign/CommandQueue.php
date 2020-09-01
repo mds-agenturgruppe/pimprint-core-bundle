@@ -14,12 +14,17 @@
 namespace Mds\PimPrint\CoreBundle\InDesign;
 
 use Mds\PimPrint\CoreBundle\InDesign\Command\AbstractCommand;
+use Mds\PimPrint\CoreBundle\InDesign\Command\ExecuteScript;
+use Mds\PimPrint\CoreBundle\InDesign\Command\GoToPage;
 use Mds\PimPrint\CoreBundle\InDesign\Command\ImageCollectorInterface;
+use Mds\PimPrint\CoreBundle\InDesign\Command\OpenDocument;
 use Mds\PimPrint\CoreBundle\InDesign\Command\PageMessage;
+use Mds\PimPrint\CoreBundle\InDesign\Command\UpdateElements;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Variable;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Variable\AbstractMath;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Variable\DependentInterface as VariableDependentInterfaceAlias;
 use Mds\PimPrint\CoreBundle\InDesign\Traits\BoxIdentBuilderTrait;
+use Mds\PimPrint\CoreBundle\Service\PluginParameters;
 
 /**
  * Class CommandQueue
@@ -176,13 +181,76 @@ class CommandQueue
     }
 
     /**
-     * Returns commands to send to InDesign Plugin.
+     * Returns all generated commands.
      *
      * @return array
      */
-    public function getCommands()
+    public function getCommandsRaw()
     {
         return $this->commands;
+    }
+
+    /**
+     * Returns commands to send to InDesign Plugin filtered for selected elements.
+     *
+     * @return array
+     * @throws \Exception
+     */
+    public function getCommands()
+    {
+        if (true === $this->getProject()
+                          ->pluginParams()
+                          ->isUpdateModeSelected()) {
+            return $this->filterSelectedCommands($this->getCommandsRaw());
+        }
+
+        return $this->getCommandsRaw();
+    }
+
+    /**
+     * Filters commands for selected elements in InDesign document.
+     *
+     * @param array $commands
+     *
+     * @return array
+     * @throws \Exception
+     * @todo Filter PageMessages for associated selected elements.
+     */
+    protected function filterSelectedCommands(array $commands): array
+    {
+        try {
+            $selectedElements = $this->getProject()
+                                     ->pluginParams()
+                                     ->get(PluginParameters::PARAM_ELEMENT_LIST);
+        } catch (\Exception $e) {
+            return $commands;
+        }
+        $selectedElements = (array)$selectedElements;
+        if (empty($selectedElements)) {
+            return [];
+        }
+        $commandWhitelist = [
+            OpenDocument::CMD,
+            GoToPage::CMD,
+            ExecuteScript::CMD,
+            Variable::CMD,
+            PageMessage::CMD
+        ];
+        $return = [];
+        $updateElements = new UpdateElements($selectedElements);
+        $return[] = $updateElements->buildCommand();
+        foreach ($commands as $command) {
+            if (isset($command['tid'])) {
+                $boxName = $command['name'] . '#' . $command['tid'] . '#';
+                if (true === in_array($boxName, $selectedElements)) {
+                    $return[] = $command;
+                }
+            } elseif (true === in_array($command['cmd'], $commandWhitelist)) {
+                $return[] = $command;
+            }
+        }
+
+        return $return;
     }
 
     /**

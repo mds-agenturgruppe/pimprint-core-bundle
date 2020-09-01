@@ -23,18 +23,46 @@ use Pimcore\Http\RequestHelper;
 class PluginParameters
 {
     /**
-     * Option value to start on left page of a print bow.
+     * Parameter value to start on left page of a print bow.
      *
      * @var int
      */
-    const OPTION_START_LEFT_PAGE = 400;
+    const START_ALIGNMENT_LEFT = 400;
 
     /**
-     * Option value to start on right page of a print bow.
+     * Parameter value to start on right page of a print bow.
      *
      * @var int
      */
-    const OPTION_START_RIGHT_PAGE = 401;
+    const START_ALIGNMENT_RIGHT = 401;
+
+    /**
+     * Update mode value "All elements (position and content)
+     *
+     * @var int
+     */
+    const UPDATE_ALL_POSITION_CONTENT = 501;
+
+    /**
+     * Update mode value "All elements (only content)
+     *
+     * @var int
+     */
+    const UPDATE_ALL_CONTENT = 502;
+
+    /**
+     * Update mode value "Selected elements (position and content)
+     *
+     * @var int
+     */
+    const UPDATE_SELECTED_POSITION_CONTENT = 511;
+
+    /**
+     * Update mode value "Selected elements (only content)
+     *
+     * @var int
+     */
+    const UPDATE_SELECTED_CONTENT = 512;
 
     /**
      * Plugin param publication ident.
@@ -44,18 +72,25 @@ class PluginParameters
     const PARAM_PUBLICATION = 'publicationIdent';
 
     /**
-     * Plugin param render option.
-     *
-     * @var string
-     */
-    const PARAM_OPTION = 'renderOption';
-
-    /**
      * Plugin param render language.
      *
      * @var string
      */
     const PARAM_LANGUAGE = 'renderLanguage';
+
+    /**
+     * Plugin param startAlignment.
+     *
+     * @var string
+     */
+    const PARAM_START_ALIGNMENT = 'startAlignment';
+
+    /**
+     * Plugin param update mode.
+     *
+     * @var string
+     */
+    const PARAM_UPDATE_MODE = 'updateMode';
 
     /**
      * Plugin param start page.
@@ -70,13 +105,6 @@ class PluginParameters
      * @var string
      */
     const PARAM_PAGE_END = 'pageEnd';
-
-    /**
-     * Plugin param render mode.
-     *
-     * @var string
-     */
-    const PARAM_MODE = 'renderMode';
 
     /**
      * Plugin param element list.
@@ -106,13 +134,13 @@ class PluginParameters
      * @var array
      */
     protected $paramDefinition = [
-        self::PARAM_PUBLICATION  => ['required' => true, 'default' => null],
-        self::PARAM_LANGUAGE     => ['required' => true, 'default' => null],
-        self::PARAM_MODE         => ['required' => false, 'default' => null],
-        self::PARAM_OPTION       => ['required' => false, 'default' => PluginParameters::OPTION_START_LEFT_PAGE],
-        self::PARAM_PAGE_START   => ['required' => false, 'default' => 1],
-        self::PARAM_PAGE_END     => ['required' => false, 'default' => false],
-        self::PARAM_ELEMENT_LIST => ['required' => false, 'default' => []],
+        self::PARAM_PUBLICATION     => ['required' => true, 'default' => null],
+        self::PARAM_LANGUAGE        => ['required' => true, 'default' => null],
+        self::PARAM_UPDATE_MODE     => ['required' => false, 'default' => null],
+        self::PARAM_START_ALIGNMENT => ['required' => false, 'default' => PluginParameters::START_ALIGNMENT_LEFT],
+        self::PARAM_PAGE_START      => ['required' => false, 'default' => 1],
+        self::PARAM_PAGE_END        => ['required' => false, 'default' => false],
+        self::PARAM_ELEMENT_LIST    => ['required' => false, 'default' => []],
     ];
 
     /**
@@ -162,7 +190,7 @@ class PluginParameters
      */
     public function isStartOnLeftPage()
     {
-        return PluginParameters::OPTION_START_LEFT_PAGE == $this->get(PluginParameters::PARAM_OPTION);
+        return PluginParameters::START_ALIGNMENT_LEFT == $this->get(PluginParameters::PARAM_START_ALIGNMENT);
     }
 
     /**
@@ -174,6 +202,22 @@ class PluginParameters
     public function isStartOnRightPage()
     {
         return !$this->isStartOnLeftPage();
+    }
+
+    /**
+     * Returns true if current update mode is for selected elements.
+     *
+     * @return bool
+     * @throws \Exception
+     */
+    public function isUpdateModeSelected()
+    {
+        $mode = $this->get(self::PARAM_UPDATE_MODE);
+        if (self::UPDATE_ALL_POSITION_CONTENT == $mode || self::UPDATE_ALL_CONTENT == $mode) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -200,24 +244,5 @@ class PluginParameters
 
             $this->params[$param] = $value;
         }
-    }
-
-    /**
-     * Returns PimPrint-Plugin options.
-     *
-     * @return array
-     */
-    public function getOptions(): array
-    {
-        return [
-            [
-                'option' => PluginParameters::OPTION_START_LEFT_PAGE,
-                'label'  => 'Start on left page',
-            ],
-            [
-                'option' => PluginParameters::OPTION_START_RIGHT_PAGE,
-                'label'  => 'Start on right page',
-            ],
-        ];
     }
 }

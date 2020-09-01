@@ -47,7 +47,7 @@ class MdsPimPrintCoreExtension extends Extension
     }
 
     /**
-     * Registeres projects from configuration in Projects service.
+     * Registers projects from configuration in Projects service.
      *
      * @param ContainerBuilder $container
      * @param array            $config
@@ -57,7 +57,12 @@ class MdsPimPrintCoreExtension extends Extension
         if (false === isset($config['projects'])) {
             return;
         }
+        $arguments = $config['projects'];
+        unset($config['projects']);
+        foreach ($arguments as &$argument) {
+            $argument = array_merge($argument, $config);
+        }
         $definition = $container->getDefinition(ProjectsManager::class);
-        $definition->setArgument('$config', $config['projects']);
+        $definition->setArgument('$config', $arguments);
     }
 }
