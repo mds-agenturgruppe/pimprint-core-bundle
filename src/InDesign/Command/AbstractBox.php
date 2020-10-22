@@ -18,18 +18,17 @@ use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\ElementNameTrait;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\PositionTrait;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\SizeTrait;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\VariableTrait;
-use Mds\PimPrint\CoreBundle\InDesign\Command\Variable\DependentInterface;
+use Mds\PimPrint\CoreBundle\InDesign\Command\Variables\DependentInterface;
+use Mds\PimPrint\CoreBundle\Project\Traits\ProjectAwareTrait;
 
 /**
- * Class AbstractBox
- *
  * Abstract command with generic functionality for box placement commands.
  *
  * @package Mds\PimPrint\CoreBundle\InDesign\Command
  */
 abstract class AbstractBox extends AbstractCommand implements DependentInterface
 {
-    use ElementNameTrait, LayerTrait, PositionTrait, SizeTrait, VariableTrait;
+    use ElementNameTrait, LayerTrait, PositionTrait, SizeTrait, VariableTrait, ProjectAwareTrait;
 
     /**
      * No resize.
@@ -65,8 +64,8 @@ abstract class AbstractBox extends AbstractCommand implements DependentInterface
      * @var array
      */
     private $availableParams = [
-        'tid' => null,
-        'cmdfilter'  => null, //currently not used.
+        'tid'       => null,
+        'cmdfilter' => null,
     ];
 
     /**
@@ -90,16 +89,53 @@ abstract class AbstractBox extends AbstractCommand implements DependentInterface
     }
 
     /**
-     * Sets box ident 'tid' parameter.
+     * Sets box ident.
+     *
+     * @param string|null $ident
+     *
+     * @return AbstractBox
+     * @throws \Exception
+     */
+    public function setBoxIdent(string $ident = null)
+    {
+        $this->setParam('tid', $ident);
+
+        return $this;
+    }
+
+    /**
+     * Returns box ident.
+     *
+     * @return string|null
+     */
+    public function getBoxIdent()
+    {
+        try {
+            return $this->getParam('tid');
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+
+    /**
+     * Sets the ident of the box referenced to RenderingTrait::$boxIdentReference with $ident as postfix.
+     * Used to create content referenced boxes in InDesign for content aware updates.
      *
      * @param string $ident
      *
      * @return AbstractBox
      * @throws \Exception
+     * @see \Mds\PimPrint\CoreBundle\Project\Traits\RenderingTrait::$boxIdentReference
      */
-    public function setBoxIdent($ident)
+    public function setBoxIdentReferenced(string $ident = '')
     {
-        $this->setParam('tid', $ident);
+        try {
+            $reference = $this->getProject()
+                              ->getBoxIdentReference();
+        } catch (\Exception $e) {
+            $reference = '';
+        }
+        $this->setBoxIdent('ID-' . $reference . $ident);
 
         return $this;
     }

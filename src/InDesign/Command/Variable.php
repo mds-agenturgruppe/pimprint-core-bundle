@@ -14,8 +14,6 @@
 namespace Mds\PimPrint\CoreBundle\InDesign\Command;
 
 /**
- * Class Variable
- *
  * Standalone or component for placement commands. Sets a variable with a position value in InDesign.
  * If the command is used as a component, positions of the placed element can be defined as variables for relative
  * positioning.
@@ -51,6 +49,20 @@ class Variable extends AbstractCommand implements ComponentInterface
      * @var string
      */
     const POSITION_BOTTOM = 'bottom';
+
+    /**
+     * InDesign variable name for yPosition.
+     *
+     * @var string
+     */
+    const VARIABLE_Y_POSITION = 'yPos';
+
+    /**
+     * InDesign variable name for xPosition.
+     *
+     * @var string
+     */
+    const VARIABLE_X_POSITION = 'xPos';
 
     /**
      * Array to validate positions.
@@ -109,6 +121,20 @@ class Variable extends AbstractCommand implements ComponentInterface
         $this->setParam('name', $name);
 
         return $this;
+    }
+
+    /**
+     * Returns InDesign variable name.
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        try {
+            return $this->getParam('name');
+        } catch (\Exception $e) {
+            return '';
+        }
     }
 
     /**

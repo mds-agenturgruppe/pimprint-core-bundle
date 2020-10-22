@@ -19,7 +19,6 @@ use Pimcore\Model\Element\AbstractElement;
  * Trait ElementCollectionRendering
  *
  * @package Mds\PimPrint\DemoBundle\Project\Traits
- * @todo    Documentation
  */
 trait ElementCollectionRenderingTrait
 {

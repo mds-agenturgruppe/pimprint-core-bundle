@@ -17,9 +17,7 @@ use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\ImageCollectorTrait;
 use Mds\PimPrint\CoreBundle\InDesign\Traits\BoxIdentBuilderTrait;
 
 /**
- * Class Template
- *
- * Command representing a InDesign template. All commands added to a template are executed automatically
+ * Command for creating page layout elements in InDesign. All commands added to a template are executed automatically
  * when a page is accessed in InDesign document.
  * If a page is accessed multiple times and the template is already applied to the page
  * the commands aren't executed once again.
@@ -43,28 +41,35 @@ class Template extends AbstractCommand implements ImageCollectorInterface
      *
      * @var string
      */
-    const TID_PREFIX = 'T';
+    const IDENT_PREFIX = 'T-AUTO#';
 
     /**
-     * Defines Commands for left and right side.
+     * Defines commands for use on single page documents.
      *
      * @var string
      */
-    const SIDE_BOTH = 'both';
+    const SIDE_SINGLE = 'single';
 
     /**
-     * Defines commands for left side.
+     * Defines commands for use on facing page documents left and side.
      *
      * @var string
      */
-    const SIDE_LEFT = 'left';
+    const SIDE_FACING_BOTH = 'both';
 
     /**
-     * Defines commands for right side.
+     * Defines commands for use on facing page documents left side.
      *
      * @var string
      */
-    const SIDE_RIGHT = 'right';
+    const SIDE_FACING_LEFT = 'left';
+
+    /**
+     * Defines commands for use on facing page documents right side.
+     *
+     * @var string
+     */
+    const SIDE_FACING_RIGHT = 'right';
 
     /**
      * {@inheritDoc}
@@ -72,21 +77,21 @@ class Template extends AbstractCommand implements ImageCollectorInterface
      * @var array
      */
     protected $availableParams = [
-        'cmds'       => [],
-        'cmds_left'  => [],
-        'cmds_right' => [],
+        'cmds_single'       => [],
+        'cmds_facing_left'  => [],
+        'cmds_facing_right' => [],
     ];
 
     /**
      * Adds $commands to template.
      *
      * @param AbstractCommand[] $commands
-     * @param string            $side Use SIDE_ class constants.
+     * @param string            $side Single/Facing page documents side
      *
      * @return Template
      * @throws \Exception
      */
-    public function addCommands(array $commands, $side = Template::SIDE_BOTH)
+    public function addCommands(array $commands, $side = Template::SIDE_SINGLE)
     {
         foreach ($commands as $command) {
             if (false === $command instanceof AbstractCommand) {
@@ -102,25 +107,39 @@ class Template extends AbstractCommand implements ImageCollectorInterface
      * Adds $command to template.
      *
      * @param AbstractCommand $command
-     * @param string          $side Use SIDE_ class constants.
+     * @param string          $side Single/Facing page documents side
      *
      * @return Template
      * @throws \Exception
      */
-    public function addCommand(AbstractCommand $command, $side = Template::SIDE_BOTH)
+    public function addCommand(AbstractCommand $command, $side = Template::SIDE_SINGLE)
     {
-        $this->createBoxIdent($command);
+        $this->setGenericPostfix($side);
+        $this->ensureBoxIdent($command);
         $this->collectImageCommand($command);
         switch ($side) {
-            case Template::SIDE_BOTH:
-                $this->params['cmds'][] = $command->buildCommand();
+            case Template::SIDE_SINGLE:
+                $this->params['cmds_single'][] = $command->buildCommand();
                 break;
-            case Template::SIDE_LEFT:
-                $this->params['cmds_left'][] = $command->buildCommand();
+            case Template::SIDE_FACING_BOTH:
+                if ($command instanceof AbstractBox) {
+                    $command->setBoxIdent();
+                }
+                $this->addCommand($command, self::SIDE_FACING_LEFT);
+                if ($command instanceof AbstractBox) {
+                    $command->setBoxIdent();
+                }
+                $this->addCommand($command, self::SIDE_FACING_RIGHT);
                 break;
-            case Template::SIDE_RIGHT:
-                $this->params['cmds_right'][] = $command->buildCommand();
+            case Template::SIDE_FACING_LEFT:
+                $this->params['cmds_facing_left'][] = $command->buildCommand();
                 break;
+            case Template::SIDE_FACING_RIGHT:
+                $this->params['cmds_facing_right'][] = $command->buildCommand();
+                break;
+        }
+        if ($command instanceof AbstractBox) {
+            $command->setBoxIdent();
         }
 
         return $this;
@@ -133,9 +152,9 @@ class Template extends AbstractCommand implements ImageCollectorInterface
      */
     public function clear()
     {
-        $this->params['cmds'] = [];
-        $this->params['cmds_left'] = [];
-        $this->params['cmds_right'] = [];
+        $this->params['cmds_single'] = [];
+        $this->params['cmds_facing_left'] = [];
+        $this->params['cmds_facing_right'] = [];
 
         return $this;
     }

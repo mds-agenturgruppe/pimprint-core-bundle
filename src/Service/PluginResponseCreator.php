@@ -13,7 +13,7 @@
 
 namespace Mds\PimPrint\CoreBundle\Service;
 
-use Mds\PimPrint\CoreBundle\InDesign\Traits\MissingAssetNotifier;
+use Mds\PimPrint\CoreBundle\InDesign\Traits\MissingAssetNotifierTrait;
 use Mds\PimPrint\CoreBundle\Session\PimPrintSessionBagConfigurator;
 use Pimcore\Http\RequestHelper;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -28,7 +28,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
  */
 class PluginResponseCreator
 {
-    use MissingAssetNotifier;
+    use MissingAssetNotifierTrait;
 
     /**
      * Lazy loading.
@@ -65,7 +65,7 @@ class PluginResponseCreator
     {
         $data['success'] = true;
 
-        return $this->buildResponse($data, Response::HTTP_ACCEPTED);
+        return $this->buildResponse($data);
     }
 
     /**
@@ -105,8 +105,10 @@ class PluginResponseCreator
         $data['debugMode'] = $this->isDebugMode();
         $this->addMissingAssetPreMessage();
         $this->addMessages($data);
-        $this->addImages($data);
-        $this->addSettings($data);
+        if (true === $data['success']) {
+            $this->addImages($data);
+            $this->addSettings($data);
+        }
         $this->addSession($data);
 
         return new JsonResponse($data, $status, $headers);
@@ -151,15 +153,17 @@ class PluginResponseCreator
      * Adds project settings if a project is currently selected.
      *
      * @param array $data
+     *
+     * @throws \Exception
      */
     private function addSettings(array &$data)
     {
         try {
-            $data['settings'] = ProjectsManager::getProject()
-                                               ->getSettings();
+            $project = ProjectsManager::getProject();
         } catch (\Exception $e) {
             return;
         }
+        $data['settings'] = $project->getSettings();
     }
 
     /**
@@ -226,7 +230,7 @@ class PluginResponseCreator
             $data['images'] = $project->getCommandQueue()
                                       ->getRegisteredAssets();
         } catch (\Exception $e) {
-            //don't add images to response when no project is generated.
+            return;
         }
     }
 }

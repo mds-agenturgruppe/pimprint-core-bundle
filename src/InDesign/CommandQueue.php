@@ -21,8 +21,8 @@ use Mds\PimPrint\CoreBundle\InDesign\Command\OpenDocument;
 use Mds\PimPrint\CoreBundle\InDesign\Command\PageMessage;
 use Mds\PimPrint\CoreBundle\InDesign\Command\UpdateElements;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Variable;
-use Mds\PimPrint\CoreBundle\InDesign\Command\Variable\AbstractMath;
-use Mds\PimPrint\CoreBundle\InDesign\Command\Variable\DependentInterface as VariableDependentInterfaceAlias;
+use Mds\PimPrint\CoreBundle\InDesign\Command\Variables\AbstractMath;
+use Mds\PimPrint\CoreBundle\InDesign\Command\Variables\DependentInterface as VariableDependentInterface;
 use Mds\PimPrint\CoreBundle\InDesign\Traits\BoxIdentBuilderTrait;
 use Mds\PimPrint\CoreBundle\Service\PluginParameters;
 
@@ -36,18 +36,11 @@ class CommandQueue
     use BoxIdentBuilderTrait;
 
     /**
-     * InDesign variable name for yPosition.
-     *
-     * @var string
-     */
-    const VARIABLE_YPOS = 'yPos';
-
-    /**
      * Prefix for BoxIdent.
      *
      * @var string
      */
-    const TID_PREFIX = 'Q';
+    const IDENT_PREFIX = 'Q';
 
     /**
      * Commands to send to InDesign.
@@ -157,7 +150,7 @@ class CommandQueue
     {
         $this->yPos = $value;
         if ($sendCommand) {
-            $this->addCommand(new Variable(self::VARIABLE_YPOS, $this->yPos));
+            $this->addCommand(new Variable(Variable::VARIABLE_Y_POSITION, $this->yPos));
         }
 
         return $this;
@@ -264,7 +257,7 @@ class CommandQueue
     public function addCommand(AbstractCommand $command): CommandQueue
     {
         $this->processVariables($command);
-        $this->createBoxIdent($command, $this->pageNumber);
+        $this->ensureBoxIdent($command);
         $this->commands[] = $command->buildCommand();
         $this->registerAsset($command);
 
@@ -296,7 +289,7 @@ class CommandQueue
     protected function registerVariables(AbstractCommand $command)
     {
         if ($command instanceof Variable) {
-            $this->registeredVariables[] = $command->getParam('name');
+            $this->registeredVariables[] = $command->getName();
 
             return;
         } elseif ($command instanceof AbstractMath) {
@@ -319,7 +312,7 @@ class CommandQueue
      */
     protected function validateVariables(AbstractCommand $command)
     {
-        if (false === $command instanceof VariableDependentInterfaceAlias) {
+        if (false === $command instanceof VariableDependentInterface) {
             return;
         }
         $check = array_diff($command->getDependentVariables(), $this->registeredVariables);

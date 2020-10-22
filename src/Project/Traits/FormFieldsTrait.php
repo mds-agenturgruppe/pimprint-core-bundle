@@ -90,7 +90,7 @@ trait FormFieldsTrait
      * Returns project specific custom form fields.
      *
      * @return array
-     * @todo Project specific custom form fields into plugin.
+     * @todo Custom plugin form fields.
      */
     protected function getCustomFormFields()
     {

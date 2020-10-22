@@ -51,6 +51,8 @@ class MdsPimPrintCoreExtension extends Extension
      *
      * @param ContainerBuilder $container
      * @param array            $config
+     *
+     * @throws \Exception
      */
     public function registerProjects(ContainerBuilder $container, array $config)
     {
@@ -61,8 +63,31 @@ class MdsPimPrintCoreExtension extends Extension
         unset($config['projects']);
         foreach ($arguments as &$argument) {
             $argument = array_merge($argument, $config);
+            $argument['bundlePath'] = $this->getBundlePathForService($container, $argument);
         }
         $definition = $container->getDefinition(ProjectsManager::class);
         $definition->setArgument('$config', $arguments);
+    }
+
+    /**
+     * Returns bundle path for configured project service in $projectConfig.
+     *
+     * @param ContainerBuilder $container
+     * @param array            $projectConfig
+     *
+     * @return string
+     * @throws \Exception
+     */
+    private function getBundlePathForService(ContainerBuilder $container, array $projectConfig)
+    {
+        if (empty($projectConfig['service'])) {
+            throw new \Exception(sprintf('No PimPrint project service defined for rendering project.'));
+        }
+        foreach (array_reverse($container->getParameter('kernel.bundles_metadata')) as $bundle) {
+            if (0 === strpos($projectConfig['service'], $bundle['namespace'])) {
+                return $bundle['path'];
+            }
+        }
+        throw new \Exception(sprintf('No matching bundle found for service: %s', $projectConfig['service']));
     }
 }

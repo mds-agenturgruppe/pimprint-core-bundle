@@ -17,9 +17,28 @@ use Pimcore\Model\DataObject\AbstractObject;
 
 /**
  * Class AbstractPublicationTreeBuilder
+ *
+ * @package Mds\PimPrint\CoreBundle\Service\InDesign
  */
 abstract class AbstractPublicationTreeBuilder
 {
+    /**
+     * Builds publication tree element with $identifier and $label.
+     *
+     * @param string $identifier
+     * @param string $label
+     *
+     * @return array
+     */
+    public function buildTreeElement(string $identifier, string $label)
+    {
+        return [
+            'identifier' => $identifier,
+            'label'      => $label,
+            'children'   => [],
+        ];
+    }
+
     /**
      * Builds recursive object tree.
      *
@@ -27,7 +46,7 @@ abstract class AbstractPublicationTreeBuilder
      *
      * @return array
      */
-    protected function buildObjectTree(AbstractObject $object): array
+    public function buildObjectTree(AbstractObject $object): array
     {
         $tree = $this->buildTreeElementFromObject($object);
         foreach ($object->getChildren() as $child) {
@@ -53,23 +72,6 @@ abstract class AbstractPublicationTreeBuilder
             $this->getObjectIdentifier($object),
             $this->getObjectLabel($object)
         );
-    }
-
-    /**
-     * Builds publication tree element with $identifier and $label.
-     *
-     * @param string $identifier
-     * @param string $label
-     *
-     * @return array
-     */
-    protected function buildTreeElement($identifier, $label)
-    {
-        return [
-            'identifier' => $identifier,
-            'label'      => $label,
-            'children'   => [],
-        ];
     }
 
     /**

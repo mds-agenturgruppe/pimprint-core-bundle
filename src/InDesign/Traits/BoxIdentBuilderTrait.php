@@ -21,68 +21,128 @@ use Mds\PimPrint\CoreBundle\Project\Traits\ProjectAwareTrait;
  * Trait BoxIdentBuilderTrait
  *
  * @package Mds\PimPrint\CoreBundle\InDesign\Traits
- * @todo    Add possible linking to Pimcore Object/Asset ids to enable updates between pages.
  */
 trait BoxIdentBuilderTrait
 {
     use ProjectAwareTrait;
 
     /**
-     * Generated box idents.
+     * Array with ident indexes.
      *
      * @var array
      */
-    protected static $boxIdents = [];
+    protected static $identIndexes = [];
+
+    /**
+     * Array with all generated boxes to ensure unique box names.
+     *
+     * @var array
+     */
+    private static $generatedBoxes = [];
+
+    /**
+     * Postfix for generic ident generation.
+     *
+     * @var string
+     */
+    protected $genericPostfix = '';
 
     /**
      * Creates a unique box ident for $command.
      *
      * @param AbstractCommand $command
-     * @param string          $page
      *
      * @throws \Exception
      */
-    protected function createBoxIdent(AbstractCommand $command, $page = '')
+    protected function ensureBoxIdent(AbstractCommand $command)
     {
         if (false === $command instanceof AbstractBox) {
             return;
         }
         /* @var AbstractBox $command */
-        try {
-            $boxIdent = $command->getParam('tid');
-            if (false === empty($boxIdent)) {
-                return;
-            }
-        } catch (\Exception $e) {
+        $boxIdent = $command->getBoxIdent();
+        if (false === empty($boxIdent)) {
+            $this->ensureUniqueBoxIdent($command);
+
             return;
         }
+        $command->setBoxIdent($this->buildGenericBoxIdent($command));
+        $this->ensureUniqueBoxIdent($command);
+    }
+
+    /**
+     * Builds generic boxIdent for $command.
+     *
+     * @param AbstractBox $command
+     *
+     * @return string
+     * @throws \Exception
+     */
+    protected function buildGenericBoxIdent(AbstractBox $command)
+    {
         $parts = [
-            static::TID_PREFIX,
-            $this->getPageNumber(),
             $command::CMD,
-            $this->buildIdentIndex($command::CMD)
+            $this->genericPostfix,
+            $this->getProject()
+                 ->getBoxIdentGenericPostfix(),
         ];
-        $command->setBoxIdent(implode('-', $parts));
+        $ident = implode('', array_filter($parts));
+        $parts = [
+            static::IDENT_PREFIX,
+            $this->getPageNumber(),
+            $ident,
+            $this->buildIdentIndex($ident)
+        ];
+
+        return implode('-', $parts);
     }
 
     /**
      * Builds unique index for $command on current page.
      *
-     * @param string $command
+     * @param string $commandName
      *
      * @return int
      */
-    protected function buildIdentIndex($command)
+    protected function buildIdentIndex(string $commandName)
     {
         $page = $this->getPageNumber();
-        if (false === isset(self::$boxIdents[$page])) {
-            self::$boxIdents[$page] = [];
+        if (false === isset(self::$identIndexes[$page])) {
+            self::$identIndexes[$page] = [];
         }
-        if (false === isset(self::$boxIdents[$page][$command])) {
-            self::$boxIdents[$page][$command] = 0;
+        if (false === isset(self::$identIndexes[$page][$commandName])) {
+            self::$identIndexes[$page][$commandName] = 0;
         }
 
-        return ++self::$boxIdents[$this->getPageNumber()][$command];
+        return ++self::$identIndexes[$this->getPageNumber()][$commandName];
+    }
+
+    /**
+     * Sets genericPostfix.
+     *
+     * @param string $postfix
+     */
+    protected function setGenericPostfix(string $postfix)
+    {
+        $this->genericPostfix = $postfix;
+    }
+
+    /**
+     * Ensured unique element names in InDesign.
+     * If a element ident is used multiple times an error PageMessage is generated.
+     *
+     * @param AbstractBox $command
+     *
+     * @throws \Exception
+     */
+    private function ensureUniqueBoxIdent(AbstractBox $command)
+    {
+        $ident = $command->getElementName() . '#' . $command->getBoxIdent();
+        if (isset(self::$generatedBoxes[$ident])) {
+            $this->getCommandQueue()
+                 ->addPageMessage('Error: Duplicate BoxIdent found:' . $ident, true);
+        }
+        self::$generatedBoxes[$ident] = true;
     }
 
     /**

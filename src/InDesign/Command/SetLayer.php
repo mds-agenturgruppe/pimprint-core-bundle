@@ -14,8 +14,6 @@
 namespace Mds\PimPrint\CoreBundle\InDesign\Command;
 
 /**
- * Class SetLayer
- *
  * Sets the target layer name for all sequential following commands.
  * Create true:
  * The layer will be created when a element is placed.

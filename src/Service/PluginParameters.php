@@ -37,28 +37,32 @@ class PluginParameters
     const START_ALIGNMENT_RIGHT = 401;
 
     /**
-     * Update mode value "All elements (position and content)
+     * Update mode value "All elements (position and content)"
      *
      * @var int
      */
     const UPDATE_ALL_POSITION_CONTENT = 501;
 
     /**
-     * Update mode value "All elements (only content)
+     * Update mode value "All elements (only content)"
      *
      * @var int
      */
     const UPDATE_ALL_CONTENT = 502;
 
     /**
-     * Update mode value "Selected elements (position and content)
+     * Update mode value "Selected elements (position and content)"
+     *
+     * Important:
+     * This update mode only works in absolute positioned layouts.
+     * Layouts using relative position or CheckNewPage commands are not absolute positioned.
      *
      * @var int
      */
     const UPDATE_SELECTED_POSITION_CONTENT = 511;
 
     /**
-     * Update mode value "Selected elements (only content)
+     * Update mode value "Selected elements (only content)"
      *
      * @var int
      */
@@ -136,8 +140,8 @@ class PluginParameters
     protected $paramDefinition = [
         self::PARAM_PUBLICATION     => ['required' => true, 'default' => null],
         self::PARAM_LANGUAGE        => ['required' => true, 'default' => null],
-        self::PARAM_UPDATE_MODE     => ['required' => false, 'default' => null],
-        self::PARAM_START_ALIGNMENT => ['required' => false, 'default' => PluginParameters::START_ALIGNMENT_LEFT],
+        self::PARAM_UPDATE_MODE     => ['required' => false, 'default' => self::UPDATE_ALL_POSITION_CONTENT],
+        self::PARAM_START_ALIGNMENT => ['required' => false, 'default' => self::START_ALIGNMENT_LEFT],
         self::PARAM_PAGE_START      => ['required' => false, 'default' => 1],
         self::PARAM_PAGE_END        => ['required' => false, 'default' => false],
         self::PARAM_ELEMENT_LIST    => ['required' => false, 'default' => []],

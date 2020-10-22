@@ -62,7 +62,6 @@ class UserHelper
      * If user is admin, all activates languages are returned.
      *
      * @return array
-     * @todo Possible storing in session for performance enhancement. Currently not added to have minimal impact.
      */
     public function getVisibleWorkspaceLanguages()
     {

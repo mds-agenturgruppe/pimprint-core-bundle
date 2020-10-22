@@ -23,7 +23,7 @@ use Mds\PimPrint\CoreBundle\InDesign\Text\Paragraph;
  *
  * @package Mds\PimPrint\CoreBundle\InDesign\Command
  */
-class Table extends AbstractBox implements ImageCollectorInterface
+class Table extends AbstractBox implements ImageCollectorInterface, ComponentInterface
 {
     use FitTrait;
     use ImageCollectorTrait;
@@ -392,8 +392,8 @@ class Table extends AbstractBox implements ImageCollectorInterface
     /**
      * Generates column ident for automatic ident mode for $elements.
      *
-     * @param string|null $ident
      * @param array       $elements
+     * @param string|null $ident
      *
      * @return int
      */
@@ -586,6 +586,26 @@ class Table extends AbstractBox implements ImageCollectorInterface
                     )
                 );
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return string
+     */
+    public function getComponentIdent(): string
+    {
+        return 'table';
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return bool
+     */
+    public function isMultipleComponent(): bool
+    {
+        return false;
     }
 
     /**

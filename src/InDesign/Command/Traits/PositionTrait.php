@@ -17,8 +17,6 @@ use Mds\PimPrint\CoreBundle\InDesign\Command\AbstractBox;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Variable;
 
 /**
- * Trait PositionTrait
- *
  * Trait to add params for positioning to a command.
  * The params left and top are used to position a element absolutely in the document. When this params are used
  * the upper-left corner of the element is positioned left/top position.

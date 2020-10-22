@@ -16,9 +16,11 @@ namespace Mds\PimPrint\CoreBundle\Project\Traits;
 use Mds\PimPrint\CoreBundle\InDesign\Command\GoToPage;
 use Mds\PimPrint\CoreBundle\InDesign\Command\OpenDocument;
 use Mds\PimPrint\CoreBundle\InDesign\Command\RemoveEmptyLayers;
+use Mds\PimPrint\CoreBundle\InDesign\Command\Variable;
 use Mds\PimPrint\CoreBundle\Project\AbstractProject;
 use Pimcore\Localization\IntlFormatter;
 use Pimcore\Localization\LocaleService;
+use Pimcore\Model\Asset;
 use Pimcore\Tool;
 
 /**
@@ -29,17 +31,110 @@ use Pimcore\Tool;
 trait RenderingTrait
 {
     /**
+     * Indicated if a generation of project is active.
+     *
+     * @var bool
+     */
+    private $generationActive = false;
+
+    /**
+     * Reference string for box ident generation.
+     * Used to generate unique content related box idents to create coupling between Pimcore content
+     * (Objects, Assets, Documents) and InDesign elements.
+     * Typical usage: use Object-Ids here.
+     *
+     * @var string
+     */
+    private $boxIdentReference = '';
+
+    /**
+     * Postfix used in generic box ident generation.
+     *
+     * @var string
+     */
+    private $boxIdentGenericPostfix = '';
+
+    /**
      * Generates PimPrint commands to build a publication in InDesign.
      *
      * @return array
      * @throws \Exception
      */
-    public function run(): array
+    final public function run(): array
     {
+        $this->generationActive = true;
         $this->buildPublication();
 
         return $this->getCommandQueue()
                     ->getCommands();
+    }
+
+    /**
+     * Returns true if the current request generated a project.
+     *
+     * @return bool
+     */
+    final public function isGenerationActive()
+    {
+        return $this->generationActive;
+    }
+
+    /**
+     * Returns $boxIdentReference.
+     *
+     * @return string
+     */
+    public function getBoxIdentReference(): string
+    {
+        return $this->boxIdentReference;
+    }
+
+    /**
+     * Sets $ident as boxIdentReference for content aware updates.
+     *
+     * @param string $ident
+     *
+     * @see RenderingTrait::$boxIdentReference
+     *
+     */
+    public function setBoxIdentReference(string $ident)
+    {
+        $this->boxIdentReference = $ident;
+    }
+
+    /**
+     * Appends $ident to existing for content aware updates.
+     *
+     * @param string $ident
+     *
+     * @see RenderingTrait::$boxIdentReference
+     *
+     */
+    public function appendToBoxIdentReference(string $ident)
+    {
+        $this->setBoxIdentReference(
+            $this->getBoxIdentReference() . $ident
+        );
+    }
+
+    /**
+     * Returns $boxIdentGenericPostfix.
+     *
+     * @return string
+     */
+    public function getBoxIdentGenericPostfix(): string
+    {
+        return $this->boxIdentGenericPostfix;
+    }
+
+    /**
+     * Sets $boxIdentGenericPostfix.
+     *
+     * @param string $postfix
+     */
+    public function setBoxIdentGenericPostfix(string $postfix)
+    {
+        $this->boxIdentGenericPostfix = $postfix;
     }
 
     /**
@@ -54,9 +149,8 @@ trait RenderingTrait
         $this->initFrontend();
         $this->initRenderMode()
              ->initInDesignDocument();
-
         if ($openFirstPage) {
-            $this->addCommand(new GoToPage());
+            $this->addCommand(new GoToPage(1, false));
         }
     }
 
@@ -135,12 +229,12 @@ trait RenderingTrait
     {
         set_time_limit(
             $this->config()
-                 ->offsetGet('php_time_limit', self::DEFAULT_TIME_LIMIT)
+                 ->offsetGet('php_time_limit')
         );
         ini_set(
             'memory_limit',
             $this->config()
-                 ->offsetGet('php_memory_limit', self::DEFAULT_MEMORY_LIMIT)
+                 ->offsetGet('php_memory_limit')
         );
     }
 
@@ -158,19 +252,22 @@ trait RenderingTrait
     }
 
     /**
-     * Opens a new InDesign document and loads the indd.template parameter template file.
+     * Opens a new InDesign document and loads the InDesign template parameter template file.
      *
      * @return AbstractProject
      * @throws \Exception
      */
-    protected function initInDesignDocument(): AbstractProject
+    final protected function initInDesignDocument(): AbstractProject
     {
         $template = $this->getTemplate();
-
+        if ($template instanceof Asset) {
+            $template = $template->getFilename();
+        }
         //Declares current open InDesign document as target document to generate publication in.
         $this->addCommand(new OpenDocument(OpenDocument::TYPE_USECURRENT))
             //opens the InDesign template document.
-             ->addCommand(new OpenDocument(OpenDocument::TYPE_TEMPLATE, '0', $template));
+             ->addCommand(new OpenDocument(OpenDocument::TYPE_TEMPLATE, '0', $template))
+             ->addCommand(new Variable('GENERATED_AT', time()));
 
         /* @var AbstractProject $this */
         return $this;

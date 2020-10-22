@@ -14,9 +14,7 @@
 namespace Mds\PimPrint\CoreBundle\InDesign\Command;
 
 /**
- * Class OpenDocument
- *
- * Opens a InDesign document.
+ * Opens an InDesign document.
  *
  * @package Mds\PimPrint\CoreBundle\InDesign\Command
  */

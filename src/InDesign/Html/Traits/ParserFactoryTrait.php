@@ -21,6 +21,8 @@ use Pimcore\Model\Asset;
 
 /**
  * Trait ParserFactoryTrait
+ *
+ * @package Mds\PimPrint\CoreBundle\InDesign\Html\Traits
  */
 trait ParserFactoryTrait
 {

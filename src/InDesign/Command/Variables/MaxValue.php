@@ -11,12 +11,12 @@
  * @license    https://pimprint.mds.eu/license GPLv3
  */
 
-namespace Mds\PimPrint\CoreBundle\InDesign\Command\Variable;
+namespace Mds\PimPrint\CoreBundle\InDesign\Command\Variables;
 
 /**
  * Sets a variable to the math maximum value of other variables.
  *
- * @package Mds\PimPrint\CoreBundle\InDesign\Command\Variable
+ * @package Mds\PimPrint\CoreBundle\InDesign\Command\Variables
  */
 class MaxValue extends AbstractMath
 {

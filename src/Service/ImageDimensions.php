@@ -35,7 +35,6 @@ class ImageDimensions
      *
      * @return array
      * @throws \Exception
-     * @todo Possible usage of a print_size_mm custom setting. Currently not added to have minimal impact.
      */
     public function getSizes(Image $asset, $defaultDpi = [300, 300]): array
     {
@@ -68,7 +67,6 @@ class ImageDimensions
      * @param array $default
      *
      * @return array
-     * @todo Possible usage of a print_dpi custom setting. Currently not added to have minimal impact.
      */
     public function getDpi(Image $asset, $default = [300, 300])
     {

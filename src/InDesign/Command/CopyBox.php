@@ -14,8 +14,6 @@
 namespace Mds\PimPrint\CoreBundle\InDesign\Command;
 
 /**
- * Class CopyBox
- *
  * Places a copy of a box from template document.
  *
  * @package Mds\PimPrint\CoreBundle\InDesign\Command

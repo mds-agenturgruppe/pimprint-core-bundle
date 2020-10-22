@@ -16,8 +16,6 @@ namespace Mds\PimPrint\CoreBundle\InDesign\Command\Traits;
 use Mds\PimPrint\CoreBundle\InDesign\Command\AbstractBox;
 
 /**
- * Trait SizeTrait
- *
  * Trait to add params for resizing to a command.
  * The params width height are used to size a element in the document.
  *

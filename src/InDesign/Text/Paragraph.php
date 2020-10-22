@@ -34,7 +34,7 @@ class Paragraph implements ImageCollectorInterface
      *
      * @var string
      */
-    const TID_PREFIX = 'P';
+    const IDENT_PREFIX = 'P';
 
     /**
      * InDesign paragraph style to apply to text.
@@ -91,6 +91,16 @@ class Paragraph implements ImageCollectorInterface
         $this->paragraphStyle = $paragraphStyle;
 
         return $this;
+    }
+
+    /**
+     * Returns InDesign paragraph style.
+     *
+     * @return string
+     */
+    public function getParagraphStyle()
+    {
+        return $this->paragraphStyle;
     }
 
     /**
@@ -198,7 +208,7 @@ class Paragraph implements ImageCollectorInterface
         }
         foreach ($this->components as $component) {
             if ($component instanceof ImageBox) {
-                $this->createBoxIdent($component);
+                $this->ensureBoxIdent($component);
                 $imageCommand = $component->buildCommand();
                 $this->addCollectedImages($component);
                 $command = [

@@ -14,11 +14,8 @@
 namespace Mds\PimPrint\CoreBundle\InDesign\Command\Traits;
 
 use Mds\PimPrint\CoreBundle\InDesign\Command\AbstractBox;
-use Mds\PimPrint\CoreBundle\InDesign\Command\AbstractCommand;
 
 /**
- * Trait ElementNameTrait
- *
  * Trait to add name param to a command.
  * The name param is used to identify elements by name in the template document.
  *
@@ -35,7 +32,7 @@ trait ElementNameTrait
     }
 
     /**
-     * Sets $name as name for the element to be copied from the template document.
+     * Sets $name as name for the element to be copied from template document.
      *
      * @param string $elementName
      *
@@ -46,6 +43,20 @@ trait ElementNameTrait
         $this->setParam('name', $elementName);
 
         return $this;
+    }
+
+    /**
+     * Returns name of element copied from template document.
+     *
+     * @return string
+     */
+    public function getElementName()
+    {
+        try {
+            return $this->getParam('name');
+        } catch (\Exception $e) {
+            return '';
+        }
     }
 
     /**

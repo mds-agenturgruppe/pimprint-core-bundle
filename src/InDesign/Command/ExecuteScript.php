@@ -14,8 +14,6 @@
 namespace Mds\PimPrint\CoreBundle\InDesign\Command;
 
 /**
- * Class ExecuteScript
- *
  * Executes JavaScript in InDesign.
  *
  * @package Mds\PimPrint\CoreBundle\InDesign\Command

@@ -14,8 +14,6 @@
 namespace Mds\PimPrint\CoreBundle\InDesign\Command;
 
 /**
- * Class CheckNewPage
- *
  * Component for placement commands. If the placed element ends at a larger position than maxXPos, the element is
  * automatically repositioned on the following page at $newYPos and $newxPos.
  *

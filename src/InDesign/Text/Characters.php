@@ -14,8 +14,6 @@
 namespace Mds\PimPrint\CoreBundle\InDesign\Text;
 
 /**
- * Class Characters
- *
  * Allowed spacial characters inside text content:
  * https://www.indesignjs.de/extendscriptAPI/indesign-latest/#SpecialCharacters.html
  *
@@ -50,15 +48,6 @@ class Characters implements ParagraphComponent
      * @var string
      */
     protected $target = '_blank';
-
-    /**
-     * Marker in InDesign to create interlinking inside the Document
-     * Example 'cross_reference'
-     *
-     * @var string
-     * @todo Implement Markers and CrossReference
-     */
-    protected $marker;
 
     /**
      * Characters constructor.

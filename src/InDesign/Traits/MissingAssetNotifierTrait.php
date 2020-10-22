@@ -16,11 +16,11 @@ namespace Mds\PimPrint\CoreBundle\InDesign\Traits;
 use Mds\PimPrint\CoreBundle\Service\ProjectsManager;
 
 /**
- * Trait MissingAssetNotifier
+ * Trait MissingAssetNotifierTrait
  *
  * @package Mds\PimPrint\CoreBundle\InDesign\Traits
  */
-trait MissingAssetNotifier
+trait MissingAssetNotifierTrait
 {
     /**
      * Adds $message as notification for missing asset for $assetId.
@@ -28,6 +28,7 @@ trait MissingAssetNotifier
      * Otherwise a offPage message will be generated.
      *
      * @param string $message
+     * @param int    $assetId
      *
      * @throws \Exception
      */

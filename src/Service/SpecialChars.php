@@ -27,7 +27,7 @@ class SpecialChars
      *
      * @var int
      */
-    const AUTO_PAGE_NUMBER = 0x0018;
+    const AUTO_PAGE_NUMBER = '[%AUTO_PAGE_NUMBER%]';
 
     /**
      * Abschnittsmarke (Link) M ^x ~x

@@ -17,8 +17,6 @@ use Mds\PimPrint\CoreBundle\InDesign\Command\AbstractBox;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Variable;
 
 /**
- * Trait VariableTrait
- *
  * Trait for setting variables when placing elements for relative positioning.
  *
  * @package Mds\PimPrint\CoreBundle\InDesign\Command\Traits

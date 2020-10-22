@@ -20,8 +20,6 @@ use Pimcore\Model\Element\AbstractElement;
  * Trait StackedElementsRendering
  *
  * @package Mds\PimPrint\DemoBundle\Project\Traits
- * @todo    Maybe find a better naming for trait
- * @todo    Documentation
  */
 trait BlockStackedQueueRenderingTrait
 {

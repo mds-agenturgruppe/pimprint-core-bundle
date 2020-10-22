@@ -22,13 +22,14 @@ use Mds\PimPrint\CoreBundle\Service\ThumbnailHelper;
 use Mds\PimPrint\CoreBundle\Service\UserHelper;
 use Pimcore\Http\RequestHelper;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
- * Trait HelpersTrait
+ * Trait ServicesTrait
  *
  * @package Mds\PimPrint\CoreBundle\Project\Traits
  */
-trait HelpersTrait
+trait ServicesTrait
 {
     /**
      * UserHelper service.
@@ -78,6 +79,13 @@ trait HelpersTrait
      * @var Config
      */
     protected $config;
+
+    /**
+     * UrlGenerator instance.
+     *
+     * @var UrlGeneratorInterface
+     */
+    protected $urlGenerator;
 
     /**
      * Sets UserHelper service.
@@ -197,6 +205,26 @@ trait HelpersTrait
     final public function setConfig(Config $config)
     {
         $this->config = $config;
+    }
+
+    /**
+     * Sets urlGenerator.
+     *
+     * @param UrlGeneratorInterface $urlGenerator
+     */
+    public function setUrlGenerator(UrlGeneratorInterface $urlGenerator)
+    {
+        $this->urlGenerator = $urlGenerator;
+    }
+
+    /**
+     * Returns urlGenerator.
+     *
+     * @return UrlGeneratorInterface
+     */
+    protected function getUrlGenerator()
+    {
+        return $this->urlGenerator;
     }
 
     /**

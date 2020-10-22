@@ -18,7 +18,11 @@ use Mds\PimPrint\CoreBundle\Service\PluginResponseCreator;
 use Mds\PimPrint\CoreBundle\Service\ProjectsManager;
 use Pimcore\Controller\FrontendController;
 use Pimcore\Http\RequestHelper;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\File\Stream;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -89,16 +93,16 @@ class InDesignController extends FrontendController
     /**
      * Returns details for project.
      *
-     * @Route("/project/{ident}")
+     * @Route("/project/{identifier}")
      *
-     * @param string $ident
+     * @param string $identifier
      *
      * @return JsonResponse
      */
-    public function projectAction($ident)
+    public function projectAction(string $identifier)
     {
         try {
-            $project = $this->projectsManager->projectServiceFactory($ident);
+            $project = $this->projectsManager->projectServiceFactory($identifier);
 
             return $this->pluginResponse->success(
                 [
@@ -115,19 +119,19 @@ class InDesignController extends FrontendController
     /**
      * Executes a project InDesign execution.
      *
-     * @Route("/project/{ident}/run")
+     * @Route("/project/{identifier}/run")
      *
-     * @param string           $ident
+     * @param string           $identifier
      * @param PluginParameters $pluginParams
      *
      * @return JsonResponse
      */
-    public function executeProjectAction($ident, PluginParameters $pluginParams)
+    public function executeProjectAction(string $identifier, PluginParameters $pluginParams)
     {
         try {
             $this->requestHelper->getRequest()
                                 ->setLocale($pluginParams->get(PluginParameters::PARAM_LANGUAGE));
-            $project = $this->projectsManager->projectServiceFactory($ident);
+            $project = $this->projectsManager->projectServiceFactory($identifier);
 
             return $this->pluginResponse->success(
                 [
@@ -138,6 +142,34 @@ class InDesignController extends FrontendController
             );
         } catch (\Exception $e) {
             return $this->pluginResponse->error($e);
+        }
+    }
+
+    /**
+     * Delivers templateFile for project identifier.
+     *
+     * @Route("/project/{identifier}/template/{templateFile}", name="mds_pimprint_downlaod_template")
+     *
+     * @param string $identifier
+     * @param string $templateFile
+     *
+     * @return BinaryFileResponse|NotFoundHttpException
+     */
+    public function downloadTemplateAction(string $identifier, string $templateFile)
+    {
+        try {
+            $project = $this->projectsManager->projectServiceFactory($identifier);
+            $filePath = $project->getTemplateFilePath($templateFile);
+            if (false === file_exists($filePath)) {
+                throw new \Exception();
+            }
+            $stream = new Stream($filePath);
+            $response = new BinaryFileResponse($stream);
+            $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, basename($filePath));
+
+            return $response;
+        } catch (\Exception $e) {
+            return $this->createNotFoundException();
         }
     }
 }

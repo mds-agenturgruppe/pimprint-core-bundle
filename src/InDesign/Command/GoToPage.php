@@ -16,8 +16,6 @@ namespace Mds\PimPrint\CoreBundle\InDesign\Command;
 use Mds\PimPrint\CoreBundle\Project\Traits\ProjectAwareTrait;
 
 /**
- * Class GoToPage
- *
  * Sets the target page in the InDesign document.
  *
  * @package Mds\PimPrint\CoreBundle\InDesign\Command
@@ -57,7 +55,7 @@ class GoToPage extends AbstractCommand
      */
     public function __construct(
         int $page = 1,
-        bool $useTemplate = false,
+        bool $useTemplate = true,
         bool $useDoublePage = false,
         bool $usePageOffset = false
     ) {

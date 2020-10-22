@@ -11,14 +11,14 @@
  * @license    https://pimprint.mds.eu/license GPLv3
  */
 
-namespace Mds\PimPrint\CoreBundle\InDesign\Command\Variable;
+namespace Mds\PimPrint\CoreBundle\InDesign\Command\Variables;
 
 use Mds\PimPrint\CoreBundle\InDesign\Command\ExecuteScript;
 
 /**
  * Class AbstractMath
  *
- * @package Mds\PimPrint\CoreBundle\InDesign\Command\Variable
+ * @package Mds\PimPrint\CoreBundle\InDesign\Command\Variables
  */
 abstract class AbstractMath extends ExecuteScript implements DependentInterface
 {

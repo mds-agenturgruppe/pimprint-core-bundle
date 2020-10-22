@@ -19,7 +19,7 @@ use Mds\PimPrint\CoreBundle\InDesign\Text;
 use Mds\PimPrint\CoreBundle\InDesign\Text\Characters;
 use Mds\PimPrint\CoreBundle\InDesign\Text\Paragraph;
 use Mds\PimPrint\CoreBundle\InDesign\Text\ParagraphComponent;
-use Mds\PimPrint\CoreBundle\InDesign\Traits\MissingAssetNotifier;
+use Mds\PimPrint\CoreBundle\InDesign\Traits\MissingAssetNotifierTrait;
 use Pimcore\Model\Asset;
 
 /**
@@ -30,7 +30,7 @@ use Pimcore\Model\Asset;
 abstract class AbstractParser
 {
     use ParserFactoryTrait;
-    use MissingAssetNotifier;
+    use MissingAssetNotifierTrait;
 
     /**
      * $element parameter name in factory closure to create Style instances.
@@ -260,15 +260,13 @@ abstract class AbstractParser
      * @return AbstractParser
      * @throws \Exception
      */
-    public function parse($html, Style $style = null)
+    public function parse(string $html, Style $style = null)
     {
         $html = $this->sanitiseHtml($html);
         if (null !== $style) {
             $this->setStyle($style);
         }
-
         $this->paragraphComponents = [];
-
         try {
             $xml = new \DOMDocument('1.0', 'UTF-8');
             $xml->loadHTML('<?xml version="1.0" encoding="UTF-8"?><html><body>' . $html . '</body></html>');

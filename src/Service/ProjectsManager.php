@@ -54,21 +54,14 @@ class ProjectsManager
      * Registers all PimPrint projects from $config.
      *
      * @param array $config
-     *
-     * @throws \Exception
      */
     private function registerProjects(array $config)
     {
         foreach ($config as $ident => $project) {
             if (empty($project['ident'])) {
-                $project['ident'] = $ident;
+                $project['ident'] = (string)$ident;
             } else {
                 $ident = $project['ident'];
-            }
-            if (empty($project['service'])) {
-                throw new \Exception(
-                    sprintf("No PimPrint project service with ident '%s' registered.", $ident)
-                );
             }
             $this->projects[$ident] = $project;
         }
@@ -115,11 +108,11 @@ class ProjectsManager
      * @return AbstractProject
      * @throws \Exception
      */
-    public function projectServiceFactory($ident, bool $registerSelected = true)
+    public function projectServiceFactory(string $ident, bool $registerSelected = true)
     {
         if (false === isset($this->projects[$ident])) {
             throw new \Exception(
-                sprintf("No PimPrint project service with ident '%s' registered.", $ident)
+                sprintf("No PimPrint project with ident '%s' registered.", $ident)
             );
         }
         $config = $this->projects[$ident];

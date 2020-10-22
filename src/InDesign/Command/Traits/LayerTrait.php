@@ -16,8 +16,6 @@ namespace Mds\PimPrint\CoreBundle\InDesign\Command\Traits;
 use Mds\PimPrint\CoreBundle\InDesign\Command\AbstractBox;
 
 /**
- * Trait LayerTrait
- *
  * Trait to add layer param to a command.
  * The layer param is used to set the layer in which a new element should be placed.
  *

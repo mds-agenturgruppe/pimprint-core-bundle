@@ -11,19 +11,13 @@
  * @license    https://pimprint.mds.eu/license GPLv3
  */
 
-namespace Mds\PimPrint\CoreBundle\InDesign\Command\Variable;
+namespace Mds\PimPrint\CoreBundle\Service\InDesign;
 
 /**
- * Interface DependentInterface
+ * Class PublicationTreeBuilder
  *
- * @package Mds\PimPrint\CoreBundle\InDesign\Command
+ * @package Mds\PimPrint\CoreBundle\Service\InDesign
  */
-interface DependentInterface
+class PublicationTreeBuilder extends AbstractPublicationTreeBuilder
 {
-    /**
-     * Returns an array with all variables command is dependent from.
-     *
-     * @return array
-     */
-    public function getDependentVariables(): array;
 }

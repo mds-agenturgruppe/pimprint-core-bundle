@@ -16,8 +16,9 @@ namespace Mds\PimPrint\CoreBundle\Project;
 use Mds\PimPrint\CoreBundle\InDesign\Command\AbstractCommand;
 use Mds\PimPrint\CoreBundle\InDesign\CommandQueue;
 use Mds\PimPrint\CoreBundle\Project\Traits\FormFieldsTrait;
-use Mds\PimPrint\CoreBundle\Project\Traits\HelpersTrait;
+use Mds\PimPrint\CoreBundle\Project\Traits\ServicesTrait;
 use Mds\PimPrint\CoreBundle\Project\Traits\RenderingTrait;
+use Mds\PimPrint\CoreBundle\Project\Traits\TemplateTrait;
 use Mds\PimPrint\CoreBundle\Service\PluginParameters;
 use Pimcore\Tool;
 
@@ -37,23 +38,10 @@ use Pimcore\Tool;
  */
 abstract class AbstractProject
 {
-    use HelpersTrait;
+    use ServicesTrait;
+    use TemplateTrait;
     use RenderingTrait;
     use FormFieldsTrait;
-
-    /**
-     * Default PHP time_limit.
-     *
-     * @var int
-     */
-    const DEFAULT_TIME_LIMIT = 0;
-
-    /**
-     * Default PHP memory_limit.
-     *
-     * @var string
-     */
-    const DEFAULT_MEMORY_LIMIT = '2G';
 
     /**
      * CommandQueue instance.
@@ -159,34 +147,8 @@ abstract class AbstractProject
                 'preDownload' => $this->config()
                                       ->offsetGet('assets')['pre_download']
             ],
-            'template'            => [
-                'download' => $this->config()
-                                   ->offsetGet('template')['download'],
-            ],
+            'template'            => $this->buildTemplateSettings()
         ];
-    }
-
-    /**
-     * Returns InDesign template filename from configuration.
-     * Can be overwritten in concrete projects to use values from Pimcore data model like fields or properties.
-     *
-     * @return string
-     * @throws \Exception
-     */
-    protected function getTemplate()
-    {
-        $config = $this->config()
-                       ->offsetGet('template', array());
-        if (false === isset($config['default'])) {
-            throw new \Exception(
-                sprintf(
-                    "No default template defined for project '%s' in configuration.",
-                    $this->getIdent()
-                )
-            );
-        }
-
-        return $config['default'];
     }
 
     /**

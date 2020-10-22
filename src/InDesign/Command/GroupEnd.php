@@ -18,7 +18,7 @@ use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\LayerTrait;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\PositionTrait;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\SizeTrait;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\VariableTrait;
-use Mds\PimPrint\CoreBundle\InDesign\Command\Variable\DependentInterface;
+use Mds\PimPrint\CoreBundle\InDesign\Command\Variables\DependentInterface;
 
 /**
  * Class GroupEnd

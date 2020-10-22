@@ -37,6 +37,7 @@ class Text implements ImageCollectorInterface
 
     /**
      * Default paragraph style when adding text.
+     * Style is applied even to parsed HTML paragraphs if no paragraph style is set by parser itself.
      *
      * @var string
      */
@@ -130,6 +131,9 @@ class Text implements ImageCollectorInterface
      */
     public function addParagraph(Paragraph $paragraph)
     {
+        if (empty($paragraph->getParagraphStyle()) && false === empty($this->paragraphStyle)) {
+            $paragraph->setParagraphStyle($this->paragraphStyle);
+        }
         $this->paragraphs[] = $paragraph;
 
         return $this;
@@ -186,15 +190,16 @@ class Text implements ImageCollectorInterface
     }
 
     /**
-     * Adds $string as plaintext paragraph to intance.
+     * Adds $string as new paragraph.
      *
      * @param string      $string
      * @param string|null $paragraphStyle
      * @param string|null $characterStyle
      *
      * @return Text
+     * @throws \Exception
      */
-    public function addPlainText($string, string $paragraphStyle = null, string $characterStyle = null)
+    public function addPlainText(string $string, string $paragraphStyle = null, string $characterStyle = null)
     {
         if ($this->skipDetection) {
             if (true === $this->isStringHtml($string)) {
@@ -222,7 +227,7 @@ class Text implements ImageCollectorInterface
      * @return Text
      * @throws \Exception
      */
-    public function addHtml($html, Style $style = null)
+    public function addHtml(string $html, Style $style = null)
     {
         if ($this->skipDetection) {
             if (false === $this->isStringHtml($html)) {

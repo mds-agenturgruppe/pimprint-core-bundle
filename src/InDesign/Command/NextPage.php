@@ -16,8 +16,6 @@ namespace Mds\PimPrint\CoreBundle\InDesign\Command;
 use Mds\PimPrint\CoreBundle\Project\Traits\ProjectAwareTrait;
 
 /**
- * Class NextPage
- *
  * Jumps to the next page in the InDesign document.
  *
  * @package Mds\PimPrint\CoreBundle\InDesign\Command
@@ -53,7 +51,7 @@ class NextPage extends AbstractCommand
      *
      * @throws \Exception
      */
-    public function __construct(bool $useTemplate = false, bool $useDoublePage = false, bool $usePageOffset = false)
+    public function __construct(bool $useTemplate = true, bool $useDoublePage = false, bool $usePageOffset = false)
     {
         $this->setUseTemplate($useTemplate);
         $this->setUsePageOffset($usePageOffset);

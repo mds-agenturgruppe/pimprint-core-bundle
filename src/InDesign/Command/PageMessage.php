@@ -14,8 +14,6 @@
 namespace Mds\PimPrint\CoreBundle\InDesign\Command;
 
 /**
- * Class PageMessage
- *
  * Displays messages in InDesign Plugin bound to the current page.
  *
  * @package Mds\PimPrint\CoreBundle\InDesign\Command

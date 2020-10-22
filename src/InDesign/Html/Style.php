@@ -114,8 +114,8 @@ class Style
     /**
      * Sets $warn for style $type.
      *
-     * @param bool   $warn
      * @param string $type
+     * @param bool   $warn
      *
      * @return Style
      * @throws \Exception

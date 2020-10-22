@@ -14,8 +14,6 @@
 namespace Mds\PimPrint\CoreBundle\InDesign\Command;
 
 /**
- * Interface ComponentInterface
- *
  * Interface for commands that can be components of commands.
  *
  * @package Mds\PimPrint\CoreBundle\InDesign\Command
