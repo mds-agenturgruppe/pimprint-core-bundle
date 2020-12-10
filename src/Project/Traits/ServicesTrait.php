@@ -19,8 +19,8 @@ use Mds\PimPrint\CoreBundle\Service\ImageDimensions;
 use Mds\PimPrint\CoreBundle\Service\PluginParameters;
 use Mds\PimPrint\CoreBundle\Service\SpecialChars;
 use Mds\PimPrint\CoreBundle\Service\ThumbnailHelper;
-use Mds\PimPrint\CoreBundle\Service\UserHelper;
 use Pimcore\Http\RequestHelper;
+use Pimcore\Localization\LocaleServiceInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -31,13 +31,6 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 trait ServicesTrait
 {
-    /**
-     * UserHelper service.
-     *
-     * @var UserHelper
-     */
-    protected $userHelper;
-
     /**
      * ImageDimensions helper service.
      *
@@ -88,14 +81,11 @@ trait ServicesTrait
     protected $urlGenerator;
 
     /**
-     * Sets UserHelper service.
+     * LocaleService instance.
      *
-     * @param UserHelper $userHelper
+     * @var LocaleServiceInterface
      */
-    public function setUserHelper(UserHelper $userHelper)
-    {
-        $this->userHelper = $userHelper;
-    }
+    protected $localeService;
 
     /**
      * Sets PluginParameters helper service.
@@ -228,6 +218,16 @@ trait ServicesTrait
     }
 
     /**
+     * Sets LocaleService instance.
+     *
+     * @param LocaleServiceInterface $localeService
+     */
+    public function setLocaleService(LocaleServiceInterface $localeService)
+    {
+        $this->localeService = $localeService;
+    }
+
+    /**
      * Returns project configuration
      *
      * @return Config
@@ -263,9 +263,9 @@ trait ServicesTrait
             $this->imageDimensions,
             $this->specialChars,
             $this->pluginParams,
-            $this->userHelper,
             $this->thumbnailHelper,
             $this->config,
+            $this->localeService,
         ];
         foreach ($services as $service) {
             if (null === $service) {

@@ -15,11 +15,11 @@ services:
         calls:
             - [setRequestHelper, ['@pimcore.http.request_helper']]
             - [setPluginParams, ['@mds.pimprint.core.plugin_parameters']]
-            - [setUserHelper, ['@mds.pimprint.core.user_helper']]
             - [setImageDimensions, ['@mds.pimprint.core.image_dimensions']]
             - [setSpecialChars, ['@mds.pimprint.core.special_chars']]
             - [setThumbnailHelper, ['@mds.pimprint.core.thumbnail_helper']]
             - [setUrlGenerator, ['@cmf_routing.router']]
+            - [setLocaleService, ['@pimcore.locale']]
 
     #Helper services
     mds.pimprint.core.user_helper:
