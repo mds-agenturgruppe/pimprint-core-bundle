@@ -20,6 +20,7 @@ use Mds\PimPrint\CoreBundle\Project\Traits\ServicesTrait;
 use Mds\PimPrint\CoreBundle\Project\Traits\RenderingTrait;
 use Mds\PimPrint\CoreBundle\Project\Traits\TemplateTrait;
 use Mds\PimPrint\CoreBundle\Service\PluginParameters;
+use Pimcore\Model\User;
 use Pimcore\Tool;
 
 /**
@@ -115,19 +116,25 @@ abstract class AbstractProject
      */
     final public function getLanguages(): array
     {
-        $return = [];
+        $languages = [];
+        $locale = $this->localeService->findLocale();
+
+        if (null === $locale) {
+            throw new \RuntimeException('Locale cound not be found!');
+        }
+
+        if (!Tool::isValidLanguage($locale)) {
+            $locale = Tool::getDefaultLanguage();
+        }
+
         foreach ($this->getUserLanguages() as $code) {
-            $return[] = [
+            $languages[] = [
                 'iso'   => $code,
-                'label' => $translation = \Locale::getDisplayLanguage(
-                    $code,
-                    $this->userHelper->getUser()
-                                     ->getLanguage()
-                ),
+                'label' => $translation = \Locale::getDisplayLanguage($code, $locale),
             ];
         }
 
-        return $return;
+        return $languages;
     }
 
     /**
@@ -164,11 +171,12 @@ abstract class AbstractProject
     protected function getUserLanguages()
     {
         $user = Tool\Admin::getCurrentUser();
-        if (true === $user->isAdmin()) {
+
+        if (!$user instanceof User) {
             return Tool::getValidLanguages();
-        } else {
-            return $user->getContentLanguages();
         }
+
+        return true === $user->isAdmin() ? Tool::getValidLanguages() : $user->getContentLanguages();
     }
 
     /**

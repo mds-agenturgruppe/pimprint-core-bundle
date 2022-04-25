@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.1] - 2022-04-25
+### Fix
+-  [[AbstractProject] Loading languages in multi-domain setup #1](https://github.com/mds-agenturgruppe/pimprint-core-bundle/pull/1)
+  - Uses `\Pimcore\Localization\LocaleService` instead of `\Mds\PimPrint\CoreBundle\Service\UserHelper`
+
+### Breaking changes
+- Removed `\Mds\PimPrint\CoreBundle\Service\UserHelper`
+
 ## [1.2.0] - 2020-10-22
 ### Features
 - InDesign template file download with PimPrint-Plugin.
