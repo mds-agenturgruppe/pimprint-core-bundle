@@ -148,7 +148,7 @@ abstract class AbstractMath extends ExecuteScript implements DependentInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Returns an array with all variables command is dependent from.
      *
      * @return array
      */
@@ -158,7 +158,7 @@ abstract class AbstractMath extends ExecuteScript implements DependentInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Builds command array that is sent as JSON to InDesign.
      *
      * @param bool $addCmd
      *

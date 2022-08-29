@@ -26,7 +26,7 @@ class MdsPimPrintCoreBundle extends AbstractPimcoreBundle
     use PackageVersionTrait;
 
     /**
-     * {@inheritDoc}
+     * Returns the composer package name used to resolve the version
      *
      * @return string
      */
@@ -36,7 +36,7 @@ class MdsPimPrintCoreBundle extends AbstractPimcoreBundle
     }
 
     /**
-     * {@inheritDoc}
+     * Bundle description as shown in extension manager
      *
      * @return string
      */

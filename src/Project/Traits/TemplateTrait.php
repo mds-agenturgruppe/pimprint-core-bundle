@@ -24,7 +24,7 @@ trait TemplateTrait
 {
     /**
      * Returns InDesign template filename or Pimcore Asset object.
-     * By default the template filename defined in project configuration is used.
+     * By default, the template filename defined in project configuration is used.
      *
      * Can be overwritten in concrete projects to use values from Pimcore data model like fields or properties.
      *
@@ -53,8 +53,9 @@ trait TemplateTrait
      * @param string $filename
      *
      * @return string
+     * @throws \Exception
      */
-    public function getTemplateFilePath(string $filename)
+    public function getTemplateFilePath(string $filename): string
     {
         return implode(
             [
@@ -73,7 +74,7 @@ trait TemplateTrait
      * @return array
      * @throws \Exception
      */
-    final protected function buildTemplateSettings()
+    final protected function buildTemplateSettings(): array
     {
         $settings = [
             'download' => $this->config()
@@ -116,13 +117,13 @@ trait TemplateTrait
     /**
      * Builds the template download url.
      * If template is a Pimcore Asset object the public url is used.
-     * Otherwise the template file form the project bundle is downloaded via:
+     * Otherwise, the template file form the project bundle is downloaded via:
      * \Mds\PimPrint\CoreBundle\Controller\InDesignController::downloadTemplateAction
      *
      * @return string
      * @throws \Exception
      */
-    private function buildTemplateUrl()
+    private function buildTemplateUrl(): string
     {
         $template = $this->getTemplate();
         if ($template instanceof Asset) {

@@ -3,6 +3,7 @@ The following is the generated reference for the `mds_pim_print_core` configurat
 ```bash
 bin/console config:dump-reference mds_pim_print_core
 ```
+
 ```yaml
 # Default configuration for extension with alias: "mds_pim_print_core"
 mds_pim_print_core:
@@ -57,7 +58,7 @@ mds_pim_print_core:
             # Available plugin elements.
             plugin_elements:
 
-                # Field for update modes.
+                # Show field for update modes.
                 update_mode:          true
 
                 # Available update modes for project.
@@ -68,11 +69,23 @@ mds_pim_print_core:
                     - 502
                     - 512
 
-                # Field for start left/right page.
+                # Show field for start left/right page.
                 start_alignment:      false
 
-                # Fields for page start/end.
+                # Show fields for page start/end.
                 page_bounds:          false
+
+                # Configuration of default publication select free field.
+                publications:
+
+                    # Show publication select tree field.
+                    show:                 true
+
+                    # A selection is required or not to start InDesign rendering.
+                    required:             true
+
+                    # Optional label for field.
+                    label:                null
 
             # Asset handling settings.
             assets:
@@ -95,3 +108,4 @@ mds_pim_print_core:
             # Optional PHP setting memory_limit for project generation.
             php_memory_limit:     2G
 ```
+The configuration has a general PimPrint part, which affects all rendering projects. Each rendering project is configured within the `projects` array prototype.

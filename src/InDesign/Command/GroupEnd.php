@@ -37,7 +37,7 @@ class GroupEnd extends AbstractCommand implements DependentInterface
     const CMD = 'groupend';
 
     /**
-     * {@inheritDoc}
+     * Builds command array that is sent as JSON to InDesign.
      *
      * @var array
      */

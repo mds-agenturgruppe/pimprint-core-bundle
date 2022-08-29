@@ -61,7 +61,7 @@ class PluginResponseCreator
      *
      * @return JsonResponse
      */
-    public function success(array $data)
+    public function success(array $data): JsonResponse
     {
         $data['success'] = true;
 
@@ -75,7 +75,7 @@ class PluginResponseCreator
      *
      * @return JsonResponse
      */
-    public function error(\Exception $exception)
+    public function error(\Exception $exception): JsonResponse
     {
         $data = [
             'success'  => false,
@@ -96,7 +96,7 @@ class PluginResponseCreator
      *
      * @return JsonResponse
      */
-    protected function buildResponse(array $data, $status = Response::HTTP_OK)
+    protected function buildResponse(array $data, int $status = Response::HTTP_OK): JsonResponse
     {
         $headers['content-type'] = 'application/json;charset=utf-8';
         if (false === isset($data['messages'])) {
@@ -119,7 +119,7 @@ class PluginResponseCreator
      *
      * @return bool
      */
-    protected function isDebugMode()
+    protected function isDebugMode(): bool
     {
         if (null === self::$isDebugMode) {
             self::$isDebugMode = false;

@@ -13,6 +13,8 @@
 
 namespace Mds\PimPrint\CoreBundle\Project\Traits;
 
+use Mds\PimPrint\CoreBundle\InDesign\CustomField\AbstractField;
+use Mds\PimPrint\CoreBundle\Project\AbstractProject;
 use Mds\PimPrint\CoreBundle\Service\PluginParameters;
 
 /**
@@ -30,7 +32,8 @@ trait FormFieldsTrait
     protected $factoryFields = [
         'start_alignment' => 'startAlignment',
         'page_bounds'     => 'pageBounds',
-        'update_mode'     => 'updateMode'
+        'update_mode'     => 'updateMode',
+        'publications'    => 'publications',
     ];
 
     /**
@@ -46,15 +49,23 @@ trait FormFieldsTrait
     ];
 
     /**
-     * Returns form fields definition array for InDesign plugin.
+     * Registered custom InDesign plugin fields.
+     *
+     * @var AbstractField[]
+     */
+    private $customFormFields = null;
+
+    /**
+     * Returns form fields configuration array for InDesign plugin.
      *
      * @return array
+     * @throws \Exception
      */
-    public function getFormFields(): array
+    final public function getFormFieldsConfig(): array
     {
         return [
-            'factory' => $this->getFactoryFormFields(),
-            'custom'  => $this->getCustomFormFields(),
+            'factory' => $this->getFactoryFormFieldsConfig(),
+            'custom'  => $this->getCustomFormFieldsConfig(),
         ];
     }
 
@@ -62,8 +73,9 @@ trait FormFieldsTrait
      * Returns configuration array for factory plugin fields.
      *
      * @return array
+     * @throws \Exception
      */
-    final protected function getFactoryFormFields()
+    final protected function getFactoryFormFieldsConfig(): array
     {
         $return = [
             'updateModes' => [],
@@ -83,17 +95,93 @@ trait FormFieldsTrait
             }
         }
 
+        if (!$return['publications']['show']) {
+            $return['publications']['required'] = false;
+        }
+
         return $return;
     }
 
     /**
-     * Returns project specific custom form fields.
+     * Template method to be extended in concrete rendering projects to create custom form fields in InDesign plugin.
+     *
+     * @return void
+     */
+    protected function initCustomFormFields(): void
+    {
+    }
+
+    /**
+     * Adds custom form $field to project.
+     * If already a fields with the same param name is registered an exception is thrown
+     *
+     * @param AbstractField $field
+     *
+     * @return AbstractProject
+     * @throws \Exception
+     */
+    final protected function addCustomFormField(AbstractField $field): AbstractProject
+    {
+        $param = $field->getParam();
+        if (isset($this->customFormFields[$param])) {
+            throw new \Exception(
+                'Can not add custom field to project. There is already a field defined with param name: ' . $param
+            );
+        }
+
+        $field->setProject($this);
+        $this->customFormFields[$param] = $field;
+
+        return $this;
+    }
+
+    /**
+     * Returns project specific custom form fields configuration array.
      *
      * @return array
-     * @todo Custom plugin form fields.
+     * @throws \Exception
      */
-    protected function getCustomFormFields()
+    final protected function getCustomFormFieldsConfig(): array
     {
-        return [];
+        $return = [];
+        foreach ($this->getCustomFormFields() as $field) {
+            $return[] = $field->buildPluginConfig();
+        }
+
+        return $return;
+    }
+
+    /**
+     * Returns an array with all defined custom InDesign form fields.
+     *
+     * @return AbstractField[]
+     */
+    final public function getCustomFormFields(): array
+    {
+        if (!is_array($this->customFormFields)) {
+            $this->customFormFields = [];
+            $this->initCustomFormFields();
+        }
+
+        return $this->customFormFields;
+    }
+
+    /**
+     * Returns custom InDesign form field identified by $param parameter name.
+     * If no field with $param parameter name is registered an exception is thrown.
+     *
+     * @param string $param
+     *
+     * @return AbstractField
+     * @throws \Exception
+     */
+    final public function getCustomFormField(string $param): AbstractField
+    {
+        $fields = $this->getCustomFormFields();
+        if (isset($fields[$param]) && $fields[$param] instanceof AbstractField) {
+            return $fields[$param];
+        }
+
+        throw new \Exception('No custom InDesign form field defined for name: ' . $param);
     }
 }

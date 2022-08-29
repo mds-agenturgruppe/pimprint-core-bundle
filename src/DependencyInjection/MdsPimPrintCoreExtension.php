@@ -27,7 +27,7 @@ use Symfony\Component\DependencyInjection\Loader;
 class MdsPimPrintCoreExtension extends Extension
 {
     /**
-     * {@inheritDoc}
+     * Loads a specific configuration.
      *
      * @param array            $configs
      * @param ContainerBuilder $container
@@ -44,6 +44,7 @@ class MdsPimPrintCoreExtension extends Extension
         $loader->load('aliases.yml');
 
         $this->registerProjects($container, $config);
+        $this->configurePluginParams($container, $config);
     }
 
     /**
@@ -78,7 +79,7 @@ class MdsPimPrintCoreExtension extends Extension
      * @return string
      * @throws \Exception
      */
-    private function getBundlePathForService(ContainerBuilder $container, array $projectConfig)
+    private function getBundlePathForService(ContainerBuilder $container, array $projectConfig): string
     {
         if (empty($projectConfig['service'])) {
             throw new \Exception(sprintf('No PimPrint project service defined for rendering project.'));
@@ -89,5 +90,19 @@ class MdsPimPrintCoreExtension extends Extension
             }
         }
         throw new \Exception(sprintf('No matching bundle found for service: %s', $projectConfig['service']));
+    }
+
+    /**
+     * Configures PluginParams service
+     *
+     * @param ContainerBuilder $container
+     * @param array            $config
+     *
+     * @return void
+     */
+    private function configurePluginParams(ContainerBuilder $container, array $config): void
+    {
+        $definition = $container->getDefinition('mds.pimprint.core.plugin_parameters');
+        $definition->setArgument('$config', $config);
     }
 }

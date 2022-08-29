@@ -106,7 +106,7 @@ class CheckNewPage extends AbstractCommand implements ComponentInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Returns ident of command when used as compound.
      *
      * @return string
      */
@@ -116,7 +116,7 @@ class CheckNewPage extends AbstractCommand implements ComponentInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Returns true if component can be used multiple times in the same command.
      *
      * @return bool
      */

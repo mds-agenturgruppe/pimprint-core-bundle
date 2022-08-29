@@ -92,13 +92,13 @@ class InDesignAuthenticator extends AbstractGuardAuthenticator
     }
 
     /**
-     * {@inheritDoc}
+     * Does the authenticator support the given Request?
      *
      * @param Request $request
      *
      * @return bool
      */
-    public function supports(Request $request)
+    public function supports(Request $request): bool
     {
         if (true === $this->isInDesignRequest($request)) {
             @ini_set('session.use_only_cookies', 0);
@@ -110,14 +110,14 @@ class InDesignAuthenticator extends AbstractGuardAuthenticator
     }
 
     /**
-     * {@inheritDoc}
+     * Returns a response that directs the user to authenticate.
      *
      * @param Request                      $request
      * @param AuthenticationException|null $authException
      *
      * @return JsonResponse
      */
-    public function start(Request $request, AuthenticationException $authException = null)
+    public function start(Request $request, AuthenticationException $authException = null): JsonResponse
     {
         return new JsonResponse(
             [
@@ -130,13 +130,13 @@ class InDesignAuthenticator extends AbstractGuardAuthenticator
     }
 
     /**
-     * {@inheritDoc}
+     * Returns credentials
      *
      * @param Request $request
      *
      * @return array
      */
-    public function getCredentials(Request $request)
+    public function getCredentials(Request $request): array
     {
         $this->jsonRequestDecoder->decode($request);
         $username = $request->get(self::PARAM_USERNAME);
@@ -160,7 +160,7 @@ class InDesignAuthenticator extends AbstractGuardAuthenticator
     }
 
     /**
-     * {@inheritDoc}
+     * Returns user
      *
      * @param array                 $credentials
      * @param UserProviderInterface $userProvider
@@ -170,7 +170,6 @@ class InDesignAuthenticator extends AbstractGuardAuthenticator
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
         $user = null;
-        $pimcoreUser = null;
 
         if (!is_array($credentials)) {
             throw new AuthenticationException('', self::ERROR_CODE_NO_CREDENTIALS);
@@ -200,7 +199,7 @@ class InDesignAuthenticator extends AbstractGuardAuthenticator
     }
 
     /**
-     * {@inheritDoc}
+     * Checks credentials
      *
      * @param array         $credentials
      * @param UserInterface $user
@@ -208,7 +207,7 @@ class InDesignAuthenticator extends AbstractGuardAuthenticator
      * @return bool
      * @see \Pimcore\Bundle\AdminBundle\Security\Guard\AdminAuthenticator::checkCredentials
      */
-    public function checkCredentials($credentials, UserInterface $user)
+    public function checkCredentials($credentials, UserInterface $user): bool
     {
         if ($user instanceof AdminUser) {
             return true;
@@ -218,14 +217,14 @@ class InDesignAuthenticator extends AbstractGuardAuthenticator
     }
 
     /**
-     * {@inheritDoc}
+     * Called when authentication executed, but failed (e.g. wrong username password).
      *
      * @param Request                 $request
      * @param AuthenticationException $exception
      *
      * @return JsonResponse
      */
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
+    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): JsonResponse
     {
         $this->jsonRequestDecoder->decode($request);
         $this->bruteforceProtectionHandler->addEntry($request->get(self::PARAM_USERNAME), $request);
@@ -250,7 +249,7 @@ class InDesignAuthenticator extends AbstractGuardAuthenticator
     }
 
     /**
-     * {@inheritDoc}
+     * Called when authentication executed and was successful!
      *
      * @param Request        $request
      * @param TokenInterface $token
@@ -264,11 +263,11 @@ class InDesignAuthenticator extends AbstractGuardAuthenticator
     }
 
     /**
-     * {@inheritDoc}
+     * Does this method support remember me cookies?
      *
      * @return bool
      */
-    public function supportsRememberMe()
+    public function supportsRememberMe(): bool
     {
         return false;
     }
@@ -286,6 +285,9 @@ class InDesignAuthenticator extends AbstractGuardAuthenticator
         $this->jsonRequestDecoder->decode($request);
         if (!Session::requestHasSessionId($request, true)) {
             return null;
+        }
+        if ('POST' == $request->getMethod()) {
+            @session_id(Session::getSessionIdFromRequest($request, true));
         }
         $session = Session::getReadOnly(PimPrintSessionBagConfigurator::NAMESPACE);
         $user = $session->get('user');

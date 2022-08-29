@@ -9,6 +9,8 @@
  *
  * @copyright  Copyright (c) mds. Agenturgruppe GmbH (https://www.mds.eu)
  * @license    https://pimprint.mds.eu/license GPLv3
+ *
+ * @phpcs:disable Generic.Files.LineLength.TooLong
  */
 
 namespace Mds\PimPrint\CoreBundle\DependencyInjection;
@@ -25,11 +27,11 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 class Configuration implements ConfigurationInterface
 {
     /**
-     * {@inheritDoc}
+     * Generates the configuration tree builder.
      *
      * @return TreeBuilder
      */
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('mds_pim_print_core');
@@ -77,9 +79,9 @@ class Configuration implements ConfigurationInterface
                                 ->info('InDesign Template settings.')
                                 ->children()
                                     ->scalarNode('default')
-                                        ->info('Default InDesign template filename.')->end()
+                                        ->info('Default InDesign template filename used for rendering.')->end()
                                     ->scalarNode('relative_path')
-                                        ->info('Optional relative path inside service bundle to the InDesign template.')
+                                        ->info('Optional relative path inside bundle of project service to the InDesign template.')
                                         ->defaultValue('/Resources/pimprint/')->end()
                                     ->booleanNode('download')->defaultValue(true)
                                         ->info('Download template')->end()
@@ -89,16 +91,29 @@ class Configuration implements ConfigurationInterface
                                 ->info('Available plugin elements.')
                                 ->children()
                                     ->booleanNode('update_mode')->defaultValue(true)
-                                        ->info('Field for update modes.')->end()
+                                        ->info('Show fields for update modes.')->end()
                                     ->arrayNode('update_modes')
                                         ->info('Available update modes for project.')
                                     ->defaultValue([501, 502, 512])
                                         ->prototype('scalar')->end()
                                     ->end()
                                     ->booleanNode('start_alignment')->defaultValue(false)
-                                        ->info('Field for start left/right page.')->end()
+                                        ->info('Show field for start left/right page.')->end()
                                     ->booleanNode('page_bounds')->defaultValue(false)
-                                        ->info('Fields for page start/end.')->end()
+                                        ->info('Show field for page start/end.')->end()
+                                    ->arrayNode('publications')->addDefaultsIfNotSet()
+                                        ->info('Configuration of default publication select free field.')
+                                        ->children()
+                                            ->booleanNode('show')->defaultValue(true)
+                                                ->info('Show publication select tree field.')->end()
+                                            ->booleanNode('required')->defaultValue(true)
+                                                ->info('A selection is required or not to start InDesign rendering.')
+                                                ->end()
+                                            ->scalarNode('label')->defaultValue(null)
+                                                ->info('Optional label for field.')
+                                                ->end()
+                                        ->end()
+                                    ->end()
                                 ->end()
                             ->end()
                             ->arrayNode('assets')->addDefaultsIfNotSet()

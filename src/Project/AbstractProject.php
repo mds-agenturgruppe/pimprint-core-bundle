@@ -59,18 +59,22 @@ abstract class AbstractProject
     protected $preMessages = [];
 
     /**
-     * Returns all publications in tree structure to display in InDesign-Plugin.
-     *
-     * @return array
-     */
-    abstract public function getPublicationsTree(): array;
-
-    /**
      * Generates InDesign Commands to build the selected publication in InDesign.
      *
      * @return void
      */
     abstract public function buildPublication(): void;
+
+    /**
+     * Returns all publications in tree structure to display in InDesign-Plugin.
+     * Extend in concrete rendering Project if default plugin_element publications is active.
+     *
+     * @return array
+     */
+    public function getPublicationsTree(): array
+    {
+        return [];
+    }
 
     /**
      * Convenience method to accessing 'name' config.
@@ -143,7 +147,7 @@ abstract class AbstractProject
      * @return array
      * @throws \Exception
      */
-    final public function getSettings()
+    final public function getSettings(): array
     {
         return [
             'createUpdateInfoBox' => $this->config()

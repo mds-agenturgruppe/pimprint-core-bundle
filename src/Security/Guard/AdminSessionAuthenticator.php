@@ -38,26 +38,26 @@ class AdminSessionAuthenticator extends AbstractGuardAuthenticator
     use InDesignRequestDetector;
 
     /**
-     * {@inheritDoc}
+     * Does the authenticator support the given Request?
      *
      * @param Request $request
      *
      * @return bool
      */
-    public function supports(Request $request)
+    public function supports(Request $request): bool
     {
         return !$this->isInDesignRequest($request);
     }
 
     /**
-     * {@inheritDoc}
+     * Returns a response that directs the user to authenticate.
      *
      * @param Request                      $request
      * @param AuthenticationException|null $authException
      *
      * @return Response
      */
-    public function start(Request $request, AuthenticationException $authException = null)
+    public function start(Request $request, AuthenticationException $authException = null): Response
     {
         return new Response($this->getLoginMessage(), Response::HTTP_UNAUTHORIZED);
     }
@@ -67,19 +67,19 @@ class AdminSessionAuthenticator extends AbstractGuardAuthenticator
      *
      * @return string
      */
-    protected function getLoginMessage()
+    protected function getLoginMessage(): string
     {
         return 'Authentication Required. Please login at <a href="/admin">Pimcore admin</a>.';
     }
 
     /**
-     * {@inheritDoc}
+     * Returns credentials
      *
      * @param Request $request
      *
      * @return array
      */
-    public function getCredentials(Request $request)
+    public function getCredentials(Request $request): array
     {
         if ($pimcoreUser = Authentication::authenticateSession($request)) {
             return [
@@ -91,7 +91,7 @@ class AdminSessionAuthenticator extends AbstractGuardAuthenticator
     }
 
     /**
-     * {@inheritDoc}
+     * Returns user
      *
      * @param array                 $credentials
      * @param UserProviderInterface $userProvider
@@ -111,7 +111,7 @@ class AdminSessionAuthenticator extends AbstractGuardAuthenticator
     }
 
     /**
-     * {@inheritDoc}
+     * Checks credentials
      *
      * @param array         $credentials
      * @param UserInterface $user
@@ -119,7 +119,7 @@ class AdminSessionAuthenticator extends AbstractGuardAuthenticator
      * @return bool
      * @see \Pimcore\Bundle\AdminBundle\Security\Guard\AdminAuthenticator::checkCredentials
      */
-    public function checkCredentials($credentials, UserInterface $user)
+    public function checkCredentials($credentials, UserInterface $user): bool
     {
         if ($user instanceof AdminUser) {
             return true;
@@ -129,20 +129,20 @@ class AdminSessionAuthenticator extends AbstractGuardAuthenticator
     }
 
     /**
-     * {@inheritDoc}
+     * Called when authentication executed, but failed (e.g. wrong username password).
      *
      * @param Request                 $request
      * @param AuthenticationException $exception
      *
      * @return Response
      */
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
+    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): Response
     {
         return new Response($this->getLoginMessage(), Response::HTTP_UNAUTHORIZED);
     }
 
     /**
-     * {@inheritDoc}
+     * Called when authentication executed and was successful!
      *
      * @param Request        $request
      * @param TokenInterface $token
@@ -156,11 +156,11 @@ class AdminSessionAuthenticator extends AbstractGuardAuthenticator
     }
 
     /**
-     * {@inheritDoc}
+     * Does this method support remember me cookies?
      *
      * @return bool
      */
-    public function supportsRememberMe()
+    public function supportsRememberMe(): bool
     {
         return false;
     }

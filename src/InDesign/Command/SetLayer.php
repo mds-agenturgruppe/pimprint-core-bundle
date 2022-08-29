@@ -34,7 +34,7 @@ class SetLayer extends AbstractCommand
     const CMD = 'setlayer';
 
     /**
-     * {@inheritDoc}
+     * Builds command array that is sent as JSON to InDesign.
      *
      * @var array
      */
@@ -92,7 +92,7 @@ class SetLayer extends AbstractCommand
     }
 
     /**
-     * {@inheritDoc}
+     * Validates command
      *
      * @throws \Exception
      */

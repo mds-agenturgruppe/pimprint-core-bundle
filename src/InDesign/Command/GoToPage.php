@@ -142,7 +142,7 @@ class GoToPage extends AbstractCommand
     }
 
     /**
-     * {@inheritDoc}
+     * Builds command array that is sent as JSON to InDesign.
      *
      * @param bool $addCmd
      *

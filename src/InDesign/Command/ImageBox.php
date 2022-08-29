@@ -369,7 +369,7 @@ class ImageBox extends AbstractBox implements ParagraphComponent, ImageCollector
     }
 
     /**
-     * {@inheritDoc}
+     * Builds command array that is sent as JSON to InDesign.
      *
      * @param bool $addCmd
      *

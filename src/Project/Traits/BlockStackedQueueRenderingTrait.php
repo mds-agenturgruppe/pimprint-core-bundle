@@ -40,7 +40,7 @@ trait BlockStackedQueueRenderingTrait
     protected $blockStack = [];
 
     /**
-     * {@inheritDoc}
+     * Renders all publication pages for $element.
      *
      * @param AbstractElement $element
      */

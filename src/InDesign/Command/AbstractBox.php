@@ -59,7 +59,7 @@ abstract class AbstractBox extends AbstractCommand implements DependentInterface
     const RESIZE_HEIGHT = 3;
 
     /**
-     * {@inheritDoc}
+     * Available command params with default values.
      *
      * @var array
      */
@@ -69,7 +69,7 @@ abstract class AbstractBox extends AbstractCommand implements DependentInterface
     ];
 
     /**
-     * Availible resize values.
+     * Available resize values.
      *
      * @var array
      */
@@ -156,7 +156,7 @@ abstract class AbstractBox extends AbstractCommand implements DependentInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Validates command
      *
      * @throws \Exception
      */

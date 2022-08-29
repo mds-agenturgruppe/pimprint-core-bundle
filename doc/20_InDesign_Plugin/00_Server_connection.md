@@ -24,9 +24,9 @@ The following table describes all configuration elements for server connections:
 
 |Group|Field|Required|Description|
 |---|---|---|---|
-|Pimcore Server|Host/URL|Yes|URL to the Pimcore installation. URL used in Browser to access Pimcore Backend without tailing _/admin_.
-|Pimcore Server|Username|Yes|Pimcore Backend username
-|Pimcore Server|Password|Yes|Pimcore Backend password
+|Pimcore Server|Host/URL|Yes|URL to the Pimcore installation. URL used in Browser to access Pimcore Backend without tailing _/admin_.|
+|Pimcore Server|Username|Yes|Pimcore Backend username|
+|Pimcore Server|Password|Yes|Pimcore Backend password|
 | | | | |
 |Paths|Image Path|Yes|Absolute path on the local hard disk for saving downloaded image files.<br>For detailed information please refer to the [Image and template paths](#page_Image_and_template_paths) chapter below.|
 |Paths|Template Path|Yes|Absolute path on the local hard disk for saving downloaded InDesign template files.<br>For detailed information please refer to the [Image and template paths](#page_Image_and_template_paths) chapter below.|

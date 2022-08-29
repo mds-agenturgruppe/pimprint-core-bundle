@@ -32,7 +32,7 @@ class PimPrintSessionBagConfigurator implements SessionConfiguratorInterface
     const NAMESPACE = 'mds_pimprint';
 
     /**
-     * {@inheritDoc}
+     * Configure the session (e.g. register a bag)
      *
      * @param SessionInterface $session
      */

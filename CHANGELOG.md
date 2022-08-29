@@ -6,6 +6,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2022-08-29
+### Feature
+- Custom fields in InDesign PimPrint-Plugin:
+  - `\Mds\PimPrint\CoreBundle\InDesign\CustomField\Input`
+  - `\Mds\PimPrint\CoreBundle\InDesign\CustomField\Select`
+  - `\Mds\PimPrint\CoreBundle\InDesign\CustomField\Search`
+- Configuration options for factory PimPrint-Plugin field Publication:
+  - visibility
+  - required
+  - custom label
+
+### Fix
+- PHP Session detection for JSON encoded POST requests.
+
 ## [1.2.1] - 2022-04-25
 ### Fix
 -  [[AbstractProject] Loading languages in multi-domain setup #1](https://github.com/mds-agenturgruppe/pimprint-core-bundle/pull/1)

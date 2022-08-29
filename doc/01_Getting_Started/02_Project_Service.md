@@ -1,5 +1,5 @@
 # PimPrint rendering project
-PimPrint InDesign rendering is based on so called projects, which usually is one print product in a defined content structure. One server can have multiple projects, which are displayed in the Plugin and can be selected for generating documents. The content of your Pimcore database to generate the selected project is defined by publications. This can link to Pimcore DataObjects, Documents, Assets, or any other data source handled by your Pimcore. The Plugin shows all oublications of a project in a tree view, to give the option of displaying hierarchical structures to have a better overview in InDesign. 
+PimPrint InDesign rendering is based on so-called projects, which usually is one print product in a defined content structure. One server can have multiple projects, which are displayed in the Plugin and can be selected for generating documents. The content of your Pimcore database to generate the selected project is defined by the so-called publication. This can link to Pimcore DataObjects, Documents, Assets, or any other data source handled by your Pimcore. The Plugin shows all publications of a project in a tree view, to give the option of displaying hierarchical structures to have a better overview in InDesign. 
  
 The following chapters shows the basic steps to create a rendering project that shows up in the Plugin and send publications to generate: 
  - [Creating a project](#page_Creating_a_project)
@@ -30,7 +30,6 @@ class GettingStarted extends AbstractProject
      * Generates InDesign Commands to build the selected publication in InDesign.
      *
      * @return void
-     * @throws \Exception
      */
     public function buildPublication(): void
     {
@@ -138,7 +137,6 @@ The following example creates the document generated describing the [Basic Conce
  * Generates InDesign Commands to build the selected publication in InDesign.
  *
  * @return void
- * @throws \Exception
  */
 public function buildPublication(): void
 {

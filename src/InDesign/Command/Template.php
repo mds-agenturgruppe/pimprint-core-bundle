@@ -72,7 +72,7 @@ class Template extends AbstractCommand implements ImageCollectorInterface
     const SIDE_FACING_RIGHT = 'right';
 
     /**
-     * {@inheritDoc}
+     * Available command params with default values.
      *
      * @var array
      */

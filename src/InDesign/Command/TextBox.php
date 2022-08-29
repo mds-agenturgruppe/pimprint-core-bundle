@@ -76,7 +76,7 @@ class TextBox extends AbstractBox implements ImageCollectorInterface
     protected static $useLanguageLayer = true;
 
     /**
-     * {@inheritDoc}
+     * Available command params with default values.
      *
      * @var array
      */
@@ -234,11 +234,12 @@ class TextBox extends AbstractBox implements ImageCollectorInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Builds command array that is sent as JSON to InDesign.
      *
      * @param bool $addCmd
      *
      * @return array
+     * @throws \Exception
      */
     public function buildCommand(bool $addCmd = true)
     {

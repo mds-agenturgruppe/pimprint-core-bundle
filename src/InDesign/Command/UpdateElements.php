@@ -28,7 +28,7 @@ class UpdateElements extends AbstractCommand
     const CMD = 'updateitems';
 
     /**
-     * {@inheritDoc}
+     * Available command params with default values.
      *
      * @var array
      */

@@ -70,16 +70,16 @@ class Config implements \ArrayAccess
     }
 
     /**
-     * {@inheritDoc}
+     * Returns offset
      *
      * @param mixed $offset
-     * @param string $default
-     * @param bool $required
+     * @param mixed $default
+     * @param bool  $required
      *
-     * @return mixed|string
+     * @return mixed
      * @throws \Exception
      */
-    public function offsetGet($offset, $default = '', $required = false)
+    public function offsetGet($offset, $default = '', bool $required = false)
     {
         if (true === $this->offsetExists($offset)) {
             return $this->config[$offset];
@@ -94,7 +94,7 @@ class Config implements \ArrayAccess
     }
 
     /**
-     * {@inheritDoc}
+     * Checks if offset exists
      *
      * @param mixed $offset
      *
@@ -106,7 +106,7 @@ class Config implements \ArrayAccess
     }
 
     /**
-     * {@inheritDoc}
+     * Unsets offset
      *
      * @param mixed $offset
      */

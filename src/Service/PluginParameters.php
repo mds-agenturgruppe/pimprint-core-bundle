@@ -118,18 +118,32 @@ class PluginParameters
     const PARAM_ELEMENT_LIST = 'elementList';
 
     /**
+     * Plugin param custom fields
+     *
+     * @var string
+     */
+    const PARAM_CUSTOM_FIELDS = 'custom';
+
+    /**
+     * Plugin param projectIdent
+     *
+     * @var string
+     */
+    const PARAM_PROJECT_IDENT = 'identifier';
+
+    /**
      * Pimcore request helper.
      *
      * @var RequestHelper
      */
-    protected $requestHelper;
+    private $requestHelper;
 
     /**
      * JsonRequestDecoder instance.
      *
      * @var JsonRequestDecoder
      */
-    protected $jsonRequestDecoder;
+    private $jsonRequestDecoder;
 
     /**
      * Parameter definition to load from request.
@@ -138,13 +152,14 @@ class PluginParameters
      * @var array
      */
     protected $paramDefinition = [
-        self::PARAM_PUBLICATION     => ['required' => true, 'default' => null],
+        self::PARAM_PUBLICATION     => ['required' => null, 'default' => null],
         self::PARAM_LANGUAGE        => ['required' => true, 'default' => null],
         self::PARAM_UPDATE_MODE     => ['required' => false, 'default' => self::UPDATE_ALL_POSITION_CONTENT],
         self::PARAM_START_ALIGNMENT => ['required' => false, 'default' => self::START_ALIGNMENT_LEFT],
         self::PARAM_PAGE_START      => ['required' => false, 'default' => 1],
         self::PARAM_PAGE_END        => ['required' => false, 'default' => false],
         self::PARAM_ELEMENT_LIST    => ['required' => false, 'default' => []],
+        self::PARAM_CUSTOM_FIELDS   => ['required' => false, 'default' => []],
     ];
 
     /**
@@ -152,18 +167,27 @@ class PluginParameters
      *
      * @var array
      */
-    protected $params = [];
+    private $params = [];
+
+    /**
+     * PimPrint configuration
+     *
+     * @var array
+     */
+    private array $config;
 
     /**
      * PluginParams constructor.
      *
      * @param RequestHelper      $requestHelper
      * @param JsonRequestDecoder $jsonRequestDecoder
+     * @param array              $config
      */
-    public function __construct(RequestHelper $requestHelper, JsonRequestDecoder $jsonRequestDecoder)
+    public function __construct(RequestHelper $requestHelper, JsonRequestDecoder $jsonRequestDecoder, array $config)
     {
         $this->requestHelper = $requestHelper;
         $this->jsonRequestDecoder = $jsonRequestDecoder;
+        $this->config = $config;
     }
 
     /**
@@ -192,7 +216,7 @@ class PluginParameters
      * @return bool
      * @throws \Exception
      */
-    public function isStartOnLeftPage()
+    public function isStartOnLeftPage(): bool
     {
         return PluginParameters::START_ALIGNMENT_LEFT == $this->get(PluginParameters::PARAM_START_ALIGNMENT);
     }
@@ -203,7 +227,7 @@ class PluginParameters
      * @return bool
      * @throws \Exception
      */
-    public function isStartOnRightPage()
+    public function isStartOnRightPage(): bool
     {
         return !$this->isStartOnLeftPage();
     }
@@ -214,7 +238,7 @@ class PluginParameters
      * @return bool
      * @throws \Exception
      */
-    public function isUpdateModeSelected()
+    public function isUpdateModeSelected(): bool
     {
         $mode = $this->get(self::PARAM_UPDATE_MODE);
         if (self::UPDATE_ALL_POSITION_CONTENT == $mode || self::UPDATE_ALL_CONTENT == $mode) {
@@ -235,6 +259,11 @@ class PluginParameters
         $request = $this->requestHelper->getRequest();
         $this->jsonRequestDecoder->decode($request);
 
+        $projectIdent = $request->get(self::PARAM_PROJECT_IDENT);
+
+        $this->paramDefinition[self::PARAM_PUBLICATION]['required'] =
+            $this->config['projects'][$projectIdent]['plugin_elements']['publications']['required'];
+
         foreach ($this->paramDefinition as $param => $definition) {
             $required = $definition['required'];
             $default = $definition['default'];
@@ -248,5 +277,28 @@ class PluginParameters
 
             $this->params[$param] = $value;
         }
+    }
+
+    /**
+     * Returns run parameters for custom $field.
+     * If $additional is true, the optional additionalData value from custom field is returned.
+     *
+     * @param string $field
+     * @param bool   $additional
+     *
+     * @return string|array|null
+     * @throws \Exception
+     */
+    public function getCustomField(string $field, bool $additional = false)
+    {
+        if ($additional) {
+            $field .= 'AdditionalData';
+        }
+        $custom = $this->get(self::PARAM_CUSTOM_FIELDS);
+        if (false === isset($custom[$field])) {
+            return null;
+        }
+
+        return $custom[$field];
     }
 }

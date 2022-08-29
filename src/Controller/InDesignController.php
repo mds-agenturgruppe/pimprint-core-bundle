@@ -13,6 +13,8 @@
 
 namespace Mds\PimPrint\CoreBundle\Controller;
 
+use Mds\PimPrint\CoreBundle\InDesign\CustomField\Search;
+use Mds\PimPrint\CoreBundle\Service\JsonRequestDecoder;
 use Mds\PimPrint\CoreBundle\Service\PluginParameters;
 use Mds\PimPrint\CoreBundle\Service\PluginResponseCreator;
 use Mds\PimPrint\CoreBundle\Service\ProjectsManager;
@@ -21,6 +23,7 @@ use Pimcore\Http\RequestHelper;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\Stream;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -77,7 +80,7 @@ class InDesignController extends FrontendController
      *
      * @return JsonResponse
      */
-    public function projectsAction()
+    public function projectsAction(): JsonResponse
     {
         try {
             return $this->pluginResponse->success(
@@ -85,8 +88,8 @@ class InDesignController extends FrontendController
                     'projects' => $this->projectsManager->getProjectsInfo(),
                 ]
             );
-        } catch (\Exception $e) {
-            return $this->pluginResponse->error($e);
+        } catch (\Exception $exception) {
+            return $this->pluginResponse->error($exception);
         }
     }
 
@@ -99,20 +102,23 @@ class InDesignController extends FrontendController
      *
      * @return JsonResponse
      */
-    public function projectAction(string $identifier)
+    public function projectAction(string $identifier): JsonResponse
     {
         try {
             $project = $this->projectsManager->projectServiceFactory($identifier);
 
+            $pluginElements = $project->config()
+                                      ->offsetGet('plugin_elements');
+
             return $this->pluginResponse->success(
                 [
-                    'formFields'   => $project->getFormFields(),
+                    'formFields'   => $project->getFormFieldsConfig(),
                     'languages'    => $project->getLanguages(),
-                    'publications' => $project->getPublicationsTree(),
+                    'publications' => $pluginElements['publications']['show'] ? $project->getPublicationsTree() : [],
                 ]
             );
-        } catch (\Exception $e) {
-            return $this->pluginResponse->error($e);
+        } catch (\Exception $exception) {
+            return $this->pluginResponse->error($exception);
         }
     }
 
@@ -126,7 +132,7 @@ class InDesignController extends FrontendController
      *
      * @return JsonResponse
      */
-    public function executeProjectAction(string $identifier, PluginParameters $pluginParams)
+    public function executeProjectAction(string $identifier, PluginParameters $pluginParams): JsonResponse
     {
         try {
             $this->requestHelper->getRequest()
@@ -140,8 +146,8 @@ class InDesignController extends FrontendController
                     'postProcess' => [],
                 ]
             );
-        } catch (\Exception $e) {
-            return $this->pluginResponse->error($e);
+        } catch (\Exception $exception) {
+            return $this->pluginResponse->error($exception);
         }
     }
 
@@ -168,8 +174,41 @@ class InDesignController extends FrontendController
             $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, basename($filePath));
 
             return $response;
-        } catch (\Exception $e) {
+        } catch (\Exception $exception) {
             return $this->createNotFoundException();
+        }
+    }
+
+    /**
+     * Generic end point for search custom fields search execution
+     *
+     * @Route("/project/{identifier}/custom-search/{customField}", name="mds_pimprint_custom_search")
+     *
+     * @param Request            $request
+     * @param JsonRequestDecoder $requestDecoder
+     * @param string             $identifier
+     * @param string             $customField
+     *
+     * @return JsonResponse
+     */
+    public function customFieldSearchAction(
+        Request $request,
+        JsonRequestDecoder $requestDecoder,
+        string $identifier,
+        string $customField
+    ): JsonResponse {
+        try {
+            $requestDecoder->decode($request);
+            $project = $this->projectsManager->projectServiceFactory($identifier);
+
+            $field = $project->getCustomFormField($customField);
+            if (false === $field instanceof Search) {
+                throw new \Exception('Custom search field must be instance of: ' . Search::class);
+            }
+
+            return $this->json($field->getSearchResponse($request));
+        } catch (\Exception $exception) {
+            return $this->pluginResponse->error($exception);
         }
     }
 }

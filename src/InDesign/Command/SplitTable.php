@@ -34,7 +34,7 @@ class SplitTable extends AbstractCommand implements ImageCollectorInterface
     const CMD = 'splittable';
 
     /**
-     * {@inheritdoc}
+     * Builds command array that is sent as JSON to InDesign.
      *
      * @var
      */
@@ -268,7 +268,7 @@ class SplitTable extends AbstractCommand implements ImageCollectorInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Builds command array that is sent as JSON to InDesign.
      *
      * @param bool $addCmd
      *

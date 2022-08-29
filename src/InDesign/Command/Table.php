@@ -589,7 +589,7 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
     }
 
     /**
-     * {@inheritDoc}
+     * Returns ident of command when used as compound.
      *
      * @return string
      */
@@ -599,7 +599,7 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
     }
 
     /**
-     * {@inheritDoc}
+     * Returns true if component can be used multiple times in the same command.
      *
      * @return bool
      */
@@ -609,7 +609,7 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
     }
 
     /**
-     * {@inheritDoc}
+     * Builds command array that is sent as JSON to InDesign.
      *
      * @param bool $addCmd
      *

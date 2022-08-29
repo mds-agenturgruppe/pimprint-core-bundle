@@ -32,6 +32,8 @@ services:
         class: Mds\PimPrint\CoreBundle\Service\ImageDimensions
     mds.pimprint.core.thumbnail_helper:
         class: Mds\PimPrint\CoreBundle\Service\ThumbnailHelper
+    Mds\PimPrint\CoreBundle\Service\UrlGeneratorAccessor:
+        public: true
 
     #Basic services
     Mds\PimPrint\CoreBundle\Service\ProjectsManager: ~

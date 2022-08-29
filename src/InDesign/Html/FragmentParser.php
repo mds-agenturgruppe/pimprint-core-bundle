@@ -147,7 +147,7 @@ class FragmentParser extends AbstractParser
     }
 
     /**
-     * {@inheritDoc}
+     * Parses $node.
      *
      * @param \DomElement $node
      *
