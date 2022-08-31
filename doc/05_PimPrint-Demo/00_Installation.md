@@ -1,13 +1,15 @@
 # PimPrint-Demo Pimcore Installation
-PimPrint-Demo is a Pimcore bundle that is build for the public available [Pimcore Demo](https://github.com/pimcore/demo). If you already have Pimcore Demo installed directly jump to the [Installing PimPrint Demo](#page_Installing_PimPrint_Demo).
+PimPrint-Demo is a Pimcore bundle that is build for the public available [Pimcore Demo](https://github.com/pimcore/demo/tree/1.6). If you already have Pimcore Demo installed directly jump to the [Installing PimPrint Demo](#page_Installing_PimPrint_Demo).
+
+The following guide assumes you use the Pimcore 6 demo. For other Pimcore versions, please refer to the [Supported Pimcore Versions](../README.md#page_Supported_Pimcore_Versions) section.
 
 ## Installing Pimcore Demo
-Install the [Pimcore Demo](https://github.com/pimcore/demo) as described in the [Readme](https://github.com/pimcore/demo/blob/master/README.md#getting-started).
+Install the [Pimcore 6 Demo](https://github.com/pimcore/demo/tree/1.6) as described in the [Readme](https://github.com/pimcore/demo/blob/1.6/README.md#getting-started).
 
 ## Installing PimPrint Demo
 Install the `MdsPimPrintDemoBundle` into your Pimcore Demo by issuing:
 ```bash
-composer require mds-agenturgruppe/pimprint-demo-bundle
+composer require mds-agenturgruppe/pimprint-demo-bundle:^1.0
 ```
 
 Enable `MdsPimPrintCoreBundle` and `MdsPimPrintDemoBundle` by issuing following commands in exactly this order:

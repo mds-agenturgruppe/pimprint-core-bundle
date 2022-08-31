@@ -1,5 +1,7 @@
 # PimPrint for Pimcore Installation
-The following guide assumes you have a running [Pimcore](https://pimcore.com) 5.x/6.x installation. For installing Pimcore please visit the [Pimcore Installation documentation](https://pimcore.com/docs/pimcore/6.9/Development_Documentation/Getting_Started/Installation.html).
+The following guide assumes you have a running [Pimcore](https://pimcore.com) 5.x/6.x installation. For installing Pimcore 6 please visit the [Pimcore Installation documentation](https://pimcore.com/docs/pimcore/6.9/Development_Documentation/Getting_Started/Installation.html).
+
+For other Pimcore versions, please refer to the [Supported Pimcore Versions](../README.md#page_Supported_Pimcore_Versions) section.
 
 ## Installing PimPrint into Pimcore 5.x/6.x
 Install the `MdsPimPrintCoreBundle` into your Pimcore by issuing:
@@ -10,7 +12,6 @@ Enable `MdsPimPrintCoreBundle` with:
 ```bash
 bin/console pimcore:bundle:enable MdsPimPrintCoreBundle
 ```
-Or enable it manually in the Pimcore extension manager.
 
 ## Installing PimPrint InDesign-Plugin
 The InDesign plugin provided by mds as an CEP-Extension ZXP-File. Please email <a href="mailto:info@mds.eu?subject=PimPrint Plugin">info@mds.eu</a> to get the plugin and further information.
