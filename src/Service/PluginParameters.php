@@ -174,7 +174,7 @@ class PluginParameters
      *
      * @var array
      */
-    private array $config;
+    private $config;
 
     /**
      * PluginParams constructor.

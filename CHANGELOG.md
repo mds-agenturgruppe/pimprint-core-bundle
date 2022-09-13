@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.1] - 2022-09-13
+### Fixed
+- PHP 7.3 compatibility
+  - `\Mds\PimPrint\CoreBundle\Service\PluginParameters` 
+  - `\Mds\PimPrint\CoreBundle\Service\UrlGeneratorAccessor` 
+
 ## [1.3.0] - 2022-08-29
 ### Feature
 - Custom fields in InDesign PimPrint-Plugin:

@@ -27,7 +27,7 @@ class UrlGeneratorAccessor
      *
      * @var UrlGeneratorInterface
      */
-    private UrlGeneratorInterface $urlGenerator;
+    private $urlGenerator;
 
     /**
      * UrlGeneratorAccessor constructor
