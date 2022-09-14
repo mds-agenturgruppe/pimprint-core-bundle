@@ -31,30 +31,31 @@ trait BoxIdentBuilderTrait
      *
      * @var array
      */
-    protected static $identIndexes = [];
+    protected static array $identIndexes = [];
 
     /**
      * Array with all generated boxes to ensure unique box names.
      *
      * @var array
      */
-    private static $generatedBoxes = [];
+    private static array $generatedBoxes = [];
 
     /**
      * Postfix for generic ident generation.
      *
      * @var string
      */
-    protected $genericPostfix = '';
+    protected string $genericPostfix = '';
 
     /**
      * Creates a unique box ident for $command.
      *
      * @param AbstractCommand $command
      *
+     * @return void
      * @throws \Exception
      */
-    protected function ensureBoxIdent(AbstractCommand $command)
+    protected function ensureBoxIdent(AbstractCommand $command): void
     {
         if (false === $command instanceof AbstractBox) {
             return;
@@ -78,7 +79,7 @@ trait BoxIdentBuilderTrait
      * @return string
      * @throws \Exception
      */
-    protected function buildGenericBoxIdent(AbstractBox $command)
+    protected function buildGenericBoxIdent(AbstractBox $command): string
     {
         $parts = [
             $command::CMD,
@@ -104,7 +105,7 @@ trait BoxIdentBuilderTrait
      *
      * @return int
      */
-    protected function buildIdentIndex(string $commandName)
+    protected function buildIdentIndex(string $commandName): int
     {
         $page = $this->getPageNumber();
         if (false === isset(self::$identIndexes[$page])) {
@@ -121,8 +122,10 @@ trait BoxIdentBuilderTrait
      * Sets genericPostfix.
      *
      * @param string $postfix
+     *
+     * @return void
      */
-    protected function setGenericPostfix(string $postfix)
+    protected function setGenericPostfix(string $postfix): void
     {
         $this->genericPostfix = $postfix;
     }
@@ -150,12 +153,12 @@ trait BoxIdentBuilderTrait
      *
      * @return int
      */
-    private function getPageNumber()
+    private function getPageNumber(): int
     {
         try {
             return $this->getCommandQueue()
                         ->getPageNumber();
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return 0;
         }
     }

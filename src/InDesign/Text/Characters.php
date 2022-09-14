@@ -26,28 +26,28 @@ class Characters implements ParagraphComponent
      *
      * @var string
      */
-    protected $style = '';
+    protected string $style = '';
 
     /**
      * Text content.
      *
      * @var string
      */
-    protected $text;
+    protected string $text;
 
     /**
      * Hyperlink url.
      *
-     * @var string
+     * @var string|null
      */
-    protected $href = null;
+    protected ?string $href = null;
 
     /**
      * Hyperlink target.
      *
      * @var string
      */
-    protected $target = '_blank';
+    protected string $target = '_blank';
 
     /**
      * Characters constructor.
@@ -136,7 +136,7 @@ class Characters implements ParagraphComponent
      *
      * @return array
      */
-    public function buildCommand()
+    public function buildCommand(): array
     {
         $command = [
             'cs'     => $this->style,

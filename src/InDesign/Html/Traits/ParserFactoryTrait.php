@@ -29,16 +29,18 @@ trait ParserFactoryTrait
     /**
      * Closure used for creating commands.
      *
-     * @var \Closure
+     * @var \Closure|null
      */
-    protected $factoryClosure;
+    protected ?\Closure $factoryClosure = null;
 
     /**
      * Sets $commandCreator Closure. If $commandCreator is null a empty closure is created.
      *
      * @param \Closure|null $factoryClosure
+     *
+     * @return void
      */
-    public function setFactoryClosure(\Closure $factoryClosure = null)
+    public function setFactoryClosure(\Closure $factoryClosure = null): void
     {
         $this->factoryClosure = $factoryClosure;
         if (null === $this->factoryClosure) {

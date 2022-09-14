@@ -32,11 +32,11 @@ class NextPage extends AbstractCommand
     const CMD = 'nextpage';
 
     /**
-     * Allowed command.
+     * Available command params with default values.
      *
      * @var array
      */
-    protected $availableParams = [
+    protected array $availableParams = [
         'useautocmds'   => 0,
         'usepageoffset' => 0,
         'usedoublepage' => 0,
@@ -66,7 +66,7 @@ class NextPage extends AbstractCommand
      * @return NextPage
      * @throws \Exception
      */
-    public function setUseTemplate(bool $useTemplate)
+    public function setUseTemplate(bool $useTemplate): NextPage
     {
         $this->setParam('useautocmds', $useTemplate ? 1 : 0);
 
@@ -81,7 +81,7 @@ class NextPage extends AbstractCommand
      * @return NextPage
      * @throws \Exception
      */
-    public function setUsePageOffset(bool $usePageOffset)
+    public function setUsePageOffset(bool $usePageOffset): NextPage
     {
         $this->setParam('usepageoffset', $usePageOffset ? 1 : 0);
 
@@ -96,7 +96,7 @@ class NextPage extends AbstractCommand
      * @return NextPage
      * @throws \Exception
      */
-    public function setDoublePage(bool $useDoublePage)
+    public function setDoublePage(bool $useDoublePage): NextPage
     {
         $this->setParam('usedoublepage', $useDoublePage ? 1 : 0);
 
@@ -111,7 +111,7 @@ class NextPage extends AbstractCommand
      * @return array
      * @throws \Exception
      */
-    public function buildCommand(bool $addCmd = true)
+    public function buildCommand(bool $addCmd = true): array
     {
         $return = parent::buildCommand($addCmd);
         $this->getCommandQueue()

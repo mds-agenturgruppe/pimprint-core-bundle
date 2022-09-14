@@ -18,7 +18,7 @@ use Pimcore\Bundle\AdminBundle\Security\Exception\BruteforceProtectionException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
@@ -37,7 +37,7 @@ class BruteforceProtectionListener implements EventSubscriberInterface
      *
      * @return array
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             KernelEvents::EXCEPTION => ['onKernelException', 70]
@@ -47,14 +47,14 @@ class BruteforceProtectionListener implements EventSubscriberInterface
     /**
      * Returns PimPrint InDesign-Plugin error response.
      *
-     * @param GetResponseForExceptionEvent $event
+     * @param ExceptionEvent $event
      */
-    public function onKernelException(GetResponseForExceptionEvent $event)
+    public function onKernelException(ExceptionEvent $event)
     {
         if (false === $this->isInDesignRequest($event->getRequest())) {
             return;
         }
-        $exception = $event->getException();
+        $exception = $event->getThrowable();
         if ($exception instanceof BruteforceProtectionException) {
             $response = new JsonResponse(
                 [

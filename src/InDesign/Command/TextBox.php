@@ -62,7 +62,7 @@ class TextBox extends AbstractBox implements ImageCollectorInterface
      *
      * @var array
      */
-    protected $allowedFits = array(
+    protected array $allowedFits = array(
         self::FIT_NO_ADJUST,
         self::FIT_FRAME_TO_CONTENT,
         self::FIT_FRAME_TO_CONTENT_HEIGHT
@@ -73,14 +73,14 @@ class TextBox extends AbstractBox implements ImageCollectorInterface
      *
      * @var bool
      */
-    protected static $useLanguageLayer = true;
+    protected static bool $useLanguageLayer = true;
 
     /**
      * Available command params with default values.
      *
      * @var array
      */
-    private $availableParams = [
+    private array $availableParams = [
         'nolnglayer' => null,
         'values'     => [],
         'fit'        => self::FIT_NO_ADJUST,
@@ -99,12 +99,12 @@ class TextBox extends AbstractBox implements ImageCollectorInterface
      * @throws \Exception
      */
     public function __construct(
-        $elementName = '',
-        $left = null,
-        $top = null,
-        $width = null,
-        $height = null,
-        $fit = self::FIT_NO_ADJUST
+        string $elementName = '',
+        float|int $left = null,
+        float|int $top = null,
+        float|int $width = null,
+        float|int $height = null,
+        int $fit = self::FIT_NO_ADJUST
     ) {
         $this->initBoxParams();
         $this->initParams($this->availableParams);
@@ -131,7 +131,7 @@ class TextBox extends AbstractBox implements ImageCollectorInterface
      * @return TextBox
      * @throws \Exception
      */
-    public function setFit($fit)
+    public function setFit(string $fit): TextBox
     {
         $this->setParam('fit', $fit);
 
@@ -146,7 +146,7 @@ class TextBox extends AbstractBox implements ImageCollectorInterface
      *
      * @return void
      */
-    public static function setDefaultUseLanguageLayer(bool $useLanguageLayer)
+    public static function setDefaultUseLanguageLayer(bool $useLanguageLayer): void
     {
         self::$useLanguageLayer = $useLanguageLayer;
     }
@@ -159,7 +159,7 @@ class TextBox extends AbstractBox implements ImageCollectorInterface
      * @return TextBox
      * @throws \Exception
      */
-    public function setUseLanguageLayer(bool $useLanguageLayer)
+    public function setUseLanguageLayer(bool $useLanguageLayer): TextBox
     {
         $this->setParam(
             'nolnglayer',
@@ -178,7 +178,7 @@ class TextBox extends AbstractBox implements ImageCollectorInterface
      * @return TextBox
      * @throws \Exception
      */
-    public function addString(string $string)
+    public function addString(string $string): TextBox
     {
         $this->addParagraph(
             new Paragraph($string)
@@ -195,7 +195,7 @@ class TextBox extends AbstractBox implements ImageCollectorInterface
      * @return TextBox
      * @throws \Exception
      */
-    public function addText(Text $text)
+    public function addText(Text $text): TextBox
     {
         foreach ($text->getParagraphs() as $paragraph) {
             $this->addParagraph($paragraph);
@@ -212,7 +212,7 @@ class TextBox extends AbstractBox implements ImageCollectorInterface
      * @return TextBox
      * @throws \Exception
      */
-    public function addParagraph(Paragraph $paragraph)
+    public function addParagraph(Paragraph $paragraph): TextBox
     {
         $this->params['values'][] = $paragraph->buildCommand();
         $this->addCollectedImages($paragraph);
@@ -225,7 +225,7 @@ class TextBox extends AbstractBox implements ImageCollectorInterface
      *
      * @return TextBox
      */
-    public function clearContent()
+    public function clearContent(): TextBox
     {
         $this->params['values'] = [];
         $this->collectedImages = [];
@@ -241,7 +241,7 @@ class TextBox extends AbstractBox implements ImageCollectorInterface
      * @return array
      * @throws \Exception
      */
-    public function buildCommand(bool $addCmd = true)
+    public function buildCommand(bool $addCmd = true): array
     {
         if (false === isset($this->params['nolnglayer'])) {
             $this->params['nolnglayer'] = self::$useLanguageLayer ? 0 : 1;

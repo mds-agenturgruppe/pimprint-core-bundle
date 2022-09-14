@@ -39,11 +39,11 @@ class CopyBox extends AbstractBox
      * @throws \Exception
      */
     public function __construct(
-        $elementName = '',
-        $left = null,
-        $top = null,
-        $width = null,
-        $height = null
+        string $elementName = '',
+        float|int $left = null,
+        float|int $top = null,
+        float|int $width = null,
+        float|int $height = null
     ) {
         $this->initBoxParams();
 

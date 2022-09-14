@@ -24,7 +24,6 @@ use Pimcore\Tool\Session;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -68,14 +67,14 @@ class InDesignAuthenticator extends AbstractGuardAuthenticator
      *
      * @var BruteforceProtectionHandler
      */
-    protected $bruteforceProtectionHandler;
+    protected BruteforceProtectionHandler $bruteforceProtectionHandler;
 
     /**
      * JsonRequestDecoder instance.
      *
      * @var JsonRequestDecoder
      */
-    private $jsonRequestDecoder;
+    private JsonRequestDecoder $jsonRequestDecoder;
 
     /**
      * InDesignAuthenticator constructor.
@@ -160,14 +159,14 @@ class InDesignAuthenticator extends AbstractGuardAuthenticator
     }
 
     /**
-     * Returns user
+     * Return a UserInterface object based on the credentials.
      *
      * @param array                 $credentials
      * @param UserProviderInterface $userProvider
      *
-     * @return UserInterface|null
+     * @return UserInterface|AdminUser|null
      */
-    public function getUser($credentials, UserProviderInterface $userProvider)
+    public function getUser($credentials, UserProviderInterface $userProvider): UserInterface|AdminUser|null
     {
         $user = null;
 
@@ -181,14 +180,10 @@ class InDesignAuthenticator extends AbstractGuardAuthenticator
         } else {
             $pimcoreUser = Authentication::authenticatePlaintext($credentials['username'], $credentials['password']);
             if ($pimcoreUser instanceof User) {
-                Session::useSession(
-                    function (AttributeBagInterface $session) use ($pimcoreUser) {
-                        Session::regenerateId();
-                        $session->set('user', $pimcoreUser);
-                        $session->set('sendId', true);
-                    },
-                    PimPrintSessionBagConfigurator::NAMESPACE
-                );
+                Session::regenerateId();
+                $session = Session::get(PimPrintSessionBagConfigurator::NAMESPACE);
+                $session->set('user', $pimcoreUser);
+                $session->set('sendId', true);
             }
         }
         if ($pimcoreUser instanceof User) {
@@ -199,7 +194,7 @@ class InDesignAuthenticator extends AbstractGuardAuthenticator
     }
 
     /**
-     * Checks credentials
+     * Returns true if the credentials are valid.
      *
      * @param array         $credentials
      * @param UserInterface $user
@@ -257,7 +252,7 @@ class InDesignAuthenticator extends AbstractGuardAuthenticator
      *
      * @return null
      */
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $providerKey)
     {
         return null;
     }
@@ -280,7 +275,7 @@ class InDesignAuthenticator extends AbstractGuardAuthenticator
      * @return User|null
      * @see \Pimcore\Tool\Authentication::authenticateSession
      */
-    public function authenticateSession(Request $request)
+    public function authenticateSession(Request $request): ?User
     {
         $this->jsonRequestDecoder->decode($request);
         if (!Session::requestHasSessionId($request, true)) {

@@ -44,7 +44,7 @@ class ThumbnailHelper
      *
      * @var array
      */
-    protected $allowedThumbnailFormats = [
+    protected array $allowedThumbnailFormats = [
         'SOURCE',
         'PNG',
         'GIF',
@@ -58,7 +58,7 @@ class ThumbnailHelper
      *
      * @var AbstractProject
      */
-    protected $project;
+    protected AbstractProject $project;
 
     /**
      * ThumbnailHelper constructor.
@@ -74,8 +74,10 @@ class ThumbnailHelper
      * Sets $project.
      *
      * @param AbstractProject $project
+     *
+     * @return void
      */
-    final public function setProject(AbstractProject $project)
+    final public function setProject(AbstractProject $project): void
     {
         $this->project = $project;
     }
@@ -83,9 +85,10 @@ class ThumbnailHelper
     /**
      * Validates configured asset thumbnail configuration exists and if it generated images usable in InDesign.
      *
+     * @return void
      * @throws \Exception
      */
-    public function validateAssetThumbnail()
+    public function validateAssetThumbnail(): void
     {
         $config = $this->getProjectConfig()
                        ->offsetGet('assets');
@@ -94,7 +97,7 @@ class ThumbnailHelper
         }
         $config = $config['thumbnail'];
         $thumbnail = ThumbnailConfig::getByName($config);
-        if (false == $thumbnail instanceof ThumbnailConfig) {
+        if (!$thumbnail instanceof ThumbnailConfig) {
             throw new \Exception(
                 sprintf(
                     "Thumbnail config '%s' does not exist for project '%s'.",
@@ -124,7 +127,7 @@ class ThumbnailHelper
      * @return ThumbnailConfig
      * @throws \Exception
      */
-    public function getThumbnailConfig(string $thumbnailName = null)
+    public function getThumbnailConfig(string $thumbnailName = null): ThumbnailConfig
     {
         $thumbnailConfig = null;
         if (null === $thumbnailName) {
@@ -156,7 +159,7 @@ class ThumbnailHelper
      * @return ThumbnailConfig
      * @throws \Exception
      */
-    protected function createDefaultThumbnailConfig()
+    protected function createDefaultThumbnailConfig(): ThumbnailConfig
     {
         $config = new ThumbnailConfig();
         $config->setName(self::THUMBNAIL_NAME);
@@ -179,7 +182,7 @@ class ThumbnailHelper
      *
      * @return Config
      */
-    protected function getProjectConfig()
+    protected function getProjectConfig(): Config
     {
         return $this->project->config();
     }
@@ -188,19 +191,21 @@ class ThumbnailHelper
      * InDesign can't handle webp support. We disable it for thumbnails.
      *
      * @param RequestHelper $requestHelper
+     *
+     * @return void
      */
-    private function disableWebpSupport(RequestHelper $requestHelper)
+    private function disableWebpSupport(RequestHelper $requestHelper): void
     {
-        if (false === $requestHelper->hasMasterRequest()) {
+        if (false === $requestHelper->hasMainRequest()) {
             return;
         }
         //not nice but this way we disable the "InDesign browser" detection
         //@see \Pimcore\Tool\Frontend::determineClientWebpSupport
         // not nice to do a browser detection but for now the easiest way to get around the topic described in #4345
-        $requestHelper->getMasterRequest()->headers->set('User-Agent', '');
+        $requestHelper->getMainRequest()->headers->set('User-Agent', '');
 
-        $accept = $requestHelper->getMasterRequest()->headers->get('Accept');
-        $requestHelper->getMasterRequest()->headers->set(
+        $accept = $requestHelper->getMainRequest()->headers->get('Accept');
+        $requestHelper->getMainRequest()->headers->set(
             'Accept',
             str_replace(['image/webp,', 'image/webp;'], '', $accept)
         );
@@ -213,13 +218,9 @@ class ThumbnailHelper
      *
      * @return bool
      */
-    public function isNotSupportedImage(string $path)
+    public function isNotSupportedImage(string $path): bool
     {
-        if (false === strpos($path, 'filetype-not-supported.svg')) {
-            return false;
-        }
-
-        return true;
+        return str_contains($path, 'filetype-not-supported.svg');
     }
 
     /**
@@ -229,7 +230,7 @@ class ThumbnailHelper
      *
      * @return string
      */
-    public function replaceNotSupported(string $path)
+    public function replaceNotSupported(string $path): string
     {
         if (false === $this->isNotSupportedImage($path)) {
             return $path;

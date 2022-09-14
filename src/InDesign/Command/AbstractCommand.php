@@ -25,21 +25,21 @@ abstract class AbstractCommand
      *
      * @var array
      */
-    private $availableParams = [];
+    private array $availableParams = [];
 
     /**
      * Params for command.
      *
      * @var array
      */
-    protected $params = [];
+    protected array $params = [];
 
     /**
      * Component commands.
      *
      * @var ComponentInterface[]
      */
-    private $components = [];
+    private array $components = [];
 
     /**
      * Inits $this->params with $params.
@@ -49,7 +49,7 @@ abstract class AbstractCommand
      *
      * @return AbstractCommand
      */
-    protected function initParams(array $params)
+    protected function initParams(array $params): AbstractCommand
     {
         $this->params = array_merge($this->params, $params);
 
@@ -60,8 +60,10 @@ abstract class AbstractCommand
      * Method is used internaly to remove empty params before generating the InDesign command.
      *
      * @param string $param
+     *
+     * @return void
      */
-    protected function removeParam($param)
+    protected function removeParam(string $param): void
     {
         if (isset($this->params[$param])) {
             unset($this->params[$param]);
@@ -76,7 +78,7 @@ abstract class AbstractCommand
      * @return mixed
      * @throws \Exception
      */
-    public function getParam($param)
+    public function getParam(string $param): mixed
     {
         if (false === array_key_exists($param, $this->params)) {
             throw new \Exception(
@@ -96,7 +98,7 @@ abstract class AbstractCommand
      * @return AbstractCommand
      * @throws \Exception
      */
-    protected function setParam($param, $value)
+    protected function setParam(string $param, mixed $value): AbstractCommand
     {
         $method = 'validate' . ucfirst($param);
         if (method_exists($this, $method)) {
@@ -114,7 +116,7 @@ abstract class AbstractCommand
      *
      * @return AbstractCommand
      */
-    public function addComponent(ComponentInterface $command)
+    public function addComponent(ComponentInterface $command): AbstractCommand
     {
         $ident = $command->getComponentIdent();
         if (true === $command->isMultipleComponent()) {
@@ -152,9 +154,9 @@ abstract class AbstractCommand
      * Template method to validate all params when creating the command that is sent to InDesign.
      * If params are invalid method should throw an Exception.
      *
-     * @throws \Exception
+     * @return void
      */
-    protected function validate()
+    protected function validate(): void
     {
     }
 
@@ -187,7 +189,7 @@ abstract class AbstractCommand
      * @return array
      * @throws \Exception
      */
-    public function buildCommand(bool $addCmd = true)
+    public function buildCommand(bool $addCmd = true): array
     {
         $this->validate();
 
@@ -212,9 +214,10 @@ abstract class AbstractCommand
      *
      * @param array $command
      *
+     * @return void
      * @throws \Exception
      */
-    protected function buildComponents(array &$command)
+    protected function buildComponents(array &$command): void
     {
         foreach ($this->components as $ident => $commands) {
             if (true === is_array($commands)) {

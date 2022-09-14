@@ -13,6 +13,7 @@
 
 namespace Mds\PimPrint\CoreBundle\InDesign\Command;
 
+use League\Flysystem\FilesystemException;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\FitTrait;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\ImageCollectorTrait;
 use Mds\PimPrint\CoreBundle\InDesign\Text;
@@ -83,7 +84,7 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
      *
      * @var array
      */
-    protected $allowedFits = array(
+    protected array $allowedFits = array(
         self::FIT_NO_ADJUST,
         self::FIT_FRAME_TO_CONTENT,
         self::FIT_FRAME_TO_CONTENT_HEIGHT
@@ -94,42 +95,42 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
      *
      * @var array
      */
-    protected $columns = [];
+    protected array $columns = [];
 
     /**
      * Content rows of table.
      *
      * @var array
      */
-    protected $rows = [];
+    protected array $rows = [];
 
     /**
      * Footer-row
      *
      * @var array
      */
-    protected $footer = [];
+    protected array $footer = [];
 
     /**
      * Temporary array for current row then adding cells sequentially.
      *
      * @var array
      */
-    protected $currentRow = [];
+    protected array $currentRow = [];
 
     /**
      * Instance of Text used when to transform cell content
      *
-     * @var Text
+     * @var Text|null
      */
-    protected $text;
+    protected ?Text $text = null;
 
     /**
      * Available command params with default values.
      *
      * @var array
      */
-    private $availableParams = [
+    private array $availableParams = [
         'fit'        => self::FIT_NO_ADJUST,
         'tableStyle' => null,
         'lineHeight' => null,
@@ -142,7 +143,7 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
      *
      * @var bool
      */
-    protected $parseMode = false;
+    protected bool $parseMode = false;
 
     /**
      * Table constructor.
@@ -159,14 +160,14 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
      * @throws \Exception
      */
     public function __construct(
-        $elementName = '',
-        $left = null,
-        $top = null,
-        $width = null,
-        $height = null,
+        string $elementName = '',
+        float|int $left = null,
+        float|int $top = null,
+        float|int $width = null,
+        float|int $height = null,
         string $tableStyle = null,
-        $lineHeight = null,
-        $fit = self::FIT_NO_ADJUST
+        float|int $lineHeight = null,
+        int $fit = self::FIT_NO_ADJUST
     ) {
         $this->initBoxParams();
         $this->initParams($this->availableParams);
@@ -199,7 +200,7 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
      * @return Table
      * @throws \Exception
      */
-    public function setTableStyle(string $tableStyle)
+    public function setTableStyle(string $tableStyle): Table
     {
         $this->setParam('tableStyle', $tableStyle);
 
@@ -212,7 +213,7 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
      * @return string
      * @throws \Exception
      */
-    public function getTableStyle()
+    public function getTableStyle(): string
     {
         $style = $this->getParam('tableStyle');
         if (empty($style)) {
@@ -225,12 +226,12 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
     /**
      * Sets lineHeight in table cells.
      *
-     * @param float|int $lineHeight
+     * @param float|int|null $lineHeight
      *
      * @return Table
      * @throws \Exception
      */
-    public function setLineHeight($lineHeight)
+    public function setLineHeight(float|int|null $lineHeight): Table
     {
         $this->setParam('lineHeight', $lineHeight);
 
@@ -246,7 +247,7 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
      * @return Table
      * @throws \Exception
      */
-    public function setRowHeight($height)
+    public function setRowHeight(float|int $height): Table
     {
         $this->setParam('rowHeight', $height);
 
@@ -260,7 +261,7 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
      *
      * @return Table
      */
-    public function setParseMode(bool $parseMode)
+    public function setParseMode(bool $parseMode): Table
     {
         $this->parseMode = $parseMode;
 
@@ -313,7 +314,7 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
      *
      * @return Table
      */
-    public function clear()
+    public function clear(): Table
     {
         $this->clearColumns();
         $this->clearFooter();
@@ -327,7 +328,7 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
      *
      * @return Table
      */
-    public function clearColumns()
+    public function clearColumns(): Table
     {
         $this->columns = [];
         $this->clearRows();
@@ -340,7 +341,7 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
      *
      * @return Table
      */
-    public function clearRows()
+    public function clearRows(): Table
     {
         $this->rows = [];
 
@@ -352,7 +353,7 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
      *
      * @return Table
      */
-    public function clearFooter()
+    public function clearFooter(): Table
     {
         $this->footer = [];
 
@@ -370,7 +371,7 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
      * @return Table
      * @throws \Exception
      */
-    public function addColumn($width, $ident = null, $style = '')
+    public function addColumn(float|int $width, int|string $ident = null, string $style = ''): Table
     {
         if (null === $ident) {
             $ident = $this->setUpAutoIdent($this->columns, $ident);
@@ -395,9 +396,9 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
      * @param array       $elements
      * @param string|null $ident
      *
-     * @return int
+     * @return int|string
      */
-    protected function setUpAutoIdent(array $elements, $ident = null)
+    protected function setUpAutoIdent(array $elements, string $ident = null): int|string
     {
         if (null !== $ident) {
             return $ident;
@@ -414,13 +415,13 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
     }
 
     /**
-     * Returns true if column $ident is defined in table. Otherwise false is returned.
+     * Returns true if column $ident is defined in table. Otherwise, false is returned.
      *
      * @param string $ident
      *
      * @return bool
      */
-    public function hasColumn($ident)
+    public function hasColumn(string $ident): bool
     {
         return isset($this->columns[$ident]);
     }
@@ -435,8 +436,11 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
      * @return Table
      * @throws \Exception
      */
-    public function startRow($height = null, $type = self::ROW_TYPE_BODY, bool $useExactHeight = false): Table
-    {
+    public function startRow(
+        float $height = null,
+        string $type = self::ROW_TYPE_BODY,
+        bool $useExactHeight = false
+    ): Table {
         $this->assertRowType($type);
         $this->endRow();
 
@@ -485,17 +489,23 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
     /**
      * Adds a cell to the current row when adding cells in sequential mode.
      *
-     * @param string|Text|Paragraph|int|float $content     Cell content: String or InDesign Text or Paragraph instance.
-     * @param string|int|null                 $ident       Optional ident of the column to set.
+     * @param float|int|string|Paragraph|Text $content     Cell content: String or InDesign Text or Paragraph instance.
+     * @param int|string|null                 $ident       Optional ident of the column to set.
      * @param int                             $colspan     Optional colspan
      * @param string|null                     $style       Optional cell style.
      * @param bool                            $appendStyle If true, $style is appended to the default column style,
      *
      * @return Table
      * @throws \Exception
+     * @throws FilesystemException
      */
-    public function addCell($content, $ident = null, $colspan = 1, $style = null, $appendStyle = false)
-    {
+    public function addCell(
+        float|Text|Paragraph|int|string $content,
+        int|string $ident = null,
+        int $colspan = 1,
+        string $style = null,
+        bool $appendStyle = false
+    ): Table {
         if (empty($this->currentRow)) {
             throw new \Exception('No row started. Use startRow() before adding cells.');
         }
@@ -537,12 +547,12 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
     /**
      * Converts $content to Text if not a Text or Paragraph.
      *
-     * @param string|int|float|Text|Paragraph $content
+     * @param float|int|string|Paragraph|Text $content
      *
      * @return Text|Paragraph
-     * @throws \Exception
+     * @throws \Exception|FilesystemException
      */
-    protected function createCellContent($content)
+    protected function createCellContent(float|Text|Paragraph|int|string $content): Text|Paragraph
     {
         if ($content instanceof Text) {
             return $content;
@@ -562,14 +572,14 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
     }
 
     /**
-     * Returns true and only true if $tyoe is a correct InDesign table row type.
+     * Returns true and only true if $type is a correct InDesign table row type.
      *
      * @param string $type
      *
      * @return bool
      * @throws \Exception
      */
-    private function assertRowType(string $type)
+    private function assertRowType(string $type): bool
     {
         switch ($type) {
             case self::ROW_TYPE_BODY:
@@ -616,7 +626,7 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
      * @return array
      * @throws \Exception
      */
-    public function buildCommand(bool $addCmd = true)
+    public function buildCommand(bool $addCmd = true): array
     {
         $this->endRow();
         if (0 === count($this->rows)) {

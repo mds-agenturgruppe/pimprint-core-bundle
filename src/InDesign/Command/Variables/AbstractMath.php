@@ -32,16 +32,16 @@ abstract class AbstractMath extends ExecuteScript implements DependentInterface
     /**
      * Variable name to set.
      *
-     * @var string
+     * @var string|null
      */
-    protected $name;
+    protected ?string $name = null;
 
     /**
      * Variables to use for math operation.
      *
      * @var string[]
      */
-    protected $variables = [];
+    protected array $variables = [];
 
     /**
      * AbstractMath constructor.
@@ -67,7 +67,7 @@ abstract class AbstractMath extends ExecuteScript implements DependentInterface
      * @return AbstractMath
      * @throws \Exception
      */
-    public function setName(string $name)
+    public function setName(string $name): AbstractMath
     {
         $this->name = $name;
 
@@ -80,7 +80,7 @@ abstract class AbstractMath extends ExecuteScript implements DependentInterface
      * @return string
      * @throws \Exception
      */
-    public function getName()
+    public function getName(): string
     {
         if (null === $this->name) {
             throw new \Exception('No target InDesign variable name defined.');
@@ -97,7 +97,7 @@ abstract class AbstractMath extends ExecuteScript implements DependentInterface
      *
      * @return AbstractMath
      */
-    public function setVariables(array $variables)
+    public function setVariables(array $variables): AbstractMath
     {
         foreach ($variables as $variable) {
             $this->addVariable($variable);
@@ -112,9 +112,9 @@ abstract class AbstractMath extends ExecuteScript implements DependentInterface
      *
      * @param string $variable
      *
-     * @return AbstractMath|void
+     * @return AbstractMath
      */
-    public function addVariable(string $variable)
+    public function addVariable(string $variable): AbstractMath
     {
         if (true === $this->hasVariable($variable)) {
             return $this;
@@ -126,13 +126,13 @@ abstract class AbstractMath extends ExecuteScript implements DependentInterface
     }
 
     /**
-     * Returns true of $variable is set in variables. Otherwise false is returned.
+     * Returns true of $variable is set in variables. Otherwise, false is returned.
      *
      * @param string $variable
      *
      * @return bool
      */
-    public function hasVariable(string $variable)
+    public function hasVariable(string $variable): bool
     {
         return isset($this->variables[$variable]);
     }
@@ -142,7 +142,7 @@ abstract class AbstractMath extends ExecuteScript implements DependentInterface
      *
      * @return array
      */
-    public function getVariables()
+    public function getVariables(): array
     {
         return array_keys($this->variables);
     }
@@ -165,7 +165,7 @@ abstract class AbstractMath extends ExecuteScript implements DependentInterface
      * @return array
      * @throws \Exception
      */
-    public function buildCommand(bool $addCmd = true)
+    public function buildCommand(bool $addCmd = true): array
     {
         $script = 'PimPrintDocument.setVar("' . $this->getName() . '",Math.'.static::MATH_OPERATION.'(';
         foreach ($this->getVariables() as $variable) {

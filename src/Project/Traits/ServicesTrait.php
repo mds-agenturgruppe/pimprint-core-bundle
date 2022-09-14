@@ -36,71 +36,77 @@ trait ServicesTrait
      *
      * @var ImageDimensions
      */
-    protected $imageDimensions;
+    protected ImageDimensions $imageDimensions;
 
     /**
      * SpecialChars helper service.
      *
      * @var SpecialChars
      */
-    protected $specialChars;
+    protected SpecialChars $specialChars;
 
     /**
      * PluginParameters instance.
      *
      * @var PluginParameters
      */
-    protected $pluginParams;
+    protected PluginParameters $pluginParams;
 
     /**
      * Pimcore RequestHelper.
      *
      * @var RequestHelper
      */
-    protected $requestHelper;
+    protected RequestHelper $requestHelper;
 
     /**
      * ThumbnailHelper service.
      *
      * @var ThumbnailHelper
      */
-    protected $thumbnailHelper;
+    protected ThumbnailHelper $thumbnailHelper;
 
     /**
      * Project configuration.
      *
      * @var Config
      */
-    protected $config;
+    protected Config $config;
 
     /**
      * UrlGenerator instance.
      *
      * @var UrlGeneratorInterface
      */
-    protected $urlGenerator;
+    protected UrlGeneratorInterface $urlGenerator;
 
     /**
      * LocaleService instance.
      *
      * @var LocaleServiceInterface
      */
-    protected $localeService;
+    protected LocaleServiceInterface $localeService;
 
     /**
      * Sets PluginParameters helper service.
      *
      * @param PluginParameters $pluginParameters
+     *
+     * @return void
      */
-    public function setPluginParams(PluginParameters $pluginParameters)
+    public function setPluginParams(PluginParameters $pluginParameters): void
     {
         $this->pluginParams = $pluginParameters;
     }
 
     /**
      * Sets Pimcore RequestHelper service.
+     *
+     * @param RequestHelper $requestHelper
+     *
+     * @return void
      */
-    public function setRequestHelper(RequestHelper $requestHelper)
+    public function setRequestHelper(RequestHelper $requestHelper): void
     {
         $this->requestHelper = $requestHelper;
     }
@@ -110,9 +116,9 @@ trait ServicesTrait
      *
      * @return Request
      */
-    public function getRequest()
+    public function getRequest(): Request
     {
-        return $this->requestHelper->getRequest();
+        return $this->requestHelper->getMainRequest();
     }
 
     /**
@@ -120,7 +126,7 @@ trait ServicesTrait
      *
      * @return PluginParameters
      */
-    public function pluginParams()
+    public function pluginParams(): PluginParameters
     {
         return $this->pluginParams;
     }
@@ -129,8 +135,10 @@ trait ServicesTrait
      * Sets ImageDimensions helper service.
      *
      * @param ImageDimensions $imageDimensions
+     *
+     * @return void
      */
-    public function setImageDimensions(ImageDimensions $imageDimensions)
+    public function setImageDimensions(ImageDimensions $imageDimensions): void
     {
         $this->imageDimensions = $imageDimensions;
     }
@@ -149,8 +157,10 @@ trait ServicesTrait
      * Sets SpecialChars helper service.
      *
      * @param SpecialChars $specialChars
+     *
+     * @return void
      */
-    public function setSpecialChars(SpecialChars $specialChars)
+    public function setSpecialChars(SpecialChars $specialChars): void
     {
         $this->specialChars = $specialChars;
     }
@@ -169,10 +179,11 @@ trait ServicesTrait
      * Sets ThumbnailHelper service.
      *
      * @param ThumbnailHelper $thumbnailHelper
+     *
+     * @return void
      */
-    public function setThumbnailHelper(ThumbnailHelper $thumbnailHelper)
+    public function setThumbnailHelper(ThumbnailHelper $thumbnailHelper): void
     {
-        /* @var AbstractProject $this */
         $thumbnailHelper->setProject($this);
         $this->thumbnailHelper = $thumbnailHelper;
     }
@@ -191,8 +202,10 @@ trait ServicesTrait
      * Sets $config project configuration.
      *
      * @param Config $config
+     *
+     * @return void
      */
-    final public function setConfig(Config $config)
+    final public function setConfig(Config $config): void
     {
         $this->config = $config;
     }
@@ -201,8 +214,10 @@ trait ServicesTrait
      * Sets urlGenerator.
      *
      * @param UrlGeneratorInterface $urlGenerator
+     *
+     * @return void
      */
-    public function setUrlGenerator(UrlGeneratorInterface $urlGenerator)
+    public function setUrlGenerator(UrlGeneratorInterface $urlGenerator): void
     {
         $this->urlGenerator = $urlGenerator;
     }
@@ -212,7 +227,7 @@ trait ServicesTrait
      *
      * @return UrlGeneratorInterface
      */
-    protected function getUrlGenerator()
+    protected function getUrlGenerator(): UrlGeneratorInterface
     {
         return $this->urlGenerator;
     }
@@ -222,7 +237,7 @@ trait ServicesTrait
      *
      * @param LocaleServiceInterface $localeService
      */
-    public function setLocaleService(LocaleServiceInterface $localeService)
+    public function setLocaleService(LocaleServiceInterface $localeService): void
     {
         $this->localeService = $localeService;
     }
@@ -244,19 +259,20 @@ trait ServicesTrait
      * @return string
      * @throws \Exception
      */
-    public function getHostUrl()
+    public function getHostUrl(): string
     {
         return $this->config()
                     ->getHostUrl($this->getRequest());
     }
 
     /**
-     * Asserts that service service is initialized correctly.
+     * Asserts that service is initialized correctly.
      * Integrated to show appropriate exception, when concrete project service hasn't right parent configuration.
      *
+     * @return void
      * @throws \Exception
      */
-    final public function assertServiceInitialized()
+    final public function assertServiceInitialized(): void
     {
         $services = [
             $this->requestHelper,

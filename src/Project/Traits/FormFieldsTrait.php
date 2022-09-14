@@ -29,7 +29,7 @@ trait FormFieldsTrait
      *
      * @var array
      */
-    protected $factoryFields = [
+    protected array $factoryFields = [
         'start_alignment' => 'startAlignment',
         'page_bounds'     => 'pageBounds',
         'update_mode'     => 'updateMode',
@@ -41,7 +41,7 @@ trait FormFieldsTrait
      *
      * @var array
      */
-    protected $allowedUpdateModes = [
+    protected array $allowedUpdateModes = [
         PluginParameters::UPDATE_ALL_POSITION_CONTENT,
         PluginParameters::UPDATE_ALL_CONTENT,
         PluginParameters::UPDATE_SELECTED_POSITION_CONTENT,
@@ -53,7 +53,7 @@ trait FormFieldsTrait
      *
      * @var AbstractField[]
      */
-    private $customFormFields = null;
+    private array $customFormFields;
 
     /**
      * Returns form fields configuration array for InDesign plugin.
@@ -158,7 +158,7 @@ trait FormFieldsTrait
      */
     final public function getCustomFormFields(): array
     {
-        if (!is_array($this->customFormFields)) {
+        if (!isset($this->customFormFields)) {
             $this->customFormFields = [];
             $this->initCustomFormFields();
         }

@@ -27,28 +27,28 @@ abstract class AbstractField
      *
      * @var AbstractProject
      */
-    protected $project;
+    protected AbstractProject $project;
 
     /**
      * Param name and ident of custom form field
      *
      * @var string
      */
-    private $param;
+    private string $param;
 
     /**
      * Label of custom form field in InDesign plugin
      *
      * @var string
      */
-    private $label = '';
+    private string $label = '';
 
     /**
      * Custom field is required to start InDesign generation process
      *
      * @var bool
      */
-    private $required = false;
+    private bool $required = false;
 
     /**
      * Sets $project
@@ -106,7 +106,7 @@ abstract class AbstractField
      */
     public function getParam(): string
     {
-        if (null === $this->param) {
+        if (!isset($this->param)) {
             throw new \Exception('Custom form field must have a param name defined');
         }
 

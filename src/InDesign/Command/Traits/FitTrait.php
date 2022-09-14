@@ -32,7 +32,7 @@ trait FitTrait
      * @return FitTrait|ImageBox|TextBox|Table
      * @throws \Exception
      */
-    public function setFit($fit)
+    public function setFit(string $fit): ImageBox|Table|TextBox|static
     {
         $this->setParam('fit', $fit);
 
@@ -44,9 +44,10 @@ trait FitTrait
      *
      * @param string $fit
      *
+     * @return void
      * @throws \Exception
      */
-    protected function validateFit($fit)
+    protected function validateFit(string $fit): void
     {
         if (false === in_array($fit, $this->allowedFits)) {
             throw new \Exception(

@@ -33,7 +33,7 @@ class CheckNewPage extends AbstractCommand implements ComponentInterface
      *
      * @var array
      */
-    protected $availableParams = [
+    protected array $availableParams = [
         'pos'      => '',
         'newpos'   => '',
         'newpos_x' => null,
@@ -49,9 +49,9 @@ class CheckNewPage extends AbstractCommand implements ComponentInterface
      * @throws \Exception
      */
     public function __construct(
-        $maxYPos = '',
-        $newYPos = '',
-        $newXPos = null
+        float|int|string $maxYPos = '',
+        float|int|string $newYPos = '',
+        float|int|string $newXPos = null
     ) {
         $this->initParams($this->availableParams);
 
@@ -68,7 +68,7 @@ class CheckNewPage extends AbstractCommand implements ComponentInterface
      * @return CheckNewPage
      * @throws \Exception
      */
-    public function setMaxYPos($maxYPos)
+    public function setMaxYPos(float|int|string $maxYPos): CheckNewPage
     {
         $this->setParam('pos', $maxYPos);
 
@@ -83,7 +83,7 @@ class CheckNewPage extends AbstractCommand implements ComponentInterface
      * @return CheckNewPage
      * @throws \Exception
      */
-    public function setNewYPos($newYPos)
+    public function setNewYPos(float|int|string $newYPos): CheckNewPage
     {
         $this->setParam('newpos', $newYPos);
 
@@ -93,12 +93,12 @@ class CheckNewPage extends AbstractCommand implements ComponentInterface
     /**
      * Sets the optional X-Position where the box is replaced.
      *
-     * @param float|int|string $newXPos
+     * @param float|int|string|null $newXPos
      *
      * @return CheckNewPage
      * @throws \Exception
      */
-    public function setNewXPos($newXPos)
+    public function setNewXPos(float|int|string|null $newXPos): CheckNewPage
     {
         $this->setParam('newpos_x', $newXPos);
 

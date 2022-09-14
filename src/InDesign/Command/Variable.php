@@ -69,7 +69,7 @@ class Variable extends AbstractCommand implements ComponentInterface
      *
      * @var array
      */
-    public static $allowedPositions = [
+    public static array $allowedPositions = [
         self::POSITION_LEFT,
         self::POSITION_RIGHT,
         self::POSITION_TOP,
@@ -84,11 +84,11 @@ class Variable extends AbstractCommand implements ComponentInterface
     const CMD = 'variable';
 
     /**
-     * Allowed command.
+     * Available command params with default values.
      *
      * @var array
      */
-    protected $availableParams = [
+    protected array $availableParams = [
         'name'  => '',
         'value' => '',
     ];
@@ -101,7 +101,7 @@ class Variable extends AbstractCommand implements ComponentInterface
      *
      * @throws \Exception
      */
-    public function __construct($name = '', $value = '')
+    public function __construct(string $name = '', string $value = '')
     {
         $this->initParams($this->availableParams);
         $this->setName($name);
@@ -116,7 +116,7 @@ class Variable extends AbstractCommand implements ComponentInterface
      * @return Variable
      * @throws \Exception
      */
-    public function setName($name)
+    public function setName(string $name): Variable
     {
         $this->setParam('name', $name);
 
@@ -128,11 +128,11 @@ class Variable extends AbstractCommand implements ComponentInterface
      *
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         try {
             return $this->getParam('name');
-        } catch (\Exception $e) {
+        } catch (\Exception $exception) {
             return '';
         }
     }
@@ -145,7 +145,7 @@ class Variable extends AbstractCommand implements ComponentInterface
      * @return Variable
      * @throws \Exception
      */
-    public function setValue($value)
+    public function setValue(float|int|string $value): Variable
     {
         $this->setParam('value', $value);
 
@@ -155,9 +155,10 @@ class Variable extends AbstractCommand implements ComponentInterface
     /**
      * Validates existence of variable name.
      *
+     * @return void
      * @throws \Exception
      */
-    public function validate()
+    protected function validate(): void
     {
         $this->validateEmptyParam('name', 'name');
     }

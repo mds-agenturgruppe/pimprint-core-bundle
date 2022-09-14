@@ -13,6 +13,7 @@
 
 namespace Mds\PimPrint\CoreBundle\Project\Traits;
 
+use Pimcore\Model\DataObject\AbstractObject;
 use Pimcore\Model\Element\AbstractElement;
 
 /**
@@ -27,28 +28,32 @@ trait ElementCollectionRenderingTrait
      *
      * @var array
      */
-    private $elements = [];
+    private array $elements = [];
 
     /**
      * Abstract method that collects all elements to render for staring $element.
      *
-     * @param AbstractElement $element
+     * @param AbstractElement|AbstractObject $element
+     *
+     * @return void
      */
-    abstract protected function collectElements(AbstractElement $element): void;
+    abstract protected function collectElements(AbstractElement|AbstractObject $element): void;
 
     /**
      * Abstract method that renders a collected element.
      *
      * @param AbstractElement $element
+     *
+     * @return void
      */
-    abstract protected function renderElement(AbstractElement $element);
+    abstract protected function renderElement(AbstractElement $element): void;
 
     /**
      * Returns next element to render.
      *
      * @return mixed
      */
-    protected function getNextElement()
+    protected function getNextElement(): mixed
     {
         return array_shift($this->elements);
     }
@@ -58,8 +63,11 @@ trait ElementCollectionRenderingTrait
      * In concrete Pimcore PimPrint projects starting $elements are usually of type AbstractObject or Document.
      *
      * @param AbstractElement $element
+     *
+     * @return void
+     * @throws \Exception
      */
-    protected function renderPages(AbstractElement $element)
+    protected function renderPages(AbstractElement $element): void
     {
         $this->collectElements($element);
         while (true) {

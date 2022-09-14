@@ -63,7 +63,7 @@ abstract class AbstractBox extends AbstractCommand implements DependentInterface
      *
      * @var array
      */
-    private $availableParams = [
+    private array $availableParams = [
         'tid'       => null,
         'cmdfilter' => null,
     ];
@@ -73,7 +73,7 @@ abstract class AbstractBox extends AbstractCommand implements DependentInterface
      *
      * @var array
      */
-    protected $availibleResizes = [
+    protected array $availableResizes = [
         self::RESIZE_NO_RESIZE,
         self::RESIZE_WIDTH_HEIGHT,
         self::RESIZE_WIDTH,
@@ -96,7 +96,7 @@ abstract class AbstractBox extends AbstractCommand implements DependentInterface
      * @return AbstractBox
      * @throws \Exception
      */
-    public function setBoxIdent(string $ident = null)
+    public function setBoxIdent(string $ident = null): AbstractBox
     {
         $this->setParam('tid', $ident);
 
@@ -108,11 +108,11 @@ abstract class AbstractBox extends AbstractCommand implements DependentInterface
      *
      * @return string|null
      */
-    public function getBoxIdent()
+    public function getBoxIdent(): ?string
     {
         try {
             return $this->getParam('tid');
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return null;
         }
     }
@@ -127,12 +127,12 @@ abstract class AbstractBox extends AbstractCommand implements DependentInterface
      * @throws \Exception
      * @see \Mds\PimPrint\CoreBundle\Project\Traits\RenderingTrait::$boxIdentReference
      */
-    public function setBoxIdentReferenced(string $ident = '')
+    public function setBoxIdentReferenced(string $ident = ''): AbstractBox
     {
         try {
             $reference = $this->getProject()
                               ->getBoxIdentReference();
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $reference = '';
         }
         $this->setBoxIdent('ID-' . $reference . $ident);
@@ -148,7 +148,7 @@ abstract class AbstractBox extends AbstractCommand implements DependentInterface
      * @return AbstractBox
      * @throws \Exception
      */
-    public function setCmdFilter($filter)
+    public function setCmdFilter(string $filter): AbstractBox
     {
         $this->setParam('cmdfilter', $filter);
 
@@ -158,9 +158,10 @@ abstract class AbstractBox extends AbstractCommand implements DependentInterface
     /**
      * Validates command
      *
+     * @return void
      * @throws \Exception
      */
-    protected function validate()
+    protected function validate(): void
     {
         $this->validateElementNameParam();
         $this->setAutoResize();

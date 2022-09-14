@@ -34,7 +34,7 @@ class SplitTable extends AbstractCommand implements ImageCollectorInterface
     const CMD = 'splittable';
 
     /**
-     * Builds command array that is sent as JSON to InDesign.
+     * Ident prefix
      *
      * @var
      */
@@ -45,7 +45,7 @@ class SplitTable extends AbstractCommand implements ImageCollectorInterface
      *
      * @var array
      */
-    private $availableParams = [
+    private array $availableParams = [
         'table'          => null,
         'checknewpage'   => null,
         'precommands'    => [],
@@ -58,7 +58,7 @@ class SplitTable extends AbstractCommand implements ImageCollectorInterface
      *
      * @var AbstractCommand[]
      */
-    protected $preCommands = [];
+    protected array $preCommands = [];
 
     /**
      * SplitTable constructor.
@@ -100,7 +100,7 @@ class SplitTable extends AbstractCommand implements ImageCollectorInterface
      * @return SplitTable
      * @throws \Exception
      */
-    public function setTable(Table $table)
+    public function setTable(Table $table): SplitTable
     {
         $this->setParam('table', $table);
 
@@ -112,10 +112,10 @@ class SplitTable extends AbstractCommand implements ImageCollectorInterface
      *
      * @param CheckNewPage $checkNewPage
      *
-     * @return $this
+     * @return SplitTable
      * @throws \Exception
      */
-    public function setCheckNewPage(CheckNewPage $checkNewPage)
+    public function setCheckNewPage(CheckNewPage $checkNewPage): SplitTable
     {
         $this->setParam('checknewpage', $checkNewPage);
 
@@ -127,7 +127,7 @@ class SplitTable extends AbstractCommand implements ImageCollectorInterface
      *
      * @return AbstractCommand[]
      */
-    public function getPreCommands()
+    public function getPreCommands(): array
     {
         return $this->preCommands;
     }
@@ -139,7 +139,7 @@ class SplitTable extends AbstractCommand implements ImageCollectorInterface
      *
      * @return SplitTable
      */
-    public function setPreCommands(array $preCommands = [])
+    public function setPreCommands(array $preCommands = []): SplitTable
     {
         foreach ($preCommands as $preCommand) {
             if ($preCommand instanceof AbstractCommand) {
@@ -157,7 +157,7 @@ class SplitTable extends AbstractCommand implements ImageCollectorInterface
      *
      * @return SplitTable
      */
-    public function addPreCommand(AbstractCommand $commands)
+    public function addPreCommand(AbstractCommand $commands): SplitTable
     {
         $this->preCommands[] = $commands;
 
@@ -172,7 +172,7 @@ class SplitTable extends AbstractCommand implements ImageCollectorInterface
      * @return SplitTable
      * @throws \Exception
      */
-    public function setMinRows(int $minRows)
+    public function setMinRows(int $minRows): SplitTable
     {
         $this->setParam('minrows', $minRows);
 
@@ -199,7 +199,7 @@ class SplitTable extends AbstractCommand implements ImageCollectorInterface
      * @return SplitTable
      * @throws \Exception
      */
-    public function setWidowRowCount(int $widowRowCount)
+    public function setWidowRowCount(int $widowRowCount): SplitTable
     {
         $this->setParam('widowRowCount', $widowRowCount);
 
@@ -226,7 +226,7 @@ class SplitTable extends AbstractCommand implements ImageCollectorInterface
      * @return SplitTable
      * @throws \Exception
      */
-    public function setOrphanRowCount(int $orphanRowCount)
+    public function setOrphanRowCount(int $orphanRowCount): SplitTable
     {
         $this->setParam('orphanRowCount', $orphanRowCount);
 
@@ -275,14 +275,14 @@ class SplitTable extends AbstractCommand implements ImageCollectorInterface
      * @return array
      * @throws \Exception
      */
-    public function buildCommand(bool $addCmd = true)
+    public function buildCommand(bool $addCmd = true): array
     {
         try {
             $table = $this->getParam('table');
             if (false === $table instanceof Table) {
                 throw new \Exception();
             }
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             throw new \Exception('No table to split defined in ' . static::CMD);
         }
         $this->ensureBoxIdent($table);
@@ -294,7 +294,7 @@ class SplitTable extends AbstractCommand implements ImageCollectorInterface
             if (false === $checkPage instanceof CheckNewPage) {
                 throw new \Exception();
             }
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             throw new \Exception('No check new page directive for splitting defined in ' . static::CMD);
         }
         $this->addComponent($checkPage);

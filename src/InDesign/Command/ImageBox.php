@@ -13,6 +13,7 @@
 
 namespace Mds\PimPrint\CoreBundle\InDesign\Command;
 
+use League\Flysystem\FilesystemException;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\FitTrait;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\ImageCollectorTrait;
 use Mds\PimPrint\CoreBundle\InDesign\Text\ParagraphComponent;
@@ -21,6 +22,7 @@ use Mds\PimPrint\CoreBundle\Project\Traits\ProjectAwareTrait;
 use Pimcore\Model\Asset;
 use Pimcore\Model\Asset\Document as DocumentAsset;
 use Pimcore\Model\Asset\Image as ImageAsset;
+use Pimcore\Tool\Storage;
 
 /**
  * Class ImageBox
@@ -108,7 +110,7 @@ class ImageBox extends AbstractBox implements ParagraphComponent, ImageCollector
      *
      * @var array
      */
-    protected $allowedFits = [
+    protected array $allowedFits = [
         self::FIT_PROPORTIONALLY,
         self::FIT_FILL_PROPORTIONALLY,
         self::FIT_CONTENT_TO_FRAME,
@@ -122,7 +124,7 @@ class ImageBox extends AbstractBox implements ParagraphComponent, ImageCollector
      *
      * @var array
      */
-    private $availableParams = [
+    private array $availableParams = [
         'fit'          => self::FIT_PROPORTIONALLY,
         'src'          => '',
         'assetId'      => '',
@@ -136,20 +138,21 @@ class ImageBox extends AbstractBox implements ParagraphComponent, ImageCollector
      *
      * @var array
      */
-    private $allowedMimeTypes = [
+    private array $allowedMimeTypes = [
         'image/bmp',
         'image/jpeg',
         'image/png',
         'image/tiff',
         'image/vnd.adobe.photoshop',
         'image/x-photoshop',
+        'image/x-eps',
         'application/x-photoshop',
         'application/photoshop',
         'application/psd',
         'image/psd',
         'application/postscript',
         'application/pdf',
-        'application/ai'
+        'application/ai',
     ];
 
     /**
@@ -163,16 +166,16 @@ class ImageBox extends AbstractBox implements ParagraphComponent, ImageCollector
      * @param Asset|null     $asset       Asset to be placed.
      * @param string         $fit         Fit mode of image in image-box. Use FIT class constants.
      *
-     * @throws \Exception
+     * @throws \Exception|FilesystemException
      */
     public function __construct(
-        $elementName = '',
-        $left = null,
-        $top = null,
-        $width = null,
-        $height = null,
+        string $elementName = '',
+        float|int $left = null,
+        float|int $top = null,
+        float|int $width = null,
+        float|int $height = null,
         Asset $asset = null,
-        $fit = self::FIT_PROPORTIONALLY
+        string $fit = self::FIT_PROPORTIONALLY
     ) {
         $this->initBoxParams();
         $this->initParams($this->availableParams);
@@ -205,10 +208,14 @@ class ImageBox extends AbstractBox implements ParagraphComponent, ImageCollector
      * @param array       $defaultDpi
      *
      * @return ImageBox
-     * @throws \Exception
+     * @throws \Exception|FilesystemException
      */
-    public function setAsset(Asset $asset, $thumbnailName = null, $resize = false, $defaultDpi = [300, 300])
-    {
+    public function setAsset(
+        Asset $asset,
+        string $thumbnailName = null,
+        bool $resize = false,
+        array $defaultDpi = [300, 300]
+    ): static {
         $fallback = $asset->getProperty(self::PROPERTY_PIMPRINT_ASSET);
         if ($fallback instanceof Asset) {
             $asset = $fallback;
@@ -278,7 +285,7 @@ class ImageBox extends AbstractBox implements ParagraphComponent, ImageCollector
      * @param Asset       $asset
      * @param string|null $thumbnailName
      *
-     * @throws \Exception
+     * @throws \Exception|FilesystemException
      */
     private function addDownloadParams(Asset $asset, string $thumbnailName = null)
     {
@@ -307,9 +314,11 @@ class ImageBox extends AbstractBox implements ParagraphComponent, ImageCollector
                 $asset->getId()
             );
         }
-        if (false === file_exists($asset->getFileSystemPath())) {
+
+        $storage = Storage::get('asset');
+        if (false === $storage->fileExists($asset->getRealFullPath())) {
             $this->notifyMissingAsset(
-                sprintf("Asset file '%s' not found.", $asset->getFileSystemPath()),
+                sprintf("Asset file '%s' not found.", $asset->getFullPath()),
                 $asset->getId()
             );
 
@@ -321,7 +330,7 @@ class ImageBox extends AbstractBox implements ParagraphComponent, ImageCollector
         if (null === $thumbnailName) {
             $thumbUrl = $thumbnailHelper->replaceNotSupported($thumbnail->getPath(true));
             $this->setParam('src', $asset->getRealFullPath());
-            $this->setParam('mtime', @filemtime($asset->getFileSystemPath()));
+            $this->setParam('mtime', $storage->lastModified($asset->getRealFullPath()));
             $this->setParam('srcFileSize', $asset->getFileSize());
             $this->setParam('srcUrl', $hostUrl . urlencode_ignore_slash($asset->getRealFullPath()));
             $this->setParam('thumbnailUrl', $hostUrl . $thumbUrl);
@@ -346,18 +355,17 @@ class ImageBox extends AbstractBox implements ParagraphComponent, ImageCollector
             $srcUrl = $thumbnailHelper->replaceNotSupported($srcUrl);
             $fileSize = 259010;
         } else {
-            $filePath = $thumbnail->getFileSystemPath();
-            if (false === file_exists($filePath)) {
+            if (false === file_exists($thumbnail->getLocalFile())) {
                 $this->notifyMissingAsset(
-                    sprintf("Thumbnail '%s' could not be created.", $filePath),
+                    sprintf("Thumbnail '%s' could not be created.", $thumbnail->getLocalFile()),
                     $thumbnail->getAsset()
                               ->getId()
                 );
 
                 return;
             }
-            $fileSize = @filesize($filePath);
-            $this->setParam('mtime', @filemtime($filePath));
+            $fileSize = $thumbnail->getFileSize();
+            $this->setParam('mtime', @filemtime($thumbnail->getLocalFile()));
         }
 
         $hostUrl = $this->getProject()
@@ -376,7 +384,7 @@ class ImageBox extends AbstractBox implements ParagraphComponent, ImageCollector
      * @return array
      * @throws \Exception
      */
-    public function buildCommand(bool $addCmd = true)
+    public function buildCommand(bool $addCmd = true): array
     {
         $this->collectImage($this);
 

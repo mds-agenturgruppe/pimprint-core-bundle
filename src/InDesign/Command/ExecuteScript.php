@@ -28,11 +28,11 @@ class ExecuteScript extends AbstractCommand
     const CMD = 'eval';
 
     /**
-     * Available command params.
+     * Available command params with default values.
      *
      * @var array
      */
-    protected $availableParams = [
+    protected array $availableParams = [
         'value' => '',
     ];
 
@@ -43,7 +43,7 @@ class ExecuteScript extends AbstractCommand
      *
      * @throws \Exception
      */
-    public function __construct($script = '')
+    public function __construct(string $script = '')
     {
         $this->initParams($this->availableParams);
 
@@ -58,7 +58,7 @@ class ExecuteScript extends AbstractCommand
      * @return ExecuteScript
      * @throws \Exception
      */
-    public function setScript($script)
+    public function setScript(string $script): ExecuteScript
     {
         $this->setParam('value', $script);
 
@@ -68,9 +68,10 @@ class ExecuteScript extends AbstractCommand
     /**
      * Validates command.
      *
+     * @return void
      * @throws \Exception
      */
-    protected function validate()
+    protected function validate(): void
     {
         $script = $this->getParam('value');
         if (empty($script)) {

@@ -33,9 +33,8 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder(): TreeBuilder
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('mds_pim_print_core');
-        $this->addProjectConfig($rootNode);
+        $treeBuilder = new TreeBuilder('mds_pim_print_core');
+        $this->addProjectConfig($treeBuilder->getRootNode());
 
         return $treeBuilder;
     }

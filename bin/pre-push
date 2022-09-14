@@ -1,7 +1,14 @@
 #!/usr/bin/env bash
 
-cd "${BASH_SOURCE%/*}/../.." || exit 1
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+DIR=${DIR##*/}
+PATH="/usr/local/bin/:$PATH"
 
 PATH="/usr/local/bin/:$PATH" && export PATH
 
-exec vendor/bin/mds-code-check
+returnValue=0
+
+vendor/bin/mds-code-check
+returnValue=$((returnValue + $?))
+
+exit $returnValue

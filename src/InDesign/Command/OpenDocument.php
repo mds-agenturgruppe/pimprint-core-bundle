@@ -42,11 +42,11 @@ class OpenDocument extends AbstractCommand
     const TYPE_TEMPLATE = 'template';
 
     /**
-     * Available command params.
+     * Available command params with default values.
      *
      * @var array
      */
-    protected $availableParams = [
+    protected array $availableParams = [
         'type'     => self::TYPE_USECURRENT,
         'language' => '',
         'name'     => null,
@@ -61,7 +61,7 @@ class OpenDocument extends AbstractCommand
      *
      * @throws \Exception
      */
-    public function __construct($type = '', $language = '', $filename = '')
+    public function __construct(string $type = '', string $language = '', string $filename = '')
     {
         $this->initParams($this->availableParams);
 
@@ -80,7 +80,7 @@ class OpenDocument extends AbstractCommand
      * @return OpenDocument
      * @throws \Exception
      */
-    public function setType($type)
+    public function setType(string $type): OpenDocument
     {
         $this->setParam('type', $type);
 
@@ -95,7 +95,7 @@ class OpenDocument extends AbstractCommand
      * @return OpenDocument
      * @throws \Exception
      */
-    public function setLanguage($language)
+    public function setLanguage(string $language): OpenDocument
     {
         $this->setParam('language', $language);
 
@@ -110,7 +110,7 @@ class OpenDocument extends AbstractCommand
      * @return OpenDocument
      * @throws \Exception
      */
-    public function setFilename($filename)
+    public function setFilename(string $filename): OpenDocument
     {
         if ('' == $filename) {
             $filename = null;
@@ -127,7 +127,7 @@ class OpenDocument extends AbstractCommand
      *
      * @throws \Exception
      */
-    protected function validateType($value)
+    protected function validateType(string $value)
     {
         switch ($value) {
             case self::TYPE_USECURRENT:

@@ -29,14 +29,14 @@ class ProjectsManager
      *
      * @var array
      */
-    private $projects = [];
+    private array $projects = [];
 
     /**
      * Instance of current selected project for generation.
      *
-     * @var AbstractProject
+     * @var AbstractProject|null
      */
-    private static $project;
+    private static ?AbstractProject $project = null;
 
     /**
      * Projects constructor.
@@ -54,8 +54,10 @@ class ProjectsManager
      * Registers all PimPrint projects from $config.
      *
      * @param array $config
+     *
+     * @return void
      */
-    private function registerProjects(array $config)
+    private function registerProjects(array $config): void
     {
         foreach ($config as $ident => $project) {
             if (empty($project['ident'])) {
@@ -73,7 +75,7 @@ class ProjectsManager
      * @return array
      * @throws \Exception
      */
-    public function getProjectsInfo()
+    public function getProjectsInfo(): array
     {
         $return = [];
         foreach ($this->projects as $ident => $project) {
@@ -90,7 +92,7 @@ class ProjectsManager
      * @return AbstractProject
      * @throws \Exception
      */
-    public static function getProject()
+    public static function getProject(): AbstractProject
     {
         if (false === self::$project instanceof AbstractProject) {
             throw new \Exception('No project selected for generation.');
@@ -108,7 +110,7 @@ class ProjectsManager
      * @return AbstractProject
      * @throws \Exception
      */
-    public function projectServiceFactory(string $ident, bool $registerSelected = true)
+    public function projectServiceFactory(string $ident, bool $registerSelected = true): AbstractProject
     {
         if (false === isset($this->projects[$ident])) {
             throw new \Exception(
@@ -120,7 +122,7 @@ class ProjectsManager
             $service = \Pimcore::getKernel()
                                ->getContainer()
                                ->get($config['service']);
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             throw new \Exception(
                 sprintf("No public PimPrint project service '%s' found.", $config['service'])
             );

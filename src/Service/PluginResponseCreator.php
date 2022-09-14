@@ -18,7 +18,7 @@ use Mds\PimPrint\CoreBundle\Session\PimPrintSessionBagConfigurator;
 use Pimcore\Http\RequestHelper;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\Attribute\NamespacedAttributeBag;
+use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBag;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
@@ -33,16 +33,16 @@ class PluginResponseCreator
     /**
      * Lazy loading.
      *
-     * @var bool
+     * @var bool|null
      */
-    private static $isDebugMode;
+    private static ?bool $isDebugMode = null;
 
     /**
      * Pimcore RequestHelper.
      *
      * @var RequestHelper
      */
-    private $requestHelper;
+    private RequestHelper $requestHelper;
 
     /**
      * PluginResponseCreator constructor.
@@ -60,6 +60,7 @@ class PluginResponseCreator
      * @param array $data
      *
      * @return JsonResponse
+     * @throws \Exception
      */
     public function success(array $data): JsonResponse
     {
@@ -95,6 +96,7 @@ class PluginResponseCreator
      * @param int   $status
      *
      * @return JsonResponse
+     * @throws \Exception
      */
     protected function buildResponse(array $data, int $status = Response::HTTP_OK): JsonResponse
     {
@@ -154,13 +156,14 @@ class PluginResponseCreator
      *
      * @param array $data
      *
+     * @return void
      * @throws \Exception
      */
-    private function addSettings(array &$data)
+    private function addSettings(array &$data): void
     {
         try {
             $project = ProjectsManager::getProject();
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return;
         }
         $data['settings'] = $project->getSettings();
@@ -170,16 +173,18 @@ class PluginResponseCreator
      * Adds sessionId to JSON response $data if a login session was created for InDesign.
      *
      * @param array $data
+     *
+     * @return void
      */
-    private function addSession(array &$data)
+    private function addSession(array &$data): void
     {
-        $request = $this->requestHelper->getRequest();
+        $request = $this->requestHelper->getMainRequest();
         $session = $request->getSession();
         if (false === $session instanceof SessionInterface) {
             return;
         }
         $sessionBag = $session->getBag(PimPrintSessionBagConfigurator::NAMESPACE);
-        if (false === $sessionBag instanceof NamespacedAttributeBag) {
+        if (false === $sessionBag instanceof AttributeBag) {
             return;
         }
         if (false === $sessionBag->has('sendId')) {
@@ -196,8 +201,10 @@ class PluginResponseCreator
      * Adds project preMessages to $data.
      *
      * @param array $data
+     *
+     * @return void
      */
-    private function addMessages(array &$data)
+    private function addMessages(array &$data): void
     {
         try {
             $messages = ProjectsManager::getProject()
@@ -205,7 +212,7 @@ class PluginResponseCreator
             if (empty($messages)) {
                 throw new \Exception();
             }
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return;
         }
         $data['messages'] = array_merge(
@@ -218,8 +225,10 @@ class PluginResponseCreator
      * Adds used images.
      *
      * @param array $data
+     *
+     * @return void
      */
-    private function addImages(array &$data)
+    private function addImages(array &$data): void
     {
         try {
             $project = ProjectsManager::getProject();
@@ -229,7 +238,7 @@ class PluginResponseCreator
             }
             $data['images'] = $project->getCommandQueue()
                                       ->getRegisteredAssets();
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return;
         }
     }

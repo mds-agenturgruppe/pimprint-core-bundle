@@ -32,11 +32,11 @@ class GoToPage extends AbstractCommand
     const CMD = 'gotopage';
 
     /**
-     * Allowed command.
+     * Available command params with default values.
      *
      * @var array
      */
-    protected $availableParams = [
+    protected array $availableParams = [
         'pagenumber'  => 1,
         'usepageoffset'  => 0,
         'useautocmds' => 0,
@@ -75,7 +75,7 @@ class GoToPage extends AbstractCommand
      * @return GoToPage
      * @throws \Exception
      */
-    public function setPage(int $page)
+    public function setPage(int $page): GoToPage
     {
         $this->setParam('pagenumber', $page);
 
@@ -87,9 +87,10 @@ class GoToPage extends AbstractCommand
      *
      * @param int $page
      *
+     * @return void
      * @throws \Exception
      */
-    protected function validatePage($page)
+    protected function validatePage(int $page): void
     {
         if ($page < 1) {
             throw new \Exception("Page must be greater than 0.");
@@ -104,7 +105,7 @@ class GoToPage extends AbstractCommand
      * @return GoToPage
      * @throws \Exception
      */
-    public function setUseTemplate(bool $useTemplate)
+    public function setUseTemplate(bool $useTemplate): GoToPage
     {
         $this->setParam('useautocmds', $useTemplate ? 1 : 0);
 
@@ -119,7 +120,7 @@ class GoToPage extends AbstractCommand
      * @return GoToPage
      * @throws \Exception
      */
-    public function setUsePageOffset(bool $usePageOffset)
+    public function setUsePageOffset(bool $usePageOffset): GoToPage
     {
         $this->setParam('usepageoffset', $usePageOffset ? 1 : 0);
 
@@ -134,7 +135,7 @@ class GoToPage extends AbstractCommand
      * @return GoToPage
      * @throws \Exception
      */
-    public function setDoublePage(bool $useDoublePage)
+    public function setDoublePage(bool $useDoublePage): GoToPage
     {
         $this->setParam('usedoublepage', $useDoublePage ? 1 : 0);
 
@@ -149,7 +150,7 @@ class GoToPage extends AbstractCommand
      * @return array
      * @throws \Exception
      */
-    public function buildCommand(bool $addCmd = true)
+    public function buildCommand(bool $addCmd = true): array
     {
         $return = parent::buildCommand($addCmd);
         $this->getCommandQueue()

@@ -13,7 +13,9 @@
 
 namespace Mds\PimPrint\CoreBundle\Project\Traits;
 
+use League\Flysystem\FilesystemException;
 use Pimcore\Model\Asset;
+use Pimcore\Tool\Storage;
 
 /**
  * Trait TemplateTrait
@@ -31,11 +33,11 @@ trait TemplateTrait
      * @return string|Asset
      * @throws \Exception
      */
-    protected function getTemplate()
+    protected function getTemplate(): Asset|string
     {
         $config = $this->config()
-                       ->offsetGet('template', array());
-        if (false === isset($config['default'])) {
+                       ->offsetGet('template');
+        if (false === is_array($config) || false === isset($config['default'])) {
             throw new \Exception(
                 sprintf(
                     "No default template defined for project '%s' in configuration.",
@@ -73,6 +75,7 @@ trait TemplateTrait
      *
      * @return array
      * @throws \Exception
+     * @throws FilesystemException
      */
     final protected function buildTemplateSettings(): array
     {
@@ -93,19 +96,28 @@ trait TemplateTrait
      *
      * @param array $settings
      *
+     * @return void
      * @throws \Exception
+     * @throws FilesystemException
      */
-    final private function addTemplateDownloadData(array &$settings)
+    private function addTemplateDownloadData(array &$settings): void
     {
         $settings['url'] = $this->buildTemplateUrl();
 
         $template = $this->getTemplate();
         if ($template instanceof Asset) {
-            $settings['mtime'] = @filemtime($template->getFileSystemPath());
+            $storage = Storage::get('asset');
+            if (false === $storage->fileExists($template->getFullPath())) {
+                throw new \Exception(
+                    sprintf('InDesign template file not found: %s', $template->getFullPath())
+                );
+            }
+            $settings['mtime'] = $storage->lastModified($template->getFullPath());
             $settings['fileSize'] = $template->getFileSize();
 
             return;
         }
+
         $filePath = $this->getTemplateFilePath($template);
         if (false === file_exists($filePath)) {
             throw new \Exception(sprintf('InDesign template file not found on server: %s', $template));

@@ -13,6 +13,7 @@
 
 namespace Mds\PimPrint\CoreBundle;
 
+use Mds\PimPrint\CoreBundle\Tools\Installer;
 use Pimcore\Extension\Bundle\AbstractPimcoreBundle;
 use Pimcore\Extension\Bundle\Traits\PackageVersionTrait;
 
@@ -40,8 +41,18 @@ class MdsPimPrintCoreBundle extends AbstractPimcoreBundle
      *
      * @return string
      */
-    public function getDescription()
+    public function getDescription(): string
     {
         return 'mds PimPrint CoreBundle - The InDesign Printing Solution for Pimcore.';
+    }
+
+    /**
+     * Returns Bundle installer
+     *
+     * @return Installer
+     */
+    public function getInstaller(): Installer
+    {
+        return $this->container->get(Installer::class);
     }
 }

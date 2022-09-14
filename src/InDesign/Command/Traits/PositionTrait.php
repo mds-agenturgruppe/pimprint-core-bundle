@@ -33,12 +33,14 @@ trait PositionTrait
      *
      * @var array
      */
-    protected $relativePositionVariables = [];
+    protected array $relativePositionVariables = [];
 
     /**
      * Initializes trait
+     *
+     * @return void
      */
-    protected function initPosition()
+    protected function initPosition(): void
     {
         $this->initParams(
             [
@@ -51,11 +53,12 @@ trait PositionTrait
     /**
      * Sets the left position in mm where the element should be placed in the document.
      *
-     * @param float|string $left Left position in mm.
+     * @param float|string|null $left Left position in mm.
      *
      * @return PositionTrait|AbstractBox
+     * @throws \Exception
      */
-    public function setLeft($left)
+    public function setLeft(float|string|null $left): AbstractBox|static
     {
         $this->setParam('left', $left);
         $this->checkRelativePositionVariable('left', $left);
@@ -66,11 +69,12 @@ trait PositionTrait
     /**
      * Sets the top position in mm where the element should be placed in the document.
      *
-     * @param float|string $top Top position in mm.
+     * @param float|string|null $top Top position in mm.
      *
      * @return PositionTrait|AbstractBox
+     * @throws \Exception
      */
-    public function setTop($top)
+    public function setTop(float|string|null $top): AbstractBox|static
     {
         $this->setParam('top', $top);
         $this->checkRelativePositionVariable('top', $top);
@@ -88,9 +92,9 @@ trait PositionTrait
      * @return PositionTrait|AbstractBox
      * @throws \Exception
      */
-    public function setRelativePosition(string $position, string $variable, $margin = 0)
+    public function setRelativePosition(string $position, string $variable, float|int $margin = 0): AbstractBox|static
     {
-        $this->validateRelataivePosition($position);
+        $this->validateRelativePosition($position);
         $this->relativePositionVariables[$position] = $variable;
         $method = 'set' . ucfirst($position);
 
@@ -106,7 +110,7 @@ trait PositionTrait
      * @return AbstractBox|PositionTrait
      * @throws \Exception
      */
-    public function setLeftRelative(string $variable, $margin = 0)
+    public function setLeftRelative(string $variable, float|int $margin = 0): AbstractBox|static
     {
         return $this->setRelativePosition(Variable::POSITION_LEFT, $variable, $margin);
     }
@@ -120,7 +124,7 @@ trait PositionTrait
      * @return AbstractBox|PositionTrait
      * @throws \Exception
      */
-    public function setTopRelative(string $variable, $margin = 0)
+    public function setTopRelative(string $variable, float|int $margin = 0): AbstractBox|static
     {
         return $this->setRelativePosition(Variable::POSITION_TOP, $variable, $margin);
     }
@@ -128,12 +132,12 @@ trait PositionTrait
     /**
      * Checks if $value contains a position variable. If not the registered variable is removed.
      *
-     * @param string $position
-     * @param string $value
+     * @param string      $position
+     * @param string|null $value
      */
-    protected function checkRelativePositionVariable($position, $value)
+    protected function checkRelativePositionVariable(string $position, string|null $value): void
     {
-        if (0 === strpos($value, '=[')) {
+        if (str_starts_with($value, '=[')) {
             return;
         }
         unset($this->relativePositionVariables[$position]);
@@ -144,9 +148,10 @@ trait PositionTrait
      *
      * @param string $position
      *
+     * @return void
      * @throws \Exception
      */
-    protected function validateRelataivePosition($position)
+    protected function validateRelativePosition(string $position): void
     {
         if ($position !== Variable::POSITION_TOP && $position !== Variable::POSITION_LEFT) {
             $message = "Invalid position '%s' for relative positioning in '%s'." .
@@ -170,7 +175,7 @@ trait PositionTrait
      */
     public function isRelativePositioned(): bool
     {
-        return empty($this->relativePositionVariables) ? false : true;
+        return !empty($this->relativePositionVariables);
     }
 
     /**

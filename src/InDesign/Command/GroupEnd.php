@@ -37,11 +37,11 @@ class GroupEnd extends AbstractCommand implements DependentInterface
     const CMD = 'groupend';
 
     /**
-     * Builds command array that is sent as JSON to InDesign.
+     * Available command params with default values.
      *
      * @var array
      */
-    protected $availableParams = [
+    protected array $availableParams = [
         'moveTo'       => null,
         'ungroupafter' => 0,
         'checknewpage' => null,
@@ -72,7 +72,7 @@ class GroupEnd extends AbstractCommand implements DependentInterface
      * @return GroupEnd
      * @throws \Exception
      */
-    public function setNewPageCmd(CheckNewPage $checkNewPage = null)
+    public function setNewPageCmd(CheckNewPage $checkNewPage = null): GroupEnd
     {
         if (null === $checkNewPage) {
             $this->removeParam('checknewpage');
@@ -91,7 +91,7 @@ class GroupEnd extends AbstractCommand implements DependentInterface
      * @return GroupEnd
      * @throws \Exception
      */
-    public function setUngroupAfter(bool $ungroupAfter)
+    public function setUngroupAfter(bool $ungroupAfter): GroupEnd
     {
         $this->setParam('ungroupafter', $ungroupAfter ? 1 : 0);
 
@@ -106,7 +106,7 @@ class GroupEnd extends AbstractCommand implements DependentInterface
      * @return GroupEnd
      * @throws \Exception
      */
-    public function setMoveTo(bool $moveTo)
+    public function setMoveTo(bool $moveTo): GroupEnd
     {
         $this->setParam('moveTo', $moveTo ? 1 : 0);
 

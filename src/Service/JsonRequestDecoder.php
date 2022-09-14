@@ -27,8 +27,10 @@ class JsonRequestDecoder
      * Convert POST JSON request content and adds content to $request parameter bag.
      *
      * @param Request $request
+     *
+     * @return void
      */
-    public function decode(Request $request)
+    public function decode(Request $request): void
     {
         if ('json' !== $request->getContentType() || empty($request->getContent())) {
             return;

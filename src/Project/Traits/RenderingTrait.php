@@ -35,7 +35,7 @@ trait RenderingTrait
      *
      * @var bool
      */
-    private $generationActive = false;
+    private bool $generationActive = false;
 
     /**
      * Reference string for box ident generation.
@@ -45,14 +45,14 @@ trait RenderingTrait
      *
      * @var string
      */
-    private $boxIdentReference = '';
+    private string $boxIdentReference = '';
 
     /**
      * Postfix used in generic box ident generation.
      *
      * @var string
      */
-    private $boxIdentGenericPostfix = '';
+    private string $boxIdentGenericPostfix = '';
 
     /**
      * Generates PimPrint commands to build a publication in InDesign.
@@ -74,7 +74,7 @@ trait RenderingTrait
      *
      * @return bool
      */
-    final public function isGenerationActive()
+    final public function isGenerationActive(): bool
     {
         return $this->generationActive;
     }
@@ -95,9 +95,8 @@ trait RenderingTrait
      * @param string $ident
      *
      * @see RenderingTrait::$boxIdentReference
-     *
      */
-    public function setBoxIdentReference(string $ident)
+    public function setBoxIdentReference(string $ident): void
     {
         $this->boxIdentReference = $ident;
     }
@@ -108,9 +107,8 @@ trait RenderingTrait
      * @param string $ident
      *
      * @see RenderingTrait::$boxIdentReference
-     *
      */
-    public function appendToBoxIdentReference(string $ident)
+    public function appendToBoxIdentReference(string $ident): void
     {
         $this->setBoxIdentReference(
             $this->getBoxIdentReference() . $ident
@@ -132,7 +130,7 @@ trait RenderingTrait
      *
      * @param string $postfix
      */
-    public function setBoxIdentGenericPostfix(string $postfix)
+    public function setBoxIdentGenericPostfix(string $postfix): void
     {
         $this->boxIdentGenericPostfix = $postfix;
     }
@@ -144,7 +142,7 @@ trait RenderingTrait
      *
      * @throws \Exception
      */
-    protected function startRendering($openFirstPage = true)
+    protected function startRendering(bool $openFirstPage = true): void
     {
         $this->initFrontend();
         $this->initRenderMode()
@@ -159,7 +157,7 @@ trait RenderingTrait
      *
      * @throws \Exception
      */
-    protected function initFrontend()
+    protected function initFrontend(): void
     {
         $this->setPimcoreLocales();
     }
@@ -169,7 +167,7 @@ trait RenderingTrait
      *
      * @throws \Exception
      */
-    protected function setPimcoreLocales()
+    protected function setPimcoreLocales(): void
     {
         $locale = $this->getLanguage();
         if (false === Tool::isValidLanguage($locale)) {
@@ -187,7 +185,7 @@ trait RenderingTrait
 
         $service = \Pimcore::getKernel()
                            ->getContainer()
-                           ->get('pimcore.locale.intl_formatter');
+                           ->get(IntlFormatter::class);
         if ($service instanceof IntlFormatter) {
             $service->setLocale($locale);
         }
@@ -203,7 +201,6 @@ trait RenderingTrait
     {
         $this->addCommand(new RemoveEmptyLayers());
 
-        /* @var AbstractProject $this */
         return $this;
     }
 
@@ -218,14 +215,15 @@ trait RenderingTrait
         $this->setPhpSettings();
         $this->setNumericLocale();
 
-        /* @var AbstractProject $this */
         return $this;
     }
 
     /**
      * Sets PHP settings.
+     *
+     * @throws \Exception
      */
-    protected function setPhpSettings()
+    protected function setPhpSettings(): void
     {
         set_time_limit(
             $this->config()
@@ -239,12 +237,14 @@ trait RenderingTrait
     }
 
     /**
-     * Sets locale for LC_NUMERIC according to to PimPrint configuration.
+     * Sets locale for LC_NUMERIC according to PimPrint configuration.
+     *
+     * @throws \Exception
      */
-    protected function setNumericLocale()
+    protected function setNumericLocale(): void
     {
         $locales = $this->config()
-                        ->offsetGet('lc_numeric', []);
+                        ->offsetGet('lc_numeric');
         if (empty($locales)) {
             return;
         }
@@ -269,7 +269,6 @@ trait RenderingTrait
              ->addCommand(new OpenDocument(OpenDocument::TYPE_TEMPLATE, '0', $template))
              ->addCommand(new Variable('GENERATED_AT', time()));
 
-        /* @var AbstractProject $this */
         return $this;
     }
 }

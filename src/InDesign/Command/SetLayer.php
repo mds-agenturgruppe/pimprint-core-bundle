@@ -34,11 +34,11 @@ class SetLayer extends AbstractCommand
     const CMD = 'setlayer';
 
     /**
-     * Builds command array that is sent as JSON to InDesign.
+     * Available command params with default values.
      *
      * @var array
      */
-    protected $availableParams = [
+    protected array $availableParams = [
         'name'   => '',
         'create' => 1,
     ];
@@ -96,7 +96,7 @@ class SetLayer extends AbstractCommand
      *
      * @throws \Exception
      */
-    protected function validate()
+    protected function validate(): void
     {
         $this->validateEmptyParam('name', 'setLayerName');
     }

@@ -32,7 +32,7 @@ class UpdateElements extends AbstractCommand
      *
      * @var array
      */
-    private $availableParams = [
+    private array $availableParams = [
         'list' => [],
     ];
 

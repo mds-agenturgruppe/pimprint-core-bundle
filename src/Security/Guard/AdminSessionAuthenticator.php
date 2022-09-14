@@ -73,7 +73,7 @@ class AdminSessionAuthenticator extends AbstractGuardAuthenticator
     }
 
     /**
-     * Returns credentials
+     * Get the authentication credentials from the request and return them as any type (e.g. an associate array).
      *
      * @param Request $request
      *
@@ -91,14 +91,14 @@ class AdminSessionAuthenticator extends AbstractGuardAuthenticator
     }
 
     /**
-     * Returns user
+     * Return a UserInterface object based on the credentials.
      *
      * @param array                 $credentials
      * @param UserProviderInterface $userProvider
      *
-     * @return UserInterface|null
+     * @return UserInterface|AdminUser|null
      */
-    public function getUser($credentials, UserProviderInterface $userProvider)
+    public function getUser($credentials, UserProviderInterface $userProvider): UserInterface|AdminUser|null
     {
         if (!is_array($credentials)) {
             throw new AuthenticationException('Invalid credentials');
@@ -111,7 +111,7 @@ class AdminSessionAuthenticator extends AbstractGuardAuthenticator
     }
 
     /**
-     * Checks credentials
+     * Returns true if the credentials are valid.
      *
      * @param array         $credentials
      * @param UserInterface $user
@@ -150,7 +150,7 @@ class AdminSessionAuthenticator extends AbstractGuardAuthenticator
      *
      * @return null
      */
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $providerKey)
     {
         return null;
     }

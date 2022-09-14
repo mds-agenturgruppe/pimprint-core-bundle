@@ -32,7 +32,7 @@ trait VariableTrait
      * @return VariableTrait|AbstractBox
      * @throws \Exception
      */
-    public function setVariable($name, $position)
+    public function setVariable(string $name, string $position): AbstractBox|static
     {
         $this->validateVariablePosition($position);
         $this->addComponent(new Variable($name, $position));
@@ -45,9 +45,10 @@ trait VariableTrait
      *
      * @param string $position
      *
+     * @return void
      * @throws \Exception
      */
-    private function validateVariablePosition($position)
+    private function validateVariablePosition(string $position): void
     {
         if (false === in_array($position, Variable::$allowedPositions)) {
             throw new \Exception(sprintf("Invalid position '%s' in '%s'.", $position, static::class));

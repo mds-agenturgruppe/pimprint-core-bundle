@@ -136,14 +136,14 @@ class PluginParameters
      *
      * @var RequestHelper
      */
-    private $requestHelper;
+    protected RequestHelper $requestHelper;
 
     /**
      * JsonRequestDecoder instance.
      *
      * @var JsonRequestDecoder
      */
-    private $jsonRequestDecoder;
+    protected JsonRequestDecoder $jsonRequestDecoder;
 
     /**
      * Parameter definition to load from request.
@@ -151,7 +151,7 @@ class PluginParameters
      *
      * @var array
      */
-    protected $paramDefinition = [
+    protected array $paramDefinition = [
         self::PARAM_PUBLICATION     => ['required' => null, 'default' => null],
         self::PARAM_LANGUAGE        => ['required' => true, 'default' => null],
         self::PARAM_UPDATE_MODE     => ['required' => false, 'default' => self::UPDATE_ALL_POSITION_CONTENT],
@@ -167,7 +167,7 @@ class PluginParameters
      *
      * @var array
      */
-    private $params = [];
+    private array $params = [];
 
     /**
      * PimPrint configuration
@@ -198,7 +198,7 @@ class PluginParameters
      * @return mixed|null
      * @throws \Exception
      */
-    public function get(string $param)
+    public function get(string $param): mixed
     {
         if (empty($this->params)) {
             $this->load();
@@ -252,9 +252,10 @@ class PluginParameters
      * Loads params from InDesign plugin from current request.
      * Throws an exception if required params are missing.
      *
+     * @return void
      * @throws \Exception
      */
-    protected function load()
+    protected function load(): void
     {
         $request = $this->requestHelper->getRequest();
         $this->jsonRequestDecoder->decode($request);
@@ -289,7 +290,7 @@ class PluginParameters
      * @return string|array|null
      * @throws \Exception
      */
-    public function getCustomField(string $field, bool $additional = false)
+    public function getCustomField(string $field, bool $additional = false): array|string|null
     {
         if ($additional) {
             $field .= 'AdditionalData';

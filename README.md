@@ -6,17 +6,18 @@ mds PimPrint CoreBundle - The InDesign Printing Solution for Pimcore.
 - Pimcore 5/6: `mds-agenturgruppe/pimprint-core-bundle:^1.0`
 
 ## Prerequisites
-- [PHP 7.1](https://secure.php.net) or higher
-- [Pimcore](https://github.com/pimcore/pimcore/tree/6.9) Version 5.x/6.x
+- [PHP 8.0](https://secure.php.net/) or higher
+- [Pimcore](https://github.com/pimcore/pimcore) Version 10.x
 
-## Installation for Pimcore 5/6
+## Installation for Pimcore 10
 Install the `MdsPimPrintCoreBundle` into your Pimcore by issuing:
 ```bash
-composer require mds-agenturgruppe/pimprint-core-bundle:^1.0
+composer require mds-agenturgruppe/pimprint-core-bundle:^2.0
 ```
-Enable `MdsPimPrintCoreBundle` with:
+Enable and install `MdsPimPrintCoreBundle` with:
 ```bash
 bin/console pimcore:bundle:enable MdsPimPrintCoreBundle
+bin/console pimcore:bundle:install MdsPimPrintCoreBundle
 ```
 
 ## InDesign Plugin

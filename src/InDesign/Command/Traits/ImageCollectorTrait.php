@@ -29,14 +29,14 @@ trait ImageCollectorTrait
      *
      * @var array
      */
-    protected $collectedImages = [];
+    protected array $collectedImages = [];
 
     /**
      * Returns collected images.
      *
      * @return array
      */
-    public function getCollectedImages()
+    public function getCollectedImages(): array
     {
         return $this->collectedImages;
     }
@@ -45,8 +45,10 @@ trait ImageCollectorTrait
      * Collects image in $command if $command is ImageBox
      *
      * @param AbstractCommand $command
+     *
+     * @return void
      */
-    protected function collectImageCommand(AbstractCommand $command)
+    protected function collectImageCommand(AbstractCommand $command): void
     {
         if ($command instanceof ImageBox) {
             $this->collectImage($command);
@@ -77,7 +79,7 @@ trait ImageCollectorTrait
                 'srcFileSize' => $imageBox->getParam('srcFileSize'),
                 'mtime'       => $imageBox->getParam('mtime'),
             ];
-        } catch (\Exception $e) {
+        } catch (\Exceptione) {
             //do nothing
         }
     }

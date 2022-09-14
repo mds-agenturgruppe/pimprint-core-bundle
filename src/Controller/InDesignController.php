@@ -18,6 +18,7 @@ use Mds\PimPrint\CoreBundle\Service\JsonRequestDecoder;
 use Mds\PimPrint\CoreBundle\Service\PluginParameters;
 use Mds\PimPrint\CoreBundle\Service\PluginResponseCreator;
 use Mds\PimPrint\CoreBundle\Service\ProjectsManager;
+use Pimcore\Bundle\AdminBundle\Security\User\UserLoader;
 use Pimcore\Controller\FrontendController;
 use Pimcore\Http\RequestHelper;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -40,21 +41,28 @@ class InDesignController extends FrontendController
      *
      * @var RequestHelper
      */
-    private $requestHelper;
+    private RequestHelper $requestHelper;
 
     /**
      * PimPrint ProjectsManager service.
      *
      * @var ProjectsManager
      */
-    private $projectsManager;
+    private ProjectsManager $projectsManager;
 
     /**
      * PluginResponseCreator service.
      *
      * @var PluginResponseCreator
      */
-    private $pluginResponse;
+    private PluginResponseCreator $pluginResponse;
+
+    /**
+     * Pimcore UserLoader
+     *
+     * @var UserLoader
+     */
+    private UserLoader $userLoader;
 
     /**
      * InDesignController constructor.
@@ -62,15 +70,18 @@ class InDesignController extends FrontendController
      * @param RequestHelper         $requestHelper
      * @param ProjectsManager       $projectsManager
      * @param PluginResponseCreator $pluginResponse
+     * @param UserLoader            $userLoader
      */
     public function __construct(
         RequestHelper $requestHelper,
         ProjectsManager $projectsManager,
-        PluginResponseCreator $pluginResponse
+        PluginResponseCreator $pluginResponse,
+        UserLoader $userLoader,
     ) {
         $this->requestHelper = $requestHelper;
         $this->projectsManager = $projectsManager;
         $this->pluginResponse = $pluginResponse;
+        $this->userLoader = $userLoader;
     }
 
     /**
@@ -83,6 +94,7 @@ class InDesignController extends FrontendController
     public function projectsAction(): JsonResponse
     {
         try {
+            $this->ensureUser();
             return $this->pluginResponse->success(
                 [
                     'projects' => $this->projectsManager->getProjectsInfo(),
@@ -105,6 +117,7 @@ class InDesignController extends FrontendController
     public function projectAction(string $identifier): JsonResponse
     {
         try {
+            $this->ensureUser();
             $project = $this->projectsManager->projectServiceFactory($identifier);
 
             $pluginElements = $project->config()
@@ -135,6 +148,7 @@ class InDesignController extends FrontendController
     public function executeProjectAction(string $identifier, PluginParameters $pluginParams): JsonResponse
     {
         try {
+            $this->ensureUser();
             $this->requestHelper->getRequest()
                                 ->setLocale($pluginParams->get(PluginParameters::PARAM_LANGUAGE));
             $project = $this->projectsManager->projectServiceFactory($identifier);
@@ -161,9 +175,12 @@ class InDesignController extends FrontendController
      *
      * @return BinaryFileResponse|NotFoundHttpException
      */
-    public function downloadTemplateAction(string $identifier, string $templateFile)
-    {
+    public function downloadTemplateAction(
+        string $identifier,
+        string $templateFile
+    ): BinaryFileResponse|NotFoundHttpException {
         try {
+            $this->ensureUser();
             $project = $this->projectsManager->projectServiceFactory($identifier);
             $filePath = $project->getTemplateFilePath($templateFile);
             if (false === file_exists($filePath)) {
@@ -174,7 +191,7 @@ class InDesignController extends FrontendController
             $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, basename($filePath));
 
             return $response;
-        } catch (\Exception $exception) {
+        } catch (\Exception) {
             return $this->createNotFoundException();
         }
     }
@@ -198,6 +215,7 @@ class InDesignController extends FrontendController
         string $customField
     ): JsonResponse {
         try {
+            $this->ensureUser();
             $requestDecoder->decode($request);
             $project = $this->projectsManager->projectServiceFactory($identifier);
 
@@ -210,5 +228,21 @@ class InDesignController extends FrontendController
         } catch (\Exception $exception) {
             return $this->pluginResponse->error($exception);
         }
+    }
+
+    /**
+     * Ensures a user is logged in.
+     *
+     * @return void
+     * @throws \Exception
+     */
+    private function ensureUser(): void
+    {
+        $user = $this->userLoader->getUser();
+        if ($user) {
+            return;
+        }
+
+        throw new \Exception('Unable to load user. PimPrint security firewall may not be configured correctly.');
     }
 }

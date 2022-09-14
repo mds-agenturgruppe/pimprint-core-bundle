@@ -39,21 +39,21 @@ abstract class Search extends AbstractField
      *
      * @var bool
      */
-    private $addAllButton = false;
+    private bool $addAllButton = false;
 
     /**
      * Add search results automatically to selection in InDesign Plugin
      *
      * @var bool
      */
-    private $autoAdd = false;
+    private bool $autoAdd = false;
 
     /**
      * Clears all selected values upon search execution in InDesign Plugin
      *
      * @var bool
      */
-    private $clearValues = false;
+    private bool $clearValues = false;
 
     /**
      * Creates Search\Result for search $phrase

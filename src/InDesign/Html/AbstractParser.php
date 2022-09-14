@@ -13,6 +13,7 @@
 
 namespace Mds\PimPrint\CoreBundle\InDesign\Html;
 
+use League\Flysystem\FilesystemException;
 use Mds\PimPrint\CoreBundle\InDesign\Command\ImageBox;
 use Mds\PimPrint\CoreBundle\InDesign\Html\Traits\ParserFactoryTrait;
 use Mds\PimPrint\CoreBundle\InDesign\Text;
@@ -72,7 +73,7 @@ abstract class AbstractParser
      *
      * @var array
      */
-    protected $elementsBlock = [
+    protected array $elementsBlock = [
         'address',
         'article',
         'aside',
@@ -105,7 +106,7 @@ abstract class AbstractParser
      *
      * @var array
      */
-    protected $elementsInline = [
+    protected array $elementsInline = [
         'a',
         'abbr',
         'b',
@@ -129,14 +130,14 @@ abstract class AbstractParser
      * List of HTML elements treated as line breaks.
      * @var array
      */
-    protected $elementsLineBreak = ['br', 'hr'];
+    protected array $elementsLineBreak = ['br', 'hr'];
 
     /**
      * List of HTML elements where styling pseudo class :first :last is supported.
      *
      * @var array
      */
-    protected $elementsFirstLastPseudo = [
+    protected array $elementsFirstLastPseudo = [
         'ol' => 'li',
         'ul' => 'li'
     ];
@@ -146,7 +147,7 @@ abstract class AbstractParser
      *
      * @var array
      */
-    protected $currentPseudo = [
+    protected array $currentPseudo = [
         'tag'     => null,
         'counter' => null,
         'amount'  => null,
@@ -155,30 +156,30 @@ abstract class AbstractParser
     /**
      * Text instance parsed ParagraphComponents are added to.
      *
-     * @var Text
+     * @var Text|null
      */
-    protected $text;
+    protected ?Text $text = null;
 
     /**
      * Used HTML style instance.
      *
-     * @var Style
+     * @var Style|null
      */
-    protected $style;
+    protected ?Style $style = null;
 
     /**
      * Parsed paragraph components
      *
      * @var ParagraphComponent[]
      */
-    protected $paragraphComponents = [];
+    protected array $paragraphComponents = [];
 
     /**
      * Indicates of inline class attributes should be used to as InDesign paragraph and character styles.
      *
      * @var bool
      */
-    protected $useInlineStyle = true;
+    protected bool $useInlineStyle = true;
 
     /**
      * Returns target Text instance.
@@ -254,13 +255,14 @@ abstract class AbstractParser
     /**
      * Parses $html and adds content as Paragraphs to Text instance.
      *
-     * @param string     $html  HTML string to parse.
+     * @param string     $html  HTML strings to parse.
      * @param Style|null $style Optional Style to apply to the parsed HTML.
      *
-     * @return AbstractParser
+     * @return AbstractParser|array
+     * @throws FilesystemException
      * @throws \Exception
      */
-    public function parse(string $html, Style $style = null)
+    public function parse(string $html, Style $style = null): AbstractParser|array
     {
         $html = $this->sanitiseHtml($html);
         if (null !== $style) {
@@ -279,15 +281,11 @@ abstract class AbstractParser
             } else {
                 throw new \Exception();
             }
-        } catch (\Exception $e) {
-            if ($e instanceof \DOMException) {
-                $paragraph = $this->paragraphFactory();
-                $paragraph->setText('Text not XHTML compliant:[%BR%] ' . $html);
-                $this->getText()
-                     ->addParagraph($paragraph);
-            } else {
-                throw $e;
-            }
+        } catch (\DOMException $exception) {
+            $paragraph = $this->paragraphFactory();
+            $paragraph->setText('Text not XHTML compliant:[%BR%] ' . $html);
+            $this->getText()
+                 ->addParagraph($paragraph);
         }
 
         return $this;
@@ -300,7 +298,7 @@ abstract class AbstractParser
      *
      * @return string
      */
-    protected function sanitiseHtml($string)
+    protected function sanitiseHtml(string $string): string
     {
         $string = str_replace(["\r", "\n", "\t"], '', $string);
         $string = preg_replace('#\s{2,}#', '', $string);
@@ -313,9 +311,10 @@ abstract class AbstractParser
      *
      * @param \DomNode $node
      *
-     * @throws \Exception
+     * @return void
+     * @throws \Exception|FilesystemException
      */
-    protected function parseNode(\DomNode $node)
+    protected function parseNode(\DomNode $node): void
     {
         foreach ($node->childNodes as $child) {
             /* @var $child \DomElement */
@@ -335,9 +334,10 @@ abstract class AbstractParser
      *
      * @param \DomNode $node
      *
+     * @return void
      * @throws \Exception
      */
-    protected function parseInlineNode(\DomNode $node)
+    protected function parseInlineNode(\DomNode $node): void
     {
         foreach ($node->childNodes as $child) {
             /* @var $child \DomElement */
@@ -370,9 +370,10 @@ abstract class AbstractParser
      *
      * @param \DomElement $node
      *
-     * @throws \Exception
+     * @return void
+     * @throws \Exception|FilesystemException
      */
-    protected function parseElementNode(\DomElement $node)
+    protected function parseElementNode(\DomElement $node): void
     {
         $tag = strtolower($node->tagName);
         switch ($tag) {
@@ -386,8 +387,8 @@ abstract class AbstractParser
                 try {
                     $command = $this->createImageCommand($node);
                     $this->addComponent($command);
-                } catch (\Exception $e) {
-                    $this->notifyMissingAsset($e->getMessage(), $e->getCode());
+                } catch (\Exception $exception) {
+                    $this->notifyMissingAsset($exception->getMessage(), $exception->getCode());
                 }
                 break;
 
@@ -421,7 +422,7 @@ abstract class AbstractParser
                                  $this->getNodeStyle($node, Style::TYPE_PARAGRAPH, $pseudoStyle)
                              )
                          );
-                } catch (\Exception $e) {
+                } catch (\Exception $exception) {
                     $this->paragraphComponents = [];
                 }
 
@@ -434,8 +435,10 @@ abstract class AbstractParser
      * Adds Characters component for text $node.
      *
      * @param \DomNode $node
+     *
+     * @return void
      */
-    protected function parseTextNode(\DomNode $node)
+    protected function parseTextNode(\DomNode $node): void
     {
         $characters = $this->charactersFactory();
         $characters->setText($node->textContent);
@@ -453,7 +456,7 @@ abstract class AbstractParser
      * @return string
      * @throws \Exception
      */
-    protected function getNodeStyle(\DomNode $node, string $type, $pseudo = ''): string
+    protected function getNodeStyle(\DomNode $node, string $type, string $pseudo = ''): string
     {
         $class = $node->getAttribute('class');
         if ($this->useInlineStyle && false === empty($class)) {
@@ -477,7 +480,7 @@ abstract class AbstractParser
      *
      * @return array
      */
-    protected function parseStyleAttribute(string $style)
+    protected function parseStyleAttribute(string $style): array
     {
         $styles = [];
         foreach (explode(';', $style) as $value) {
@@ -494,16 +497,20 @@ abstract class AbstractParser
      * Adds $component to current components stack.
      *
      * @param ParagraphComponent $component
+     *
+     * @return void
      */
-    protected function addComponent(ParagraphComponent $component)
+    protected function addComponent(ParagraphComponent $component): void
     {
         $this->paragraphComponents[] = $component;
     }
 
     /**
      * Adds parsed currentChars as paragraph to paragraphComponents.
+     *
+     * @return void
      */
-    protected function endBlock()
+    protected function endBlock(): void
     {
         try {
             $this->getText()
@@ -511,7 +518,7 @@ abstract class AbstractParser
                      $this->createParagraph($this->paragraphComponents)
                  );
             $this->paragraphComponents = [];
-        } catch (\Exception $e) {
+        } catch (\Exception $exception) {
             $this->paragraphComponents = [];
         }
     }
@@ -526,7 +533,7 @@ abstract class AbstractParser
      * @return Paragraph
      * @throws \Exception
      */
-    protected function createParagraph(array $components, string $style = null)
+    protected function createParagraph(array $components, string $style = null): Paragraph
     {
         if (empty($components)) {
             throw new \Exception('No components.');
@@ -558,9 +565,9 @@ abstract class AbstractParser
      * @param \DomElement $node
      *
      * @return ImageBox
-     * @throws \Exception
+     * @throws \Exception|FilesystemException
      */
-    protected function createImageCommand(\DomElement $node)
+    protected function createImageCommand(\DomElement $node): ImageBox
     {
         $asset = $this->loadAssetForImgTag($node);
         if (false === $asset instanceof Asset) {
@@ -602,7 +609,7 @@ abstract class AbstractParser
      * @return Asset|null
      * @throws \Exception
      */
-    protected function loadAssetForImgTag(\DomElement $node)
+    protected function loadAssetForImgTag(\DomElement $node): ?Asset
     {
         $asset = $this->factoryClosure->call($this, self::FACTORY_ELEMENT_IMG_ASSET, $node);
         if ($asset instanceof Asset) {

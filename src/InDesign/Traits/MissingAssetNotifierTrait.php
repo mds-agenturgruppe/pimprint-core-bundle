@@ -25,14 +25,15 @@ trait MissingAssetNotifierTrait
     /**
      * Adds $message as notification for missing asset for $assetId.
      * If config variable imageWarningsOnPage is true a onPage message will be generated.
-     * Otherwise a offPage message will be generated.
+     * Otherwise, a offPage message will be generated.
      *
      * @param string $message
      * @param int    $assetId
      *
+     * @return void
      * @throws \Exception
      */
-    protected function notifyMissingAsset(string $message, int $assetId)
+    protected function notifyMissingAsset(string $message, int $assetId): void
     {
         $project = ProjectsManager::getProject();
         $project->getCommandQueue()
@@ -46,12 +47,15 @@ trait MissingAssetNotifierTrait
 
     /**
      * Adds preMessage if notification for first missing asset is added.
+     *
+     * @return void
+     * @throws \Exception
      */
-    protected function addMissingAssetPreMessage()
+    protected function addMissingAssetPreMessage(): void
     {
         try {
             $project = ProjectsManager::getProject();
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return;
         }
         $missingAssets = $project->getCommandQueue()

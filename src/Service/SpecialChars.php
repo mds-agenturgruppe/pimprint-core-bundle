@@ -16,7 +16,7 @@ namespace Mds\PimPrint\CoreBundle\Service;
 /**
  * Class SpecialChars
  *
- * @see     www.absatzsetzer.de/downloads/Zeichen.pdf
+ * @see www.absatzsetzer.de/downloads/Zeichen.pdf
  *
  * @package Mds\PimPrint\CoreBundle\Service
  */
@@ -357,7 +357,7 @@ class SpecialChars
      *
      * @return string
      */
-    public function utf8($number)
+    public function utf8(int $number): string
     {
         if ($number <= 0x7F) {
             return chr($number);

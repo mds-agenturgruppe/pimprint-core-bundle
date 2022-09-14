@@ -36,7 +36,7 @@ class ImageDimensions
      * @return array
      * @throws \Exception
      */
-    public function getSizes(Image $asset, $defaultDpi = [300, 300]): array
+    public function getSizes(Image $asset, array $defaultDpi = [300, 300]): array
     {
         $dimensions = $asset->getDimensions();
         if (null === $dimensions) {
@@ -52,10 +52,10 @@ class ImageDimensions
 
         return [
             'dpi'       => $dpis,
-            'width'     => $dimensions[0],
-            'height'    => $dimensions[1],
-            'width_mm'  => $dimensions[0] / ($dpis[0] / 25.4),
-            'height_mm' => $dimensions[1] / ($dpis[1] / 25.4)
+            'width'     => $dimensions['width'],
+            'height'    => $dimensions['height'],
+            'width_mm'  => $dimensions['width'] / ($dpis[0] / 25.4),
+            'height_mm' => $dimensions['height'] / ($dpis[1] / 25.4)
         ];
     }
 
@@ -67,22 +67,23 @@ class ImageDimensions
      * @param array $default
      *
      * @return array
+     * @throws \Exception
      */
-    public function getDpi(Image $asset, $default = [300, 300])
+    public function getDpi(Image $asset, array $default = [300, 300]): array
     {
-        $filePath = $asset->getFileSystemPath();
+        $filePath = $asset->getLocalFile();
         $imageType = @exif_imagetype($filePath);
         if (IMAGETYPE_TIFF_MM == $imageType || IMAGETYPE_TIFF_II == $imageType) {
             try {
                 return $this->loadDpiWithImagick($filePath);
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 return $default;
             }
         }
         if (IMAGETYPE_JPEG == $imageType) {
             try {
                 return $this->loadDpiFromJpegFile($filePath);
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 return $default;
             }
         }

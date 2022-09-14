@@ -32,7 +32,7 @@ class PageMessage extends AbstractCommand
      *
      * @var array
      */
-    private $availableParams = [
+    private array $availableParams = [
         'message' => '',
         'onPage'  => false,
     ];
@@ -44,8 +44,8 @@ class PageMessage extends AbstractCommand
      * @param bool   $onPage  Display offPage or onPage
      */
     public function __construct(
-        $message = '',
-        $onPage = false
+        string $message = '',
+        bool $onPage = false
     ) {
         $this->initParams($this->availableParams);
         $this->setMessage($message);
@@ -59,11 +59,11 @@ class PageMessage extends AbstractCommand
      *
      * @return PageMessage
      */
-    public function setMessage(string $message)
+    public function setMessage(string $message): PageMessage
     {
         try {
             $this->setParam('message', $message);
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return $this;
         }
 
@@ -77,11 +77,11 @@ class PageMessage extends AbstractCommand
      *
      * @return PageMessage
      */
-    public function setOnPage(bool $onPage)
+    public function setOnPage(bool $onPage): PageMessage
     {
         try {
             $this->setParam('onPage', $onPage);
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return $this;
         }
 

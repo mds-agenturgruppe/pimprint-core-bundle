@@ -14,7 +14,7 @@
 namespace Mds\PimPrint\CoreBundle\Session;
 
 use Pimcore\Session\SessionConfiguratorInterface;
-use Symfony\Component\HttpFoundation\Session\Attribute\NamespacedAttributeBag;
+use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBag;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
@@ -38,7 +38,7 @@ class PimPrintSessionBagConfigurator implements SessionConfiguratorInterface
      */
     public function configure(SessionInterface $session)
     {
-        $bag = new NamespacedAttributeBag('_' . self::NAMESPACE);
+        $bag = new AttributeBag('_' . self::NAMESPACE);
         $bag->setName(self::NAMESPACE);
 
         $session->registerBag($bag);

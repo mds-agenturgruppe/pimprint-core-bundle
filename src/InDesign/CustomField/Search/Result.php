@@ -25,27 +25,28 @@ class Result
      *
      * @var bool
      */
-    private $success = true;
+    private bool $success = true;
 
     /**
      * Search results array
      *
      * @var array
      */
-    private $results = [];
+    private array $results = [];
 
     /**
      * Optional additional serach result data
+     *
      * @var mixed
      */
-    private $additionalData = null;
+    private mixed $additionalData = null;
 
     /**
      * Messages to show in InDesign Plugin if success is false
      *
      * @var array
      */
-    private $messages = [];
+    private array $messages = [];
 
     /**
      * Sets search result $success
@@ -167,7 +168,7 @@ class Result
      *
      * @return Result
      */
-    public function setAdditionalData($additionalData): Result
+    public function setAdditionalData(mixed $additionalData): Result
     {
         $this->additionalData = $additionalData;
 

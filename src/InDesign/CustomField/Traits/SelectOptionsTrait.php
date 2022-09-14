@@ -25,14 +25,14 @@ trait SelectOptionsTrait
      *
      * @var bool
      */
-    private $multiple = false;
+    private bool $multiple = false;
 
     /**
      * If values count greater than collapseAmount render as select field
      *
      * @var int
      */
-    private $collapseAmount = 5;
+    private int $collapseAmount = 5;
 
     /**
      * Sets $multiple selection mode
@@ -41,7 +41,7 @@ trait SelectOptionsTrait
      *
      * @return SelectOptionsTrait
      */
-    public function setMultiple(bool $multiple = true)
+    public function setMultiple(bool $multiple = true): static
     {
         $this->multiple = $multiple;
 
@@ -65,7 +65,7 @@ trait SelectOptionsTrait
      *
      * @return SelectOptionsTrait
      */
-    public function setCollapseAmount(int $collapseAmount)
+    public function setCollapseAmount(int $collapseAmount): static
     {
         $this->collapseAmount = $collapseAmount;
 
@@ -77,7 +77,7 @@ trait SelectOptionsTrait
      *
      * @return SelectOptionsTrait
      */
-    public function setNoCollapse()
+    public function setNoCollapse(): static
     {
         $this->setCollapseAmount(0);
 

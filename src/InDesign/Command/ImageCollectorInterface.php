@@ -25,5 +25,5 @@ interface ImageCollectorInterface
      *
      * @return array
      */
-    public function getCollectedImages();
+    public function getCollectedImages(): array;
 }

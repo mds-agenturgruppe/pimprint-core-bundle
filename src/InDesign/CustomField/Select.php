@@ -36,7 +36,7 @@ class Select extends AbstractField
      *
      * @var array
      */
-    private $values = [];
+    private array $values = [];
 
     /**
      * Sets values to show in InDesign select field.

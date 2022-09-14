@@ -25,8 +25,10 @@ trait LayerTrait
 {
     /**
      * Initializes trait
+     *
+     * @return void
      */
-    protected function initLayer()
+    protected function initLayer(): void
     {
         $this->initParams(['layer' => null]);
     }
@@ -37,8 +39,9 @@ trait LayerTrait
      * @param string $layer
      *
      * @return LayerTrait|AbstractBox
+     * @throws \Exception
      */
-    public function setLayer($layer)
+    public function setLayer(string $layer): AbstractBox|static
     {
         $this->setParam('layer', $layer);
 

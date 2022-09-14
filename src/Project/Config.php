@@ -28,14 +28,14 @@ class Config implements \ArrayAccess
      *
      * @var array
      */
-    protected $config = [];
+    protected array $config = [];
 
     /**
      * Lazy loading property.
      *
      * @var string
      */
-    protected $hostUrl;
+    protected string $hostUrl;
 
     /**
      * Config constructor.
@@ -64,7 +64,7 @@ class Config implements \ArrayAccess
      * @param mixed $offset
      * @param mixed $value
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet(mixed $offset, mixed $value)
     {
         $this->config[$offset] = $value;
     }
@@ -79,7 +79,7 @@ class Config implements \ArrayAccess
      * @return mixed
      * @throws \Exception
      */
-    public function offsetGet($offset, $default = '', bool $required = false)
+    public function offsetGet(mixed $offset, mixed $default = '', bool $required = false): mixed
     {
         if (true === $this->offsetExists($offset)) {
             return $this->config[$offset];
@@ -98,9 +98,9 @@ class Config implements \ArrayAccess
      *
      * @param mixed $offset
      *
-     * @return bool|void
+     * @return bool
      */
-    public function offsetExists($offset)
+    public function offsetExists(mixed $offset): bool
     {
         return array_key_exists($offset, $this->config);
     }
@@ -110,19 +110,10 @@ class Config implements \ArrayAccess
      *
      * @param mixed $offset
      */
-    public function offsetUnset($offset)
+    public function offsetUnset(mixed $offset)
     {
         unset($this->config[$offset]);
     }
-
-    /**
-     * Returns optional configured host url.
-     *
-     * @param Request $request
-     *
-     * @return string
-     * @throws \Exception
-     */
 
     /**
      * Returns host url from project configuration or dynamically from $request.
@@ -132,25 +123,20 @@ class Config implements \ArrayAccess
      * @return string
      * @throws \Exception
      */
-    public function getHostUrl(Request $request)
+    public function getHostUrl(Request $request): string
     {
-        if (null !== $this->hostUrl) {
+        if (!empty($this->hostUrl)) {
             return $this->hostUrl;
         }
         try {
-            $hostConfig = $this->offsetGet('host', null, true);
-            $request = Tool::resolveRequest($request);
+            $hostConfig = $this->offsetGet('host', '', true);
 
-            $protocol = 'http';
-            $hostname = '';
             $port = '';
-            if (null !== $request) {
-                $protocol = $request->getScheme();
-                $hostname = $request->getHost();
+            $protocol = $request->getScheme();
+            $hostname = $request->getHost();
 
-                if (!in_array($request->getPort(), [443, 80])) {
-                    $port = $request->getPort();
-                }
+            if (!in_array($request->getPort(), [443, 80])) {
+                $port = $request->getPort();
             }
             foreach (['hostname', 'protocol', 'port'] as $key) {
                 if (false === array_key_exists($key, $hostConfig)) {
@@ -165,7 +151,7 @@ class Config implements \ArrayAccess
                 throw new \Exception();
             }
             $url = $protocol . '://' . $hostname . $port;
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $url = Tool::getHostUrl(null, $request);
         }
         if (empty($url)) {
@@ -184,7 +170,7 @@ class Config implements \ArrayAccess
      * @return bool
      * @throws \Exception
      */
-    public function isAssetDownloadEnabled()
+    public function isAssetDownloadEnabled(): bool
     {
         return $this->offsetGet('assets')['download'];
     }
@@ -195,7 +181,7 @@ class Config implements \ArrayAccess
      * @return bool
      * @throws \Exception
      */
-    public function isAssetPreDownloadEnabled()
+    public function isAssetPreDownloadEnabled(): bool
     {
         if (false === $this->isAssetDownloadEnabled()) {
             return false;
@@ -207,10 +193,10 @@ class Config implements \ArrayAccess
     /**
      * Returns true if warnings for assets in onPage for current project.
      *
-     * @return true
+     * @return bool
      * @throws \Exception
      */
-    public function isAssetWarningOnPage()
+    public function isAssetWarningOnPage(): bool
     {
         return $this->offsetGet('assets')['warnings_on_page'];
     }

@@ -25,8 +25,10 @@ trait ElementNameTrait
 {
     /**
      * Initializes trait
+     *
+     * @return void
      */
-    protected function initElementName()
+    protected function initElementName(): void
     {
         $this->initParams(['name' => '']);
     }
@@ -37,8 +39,9 @@ trait ElementNameTrait
      * @param string $elementName
      *
      * @return ElementNameTrait|AbstractBox
+     * @throws \Exception
      */
-    public function setElementName(string $elementName)
+    public function setElementName(string $elementName): AbstractBox|static
     {
         $this->setParam('name', $elementName);
 
@@ -50,11 +53,11 @@ trait ElementNameTrait
      *
      * @return string
      */
-    public function getElementName()
+    public function getElementName(): string
     {
         try {
             return $this->getParam('name');
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return '';
         }
     }
@@ -62,9 +65,10 @@ trait ElementNameTrait
     /**
      * Validates of name param is set in command.
      *
+     * @return void
      * @throws \Exception
      */
-    protected function validateElementNameParam()
+    protected function validateElementNameParam(): void
     {
         $this->validateEmptyParam('name', 'setElementName');
     }

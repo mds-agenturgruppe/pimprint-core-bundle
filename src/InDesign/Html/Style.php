@@ -60,14 +60,14 @@ class Style
      *
      * @var array
      */
-    protected $styles = [];
+    protected array $styles = [];
 
     /**
      * Toggles warning output for missing styles.
      *
      * @var bool[]
      */
-    protected $showWarnings = [
+    protected array $showWarnings = [
         self::TYPE_PARAGRAPH => false,
         self::TYPE_CHARACTER => false,
         self::TYPE_TABLE     => false,
@@ -120,7 +120,7 @@ class Style
      * @return Style
      * @throws \Exception
      */
-    public function setWarning($type, bool $warn = false)
+    public function setWarning(string $type, bool $warn = false): Style
     {
         $this->setUpType($type);
         $this->showWarnings[$type] = $warn;
@@ -152,7 +152,7 @@ class Style
      * @return string
      * @throws \Exception
      */
-    public function getParagraph($tag)
+    public function getParagraph(string $tag): string
     {
         return $this->getStyle($tag, self::TYPE_PARAGRAPH);
     }
@@ -181,7 +181,7 @@ class Style
      * @return string
      * @throws \Exception
      */
-    public function getCharacter($tag)
+    public function getCharacter(string $tag): string
     {
         return $this->getStyle($tag, self::TYPE_CHARACTER);
     }
@@ -207,7 +207,7 @@ class Style
      * @return string
      * @throws \Exception
      */
-    public function getTable()
+    public function getTable(): string
     {
         return $this->getStyle('table', self::TYPE_TABLE);
     }
@@ -236,7 +236,7 @@ class Style
      * @return string
      * @throws \Exception
      */
-    public function getCell($tag)
+    public function getCell(string $tag): string
     {
         return $this->getStyle($tag, self::TYPE_CELL);
     }
@@ -251,7 +251,7 @@ class Style
      * @return Style
      * @throws \Exception
      */
-    public function setTag($tag, string $paragraphStyle = '', string $characterStyle = ''): Style
+    public function setTag(string $tag, string $paragraphStyle = '', string $characterStyle = ''): Style
     {
         $this->setParagraph($tag, $paragraphStyle)
              ->setCharacter($tag, $characterStyle);
@@ -290,7 +290,7 @@ class Style
      * @return string
      * @throws \Exception
      */
-    public function getStyle($tag, $type)
+    public function getStyle(string $tag, string $type): string
     {
         $tag = $this->setUpTag($tag);
         $this->setUpType($type);
@@ -309,7 +309,7 @@ class Style
      */
     protected function initTag(string $tag): Style
     {
-        if (false === is_array($this->styles[$tag])) {
+        if (false === isset($this->styles[$tag]) || false === is_array($this->styles[$tag])) {
             $this->styles[$tag] = [];
             foreach ($this->showWarnings as $type => $show) {
                 $this->styles[$tag][$type] = $show ? self::WARNING_MESSAGE . $tag : '';
@@ -326,7 +326,7 @@ class Style
      *
      * @return string
      */
-    protected function setUpTag(string $tag)
+    protected function setUpTag(string $tag): string
     {
         return strtolower($tag);
     }
@@ -337,9 +337,10 @@ class Style
      *
      * @param string $type
      *
+     * @return void
      * @throws \Exception
      */
-    protected function setUpType(string $type)
+    protected function setUpType(string $type): void
     {
         if (false === isset($this->showWarnings[$type])) {
             throw new \Exception(

@@ -1,17 +1,58 @@
 # PimPrint for Pimcore Installation
-The following guide assumes you have a running [Pimcore](https://pimcore.com) 5.x/6.x installation. For installing Pimcore 6 please visit the [Pimcore Installation documentation](https://pimcore.com/docs/pimcore/6.9/Development_Documentation/Getting_Started/Installation.html).
+
+## Prerequisites
+The following guide assumes you have a running [Pimcore](https://pimcore.com) 10.x installation. For installing Pimcore please visit the [Pimcore Installation documentation](https://pimcore.com/docs/pimcore/current/Development_Documentation/Getting_Started/Installation.html).
 
 For other Pimcore versions, please refer to the [Supported Pimcore Versions](../README.md#page_Supported_Pimcore_Versions) section.
 
-## Installing PimPrint into Pimcore 5.x/6.x
+## Installing PimPrint into Pimcore 10
 Install the `MdsPimPrintCoreBundle` into your Pimcore by issuing:
 ```bash
-composer require mds-agenturgruppe/pimprint-core-bundle:^1.0
+composer require mds-agenturgruppe/pimprint-core-bundle:^2.0
 ```
 Enable `MdsPimPrintCoreBundle` with:
 ```bash
 bin/console pimcore:bundle:enable MdsPimPrintCoreBundle
 ```
+
+PimPrint needs a Symfony security firewall for handling the user authentication process.
+Add the firewall configuration right after `pimcore_admin` in the `firewall` section of your `security.yaml` file.
+
+Choose the right configuration for Guard or Authenricator based security.
+
+#### Guard based security
+```yaml
+pimprint_api:
+    pattern: ^/pimprint-api
+    stateless: true
+    provider: pimcore_admin
+    guard:
+        entry_point: Mds\PimPrint\CoreBundle\Security\Guard\AdminSessionAuthenticator
+        authenticators:
+            - Mds\PimPrint\CoreBundle\Security\Guard\InDesignAuthenticator
+            - Mds\PimPrint\CoreBundle\Security\Guard\AdminSessionAuthenticator 
+```
+
+#### Authenticator based security
+```yaml
+pimprint_api:
+    pattern: ^/pimprint-api
+    stateless: true
+    provider: pimcore_admin
+    entry_point: Mds\PimPrint\CoreBundle\Security\Authenticator\AdminSessionAuthenticator
+    custom_authenticators:
+      - Mds\PimPrint\CoreBundle\Security\Authenticator\AdminSessionAuthenticator
+      - Mds\PimPrint\CoreBundle\Security\Authenticator\InDesignAuthenticator
+```
+
+To automatically add the matching firewall by the installer issue:
+```shell
+ bin/console pimcore:bundle:install MdsPimPrintCoreBundle -n
+```
+
+> <strong>Attention</strong>:<br>
+> Do not be surprised that your `security.yaml` looks ugly after automatic installation!<br>
+> `\Symfony\Component\Yaml\Yaml::dump()` sometimes creates really ugly files.
 
 ## Installing PimPrint InDesign-Plugin
 The InDesign plugin provided by mds as an CEP-Extension ZXP-File. Please email <a href="mailto:info@mds.eu?subject=PimPrint Plugin">info@mds.eu</a> to get the plugin and further information.

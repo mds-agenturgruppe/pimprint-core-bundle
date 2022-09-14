@@ -27,7 +27,7 @@ class RemoveEmptyLayers extends ExecuteScript
      *
      * @throws \Exception
      */
-    public function __construct($script = '')
+    public function __construct(string $script = '')
     {
         $script = 'var currentLayers = PimPrintDocument.currentDoc.layers;
             for(var i=currentLayers.length-1;i>=0;i--)

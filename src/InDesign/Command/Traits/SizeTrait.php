@@ -25,8 +25,10 @@ trait SizeTrait
 {
     /**
      * Initializes trait
+     *
+     * @return void
      */
-    protected function initSize()
+    protected function initSize(): void
     {
         $this->initParams(
             [
@@ -40,12 +42,12 @@ trait SizeTrait
     /**
      * Sets the width value in mm of the the element.
      *
-     * @param int|float|null $width width in mm.
+     * @param float|int|null $width width in mm.
      *
      * @return SizeTrait|AbstractBox
      * @throws \Exception
      */
-    public function setWidth($width)
+    public function setWidth(float|int|null $width): AbstractBox|static
     {
         $this->setParam('width', $width);
 
@@ -56,21 +58,22 @@ trait SizeTrait
      * Returns width parameter.
      *
      * @return int|float|null
+     * @throws \Exception
      */
-    public function getWidth()
+    public function getWidth(): float|int|null
     {
         return $this->getParam('width');
     }
 
     /**
-     * Sets the height value in mm of the the element.
+     * Sets the height value in mm of the element.
      *
-     * @param int|float|null $height height in mm.
+     * @param float|int|null $height height in mm.
      *
      * @return SizeTrait|AbstractBox
      * @throws \Exception
      */
-    public function setHeight($height)
+    public function setHeight(float|int|null $height): AbstractBox|static
     {
         $this->setParam('height', $height);
 
@@ -81,8 +84,9 @@ trait SizeTrait
      * Returns height parameter.
      *
      * @return int|float|null
+     * @throws \Exception
      */
-    public function getHeight()
+    public function getHeight(): float|int|null
     {
         return $this->getParam('height');
     }
@@ -90,11 +94,12 @@ trait SizeTrait
     /**
      * Validates width parameter.
      *
-     * @param int|float|null $value
+     * @param float|int|null $value
      *
+     * @return void
      * @throws \Exception
      */
-    protected function validateWidth($value)
+    protected function validateWidth(float|int|null $value): void
     {
         $this->validateSize($value, 'width');
     }
@@ -102,11 +107,12 @@ trait SizeTrait
     /**
      * Validates height parameter.
      *
-     * @param int|float|null $value
+     * @param float|int|null $value
      *
+     * @return void
      * @throws \Exception
      */
-    protected function validateHeight($value)
+    protected function validateHeight(float|int|null $value): void
     {
         $this->validateSize($value, 'height');
     }
@@ -116,9 +122,10 @@ trait SizeTrait
      * @param mixed  $value
      * @param string $param
      *
+     * @return void
      * @throws \Exception
      */
-    protected function validateSize($value, $param)
+    protected function validateSize(mixed $value, string $param): void
     {
         if (null === $value) {
             return;
@@ -141,9 +148,9 @@ trait SizeTrait
      * @return SizeTrait|AbstractBox
      * @throws \Exception
      */
-    public function setResize(int $resize)
+    public function setResize(int $resize): AbstractBox|static
     {
-        if (false === in_array($resize, $this->availibleResizes)) {
+        if (false === in_array($resize, $this->availableResizes)) {
             throw new \Exception(
                 sprintf("Invalid 'resize' parameter value '%s' in '%s'.", $resize, static::class)
             );
@@ -156,9 +163,10 @@ trait SizeTrait
     /**
      * Sets automatic resize param if needed.
      *
+     * @return void
      * @throws \Exception
      */
-    protected function setAutoResize()
+    protected function setAutoResize(): void
     {
         $resize = $this->getParam('resize');
         if ($resize !== AbstractBox::RESIZE_NO_RESIZE) {

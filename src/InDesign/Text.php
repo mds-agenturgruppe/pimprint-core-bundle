@@ -13,6 +13,7 @@
 
 namespace Mds\PimPrint\CoreBundle\InDesign;
 
+use League\Flysystem\FilesystemException;
 use Mds\PimPrint\CoreBundle\InDesign\Command\ImageCollectorInterface;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\ImageCollectorTrait;
 use Mds\PimPrint\CoreBundle\InDesign\Html\TextParser;
@@ -33,7 +34,7 @@ class Text implements ImageCollectorInterface
      *
      * @var Paragraph[]
      */
-    protected $paragraphs = [];
+    protected array $paragraphs = [];
 
     /**
      * Default paragraph style when adding text.
@@ -41,28 +42,28 @@ class Text implements ImageCollectorInterface
      *
      * @var string
      */
-    protected $paragraphStyle = '';
+    protected string $paragraphStyle = '';
 
     /**
      * Default character style when adding text.
      *
      * @var string
      */
-    protected $characterStyle = '';
+    protected string $characterStyle = '';
 
     /**
      * Internal helper.
      *
      * @var bool
      */
-    protected $skipDetection = false;
+    protected bool $skipDetection = false;
 
     /**
      * HTML parser instance.
      *
-     * @var TextParser
+     * @var TextParser|null
      */
-    protected $htmlParser;
+    protected ?TextParser $htmlParser = null;
 
     /**
      * Text constructor.
@@ -87,8 +88,7 @@ class Text implements ImageCollectorInterface
      *
      * @return Text
      */
-
-    public function setParagraphStyle(string $paragraphStyle)
+    public function setParagraphStyle(string $paragraphStyle): Text
     {
         $this->paragraphStyle = $paragraphStyle;
 
@@ -102,7 +102,7 @@ class Text implements ImageCollectorInterface
      *
      * @return Text
      */
-    public function setCharacterStyle(string $characterStyle)
+    public function setCharacterStyle(string $characterStyle): Text
     {
         $this->characterStyle = $characterStyle;
 
@@ -114,7 +114,7 @@ class Text implements ImageCollectorInterface
      *
      * @return Text
      */
-    public function clear()
+    public function clear(): Text
     {
         $this->paragraphs = [];
         $this->collectedImages = [];
@@ -129,7 +129,7 @@ class Text implements ImageCollectorInterface
      *
      * @return Text
      */
-    public function addParagraph(Paragraph $paragraph)
+    public function addParagraph(Paragraph $paragraph): Text
     {
         if (empty($paragraph->getParagraphStyle()) && false === empty($this->paragraphStyle)) {
             $paragraph->setParagraphStyle($this->paragraphStyle);
@@ -159,6 +159,7 @@ class Text implements ImageCollectorInterface
      *
      * @return Text
      * @throws \Exception
+     * @throws FilesystemException
      */
     public function addString(string $string, string $paragraphStyle = null, string $characterStyle = null): Text
     {
@@ -199,7 +200,7 @@ class Text implements ImageCollectorInterface
      * @return Text
      * @throws \Exception
      */
-    public function addPlainText(string $string, string $paragraphStyle = null, string $characterStyle = null)
+    public function addPlainText(string $string, string $paragraphStyle = null, string $characterStyle = null): Text
     {
         if ($this->skipDetection) {
             if (true === $this->isStringHtml($string)) {
@@ -226,8 +227,9 @@ class Text implements ImageCollectorInterface
      *
      * @return Text
      * @throws \Exception
+     * @throws FilesystemException
      */
-    public function addHtml(string $html, Style $style = null)
+    public function addHtml(string $html, Style $style = null): Text
     {
         if ($this->skipDetection) {
             if (false === $this->isStringHtml($html)) {
@@ -247,7 +249,7 @@ class Text implements ImageCollectorInterface
      *
      * @return TextParser
      */
-    public function getHtmlParser()
+    public function getHtmlParser(): TextParser
     {
         if (null === $this->htmlParser) {
             $this->htmlParser = $this->parserFactory();
@@ -263,7 +265,7 @@ class Text implements ImageCollectorInterface
      *
      * @return Text
      */
-    public function setHtmlParser(TextParser $parser)
+    public function setHtmlParser(TextParser $parser): Text
     {
         $this->htmlParser = $parser;
 
@@ -276,7 +278,7 @@ class Text implements ImageCollectorInterface
      *
      * @return TextParser
      */
-    protected function parserFactory()
+    protected function parserFactory(): TextParser
     {
         return new TextParser();
     }
@@ -287,7 +289,7 @@ class Text implements ImageCollectorInterface
      * @return array
      * @throws \Exception
      */
-    public function buildCommand()
+    public function buildCommand(): array
     {
         $return = [];
 

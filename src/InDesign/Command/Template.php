@@ -76,7 +76,7 @@ class Template extends AbstractCommand implements ImageCollectorInterface
      *
      * @var array
      */
-    protected $availableParams = [
+    protected array $availableParams = [
         'cmds_single'       => [],
         'cmds_facing_left'  => [],
         'cmds_facing_right' => [],

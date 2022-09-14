@@ -30,7 +30,7 @@ abstract class AbstractPublicationTreeBuilder
      *
      * @return array
      */
-    public function buildTreeElement(string $identifier, string $label)
+    public function buildTreeElement(string $identifier, string $label): array
     {
         return [
             'identifier' => $identifier,
@@ -66,7 +66,7 @@ abstract class AbstractPublicationTreeBuilder
      *
      * @return array
      */
-    protected function buildTreeElementFromObject(AbstractObject $object)
+    protected function buildTreeElementFromObject(AbstractObject $object): array
     {
         return $this->buildTreeElement(
             $this->getObjectIdentifier($object),
@@ -84,7 +84,7 @@ abstract class AbstractPublicationTreeBuilder
      *
      * @return bool
      */
-    protected function showObjectInTree(AbstractObject $object)
+    protected function showObjectInTree(AbstractObject $object): bool
     {
         return $object->isAllowed('view');
     }
@@ -96,9 +96,9 @@ abstract class AbstractPublicationTreeBuilder
      *
      * @param AbstractObject $object
      *
-     * @return int|string
+     * @return int|null
      */
-    protected function getObjectIdentifier(AbstractObject $object)
+    protected function getObjectIdentifier(AbstractObject $object): ?int
     {
         return $object->getId();
     }
@@ -111,7 +111,7 @@ abstract class AbstractPublicationTreeBuilder
      *
      * @return string
      */
-    protected function getObjectLabel(AbstractObject $object)
+    protected function getObjectLabel(AbstractObject $object): string
     {
         return $object->getKey();
     }

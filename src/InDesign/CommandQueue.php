@@ -215,7 +215,7 @@ class CommandQueue
             $selectedElements = $this->getProject()
                                      ->pluginParams()
                                      ->get(PluginParameters::PARAM_ELEMENT_LIST);
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return $commands;
         }
         $selectedElements = (array)$selectedElements;

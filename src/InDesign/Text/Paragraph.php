@@ -41,21 +41,21 @@ class Paragraph implements ImageCollectorInterface
      *
      * @var string
      */
-    protected $paragraphStyle = '';
+    protected string $paragraphStyle = '';
 
     /**
      * InDesign character style to apply to text.
      *
      * @var string
      */
-    protected $characterStyle = '';
+    protected string $characterStyle = '';
 
     /**
      * Components in paragraph.
      *
      * @var ParagraphComponent[]
      */
-    protected $components;
+    protected array $components;
 
     /**
      * Paragraph constructor.
@@ -98,7 +98,7 @@ class Paragraph implements ImageCollectorInterface
      *
      * @return string
      */
-    public function getParagraphStyle()
+    public function getParagraphStyle(): string
     {
         return $this->paragraphStyle;
     }
@@ -197,7 +197,7 @@ class Paragraph implements ImageCollectorInterface
      * @return array
      * @throws \Exception
      */
-    public function buildCommand()
+    public function buildCommand(): array
     {
         $array = [
             'ps'    => $this->paragraphStyle,

@@ -13,6 +13,7 @@
 
 namespace Mds\PimPrint\CoreBundle\InDesign\Html;
 
+use League\Flysystem\FilesystemException;
 use Mds\PimPrint\CoreBundle\InDesign\Command\AbstractBox;
 use Mds\PimPrint\CoreBundle\InDesign\Command\AbstractCommand;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Table;
@@ -52,7 +53,7 @@ class FragmentParser extends AbstractParser
      *
      * @var array
      */
-    protected $elementsTable = [
+    protected array $elementsTable = [
         'thead',
         'tfoot',
         'tbody',
@@ -69,14 +70,14 @@ class FragmentParser extends AbstractParser
      *
      * @var AbstractBox[]
      */
-    protected $boxes = [];
+    protected array $boxes = [];
 
     /**
      * Current parsed box.
      *
-     * @var AbstractBox
+     * @var AbstractBox|null
      */
-    protected $currentBox = null;
+    protected ?AbstractBox $currentBox = null;
 
     /**
      * FragmentParser constructor.
@@ -92,13 +93,13 @@ class FragmentParser extends AbstractParser
     /**
      * Parses $html and returns AbstractCommands for all elements to be places in InDesign document.
      *
-     * @param string     $html  HTML string to parse.
+     * @param string     $html  HTML strings to parse.
      * @param Style|null $style Optional Style to apply to the parsed HTML.
      *
-     * @return AbstractCommand[]
-     * @throws \Exception
+     * @return AbstractParser|AbstractBox[]
+     * @throws FilesystemException
      */
-    public function parse($html, Style $style = null)
+    public function parse(string $html, Style $style = null): AbstractParser|array
     {
         $this->boxes = [];
         parent::parse($html, $style);
@@ -109,8 +110,10 @@ class FragmentParser extends AbstractParser
 
     /**
      * Adds stored $text as TEXT-BOX
+     *
+     * @return void
      */
-    public function handleTextFragment()
+    public function handleTextFragment(): void
     {
         if (null == $this->text) {
             return;
@@ -121,7 +124,7 @@ class FragmentParser extends AbstractParser
                 $textBox->addText($this->text);
                 $this->addBox($textBox, false);
                 $this->text = null;
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->text = null;
             }
         }
@@ -151,9 +154,10 @@ class FragmentParser extends AbstractParser
      *
      * @param \DomElement $node
      *
-     * @throws \Exception
+     * @return void
+     * @throws \Exception|FilesystemException
      */
-    protected function parseElementNode(\DomElement $node)
+    protected function parseElementNode(\DomElement $node): void
     {
         $tag = strtolower($node->tagName);
         switch ($tag) {
@@ -171,9 +175,10 @@ class FragmentParser extends AbstractParser
      *
      * @param \DomElement $node
      *
-     * @throws \Exception
+     * @return void
+     * @throws \Exception|FilesystemException
      */
-    protected function parseTableNodes(\DomElement $node)
+    protected function parseTableNodes(\DomElement $node): void
     {
         $tag = strtolower($node->tagName);
         switch ($tag) {
@@ -212,9 +217,10 @@ class FragmentParser extends AbstractParser
      *
      * @param \DomElement $node
      *
-     * @throws \Exception
+     * @return void
+     * @throws \Exception|FilesystemException
      */
-    protected function processNodeCol(\DomElement $node)
+    protected function processNodeCol(\DomElement $node): void
     {
         $width = $node->getAttribute('width');
         if (empty($width)) {
@@ -230,14 +236,15 @@ class FragmentParser extends AbstractParser
      *
      * @param \DomElement $node
      *
-     * @throws \Exception
+     * @return void
+     * @throws \Exception|FilesystemException
      */
-    protected function processNodeTable(\DomElement $node)
+    protected function processNodeTable(\DomElement $node): void
     {
         $table = $this->tableFactory($node);
         try {
             $table->getTableStyle();
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $table->setTableStyle($this->getNodeStyle($node, Style::TYPE_TABLE));
         }
         $this->newBox($table);
@@ -250,7 +257,7 @@ class FragmentParser extends AbstractParser
      *
      * @param \DomElement $node
      *
-     * @throws \Exception
+     * @throws \Exception|FilesystemException
      */
     protected function processNodeTr(\DomElement $node)
     {
@@ -270,9 +277,10 @@ class FragmentParser extends AbstractParser
      *
      * @param \DomElement $node
      *
+     * @return void
      * @throws \Exception
      */
-    protected function processNodeTh(\DomElement $node)
+    protected function processNodeTh(\DomElement $node): void
     {
         $this->processNodeTd($node);
     }
@@ -282,9 +290,10 @@ class FragmentParser extends AbstractParser
      *
      * @param \DomElement $node
      *
+     * @return void
      * @throws \Exception
      */
-    protected function processNodeTd(\DomElement $node)
+    protected function processNodeTd(\DomElement $node): void
     {
         $table = $this->getCurrentBox(Table::class);
         $colspan = $node->getAttribute('colspan');
@@ -297,10 +306,10 @@ class FragmentParser extends AbstractParser
      *
      * @param string|null $className
      *
-     * @return AbstractCommand
+     * @return AbstractBox|AbstractCommand|null
      * @throws \Exception
      */
-    protected function getCurrentBox($className = null)
+    protected function getCurrentBox(string $className = null): AbstractBox|AbstractCommand|null
     {
         try {
             if (empty($this->currentBox)) {
@@ -312,7 +321,7 @@ class FragmentParser extends AbstractParser
             if (false === $this->currentBox instanceof $className) {
                 throw new \Exception();
             }
-        } catch (\Exception $e) {
+        } catch (\Exception $exception) {
             throw new \Exception(
                 sprintf(
                     "XHTML Stack error. Expected class is '%s', current class '%s'.",
@@ -330,8 +339,10 @@ class FragmentParser extends AbstractParser
      *
      * @param AbstractBox $box
      * @param bool        $reset
+     *
+     * @return void
      */
-    protected function addBox(AbstractBox $box, bool $reset = true)
+    protected function addBox(AbstractBox $box, bool $reset = true): void
     {
         $this->boxes[] = $box;
         if (true === $reset) {
@@ -343,8 +354,10 @@ class FragmentParser extends AbstractParser
      * Adds $box as new currentBox.
      *
      * @param AbstractBox $box
+     *
+     * @return void
      */
-    protected function newBox(AbstractBox $box)
+    protected function newBox(AbstractBox $box): void
     {
         $this->handleTextFragment();
         if ($this->currentBox instanceof AbstractBox) {
@@ -362,7 +375,7 @@ class FragmentParser extends AbstractParser
      * @return Table
      * @throws \Exception
      */
-    protected function tableFactory(\DOMElement $node)
+    protected function tableFactory(\DOMElement $node): Table
     {
         $table = $this->factoryClosure->call($this, self::FACTORY_ELEMENT_TABLE, $node);
         if (false === $table instanceof Table) {

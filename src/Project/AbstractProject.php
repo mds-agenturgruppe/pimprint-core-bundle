@@ -47,16 +47,16 @@ abstract class AbstractProject
     /**
      * CommandQueue instance.
      *
-     * @var CommandQueue
+     * @var CommandQueue|null
      */
-    private $commandQueue;
+    private ?CommandQueue $commandQueue = null;
 
     /**
      * Array with messages displayed in InDesign Plugin before rendering.
      *
      * @var array
      */
-    protected $preMessages = [];
+    protected array $preMessages = [];
 
     /**
      * Generates InDesign Commands to build the selected publication in InDesign.
@@ -124,7 +124,7 @@ abstract class AbstractProject
         $locale = $this->localeService->findLocale();
 
         if (null === $locale) {
-            throw new \RuntimeException('Locale cound not be found!');
+            throw new \RuntimeException('Locale could not be found!');
         }
 
         if (!Tool::isValidLanguage($locale)) {
@@ -134,7 +134,7 @@ abstract class AbstractProject
         foreach ($this->getUserLanguages() as $code) {
             $languages[] = [
                 'iso'   => $code,
-                'label' => $translation = \Locale::getDisplayLanguage($code, $locale),
+                'label' => \Locale::getDisplayLanguage($code, $locale),
             ];
         }
 
@@ -165,14 +165,13 @@ abstract class AbstractProject
     /**
      * Returns languages for current user.
      * For admin user all activated languages are returned.
-     * Otherwise all assigned content languages are returned.
+     * Otherwise, all assigned content languages are returned.
      *
      * Template method can be overwritten in concrete projects to have e.g. workspace languages used.
      *
      * @return array
-     * @see \Mds\PimPrint\CoreBundle\Service\UserHelper::getVisibleWorkspaceLanguages
      */
-    protected function getUserLanguages()
+    protected function getUserLanguages(): array
     {
         $user = Tool\Admin::getCurrentUser();
 
@@ -189,7 +188,7 @@ abstract class AbstractProject
      * @return string
      * @throws \Exception
      */
-    protected function getLanguage()
+    protected function getLanguage(): string
     {
         return $this->pluginParams()
                     ->get(PluginParameters::PARAM_LANGUAGE);
@@ -251,7 +250,7 @@ abstract class AbstractProject
      *
      * @return AbstractProject
      */
-    public function addPreMessage(string $message)
+    public function addPreMessage(string $message): AbstractProject
     {
         $this->preMessages[] = $message;
 
@@ -263,7 +262,7 @@ abstract class AbstractProject
      *
      * @return array
      */
-    public function getPreMessages()
+    public function getPreMessages(): array
     {
         return $this->preMessages;
     }
@@ -277,7 +276,7 @@ abstract class AbstractProject
      * @return AbstractProject
      * @throws \Exception
      */
-    public function addPageMessage(string $message, $onPage = false)
+    public function addPageMessage(string $message, bool $onPage = false): AbstractProject
     {
         $this->getCommandQueue()
              ->addPageMessage($message, $onPage);

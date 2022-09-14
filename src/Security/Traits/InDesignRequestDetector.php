@@ -29,7 +29,7 @@ trait InDesignRequestDetector
      *
      * @return bool
      */
-    protected function isInDesignRequest(Request $request)
+    protected function isInDesignRequest(Request $request): bool
     {
         $header = $request->headers->get('mds-pimprint');
 

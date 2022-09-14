@@ -30,21 +30,23 @@ trait BlockStackedQueueRenderingTrait
      *
      * @var AbstractCommand[]
      */
-    protected $blockCommands;
+    protected array $blockCommands = [];
 
     /**
      * Block stack.
      *
      * @var array
      */
-    protected $blockStack = [];
+    protected array $blockStack = [];
 
     /**
      * Renders all publication pages for $element.
      *
      * @param AbstractElement $element
+     *
+     * @return void
      */
-    protected function renderPages(AbstractElement $element)
+    protected function renderPages(AbstractElement $element): void
     {
         $this->collectElements($element);
         while (true) {
@@ -63,9 +65,9 @@ trait BlockStackedQueueRenderingTrait
      *
      * @return bool
      */
-    protected function hasBlockCommands()
+    protected function hasBlockCommands(): bool
     {
-        return count($this->blockCommands) ? true : false;
+        return (bool)count($this->blockCommands);
     }
 
     /**
@@ -73,8 +75,10 @@ trait BlockStackedQueueRenderingTrait
      *
      * @param string $name
      * @param bool   $reset
+     *
+     * @return void
      */
-    protected function saveBlockCommands(string $name, bool $reset = true)
+    protected function saveBlockCommands(string $name, bool $reset = true): void
     {
         $this->blockStack[$name] = $this->blockCommands;
         if ($reset) {
@@ -84,8 +88,10 @@ trait BlockStackedQueueRenderingTrait
 
     /**
      * Clears current blockCommands.
+     *
+     * @return void
      */
-    protected function resetBlockCommands()
+    protected function resetBlockCommands(): void
     {
         $this->blockCommands = [];
     }
@@ -95,9 +101,9 @@ trait BlockStackedQueueRenderingTrait
      *
      * @param array $commands
      *
-     * @return array|AbstractCommand[]
+     * @return AbstractCommand[]
      */
-    protected function addBlockCommands(array $commands)
+    protected function addBlockCommands(array $commands): array
     {
         foreach ($commands as $command) {
             $this->blockCommands[] = $command;
@@ -110,8 +116,10 @@ trait BlockStackedQueueRenderingTrait
      * Adds $command to current blockCommands.
      *
      * @param AbstractCommand $command
+     *
+     * @return void
      */
-    protected function addToBlock(AbstractCommand $command)
+    protected function addToBlock(AbstractCommand $command): void
     {
         $this->blockCommands[] = $command;
     }
@@ -123,10 +131,10 @@ trait BlockStackedQueueRenderingTrait
      *
      * @return AbstractCommand[]
      */
-    protected function restoreBlockCommands(string $name)
+    protected function restoreBlockCommands(string $name): array
     {
         $commands = $this->getBlockCommands();
-        $this->blockCommands = isset($this->blockStack[$name]) ? $this->blockStack[$name] : [];
+        $this->blockCommands = $this->blockStack[$name] ?? [];
 
         return $commands;
     }
@@ -136,7 +144,7 @@ trait BlockStackedQueueRenderingTrait
      *
      * @return AbstractCommand[]
      */
-    protected function getBlockCommands()
+    protected function getBlockCommands(): array
     {
         return $this->blockCommands;
     }

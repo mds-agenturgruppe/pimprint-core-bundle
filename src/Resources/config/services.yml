@@ -13,7 +13,7 @@ services:
     Mds\PimPrint\CoreBundle\Project\AbstractProject:
         abstract: true
         calls:
-            - [setRequestHelper, ['@pimcore.http.request_helper']]
+            - [setRequestHelper, ['@Pimcore\Http\RequestHelper']]
             - [setPluginParams, ['@mds.pimprint.core.plugin_parameters']]
             - [setImageDimensions, ['@mds.pimprint.core.image_dimensions']]
             - [setSpecialChars, ['@mds.pimprint.core.special_chars']]
@@ -45,6 +45,14 @@ services:
     Mds\PimPrint\CoreBundle\EventListener\BruteforceProtectionListener: ~
     Mds\PimPrint\CoreBundle\Security\Guard\AdminSessionAuthenticator: ~
     Mds\PimPrint\CoreBundle\Security\Guard\InDesignAuthenticator: ~
+    Mds\PimPrint\CoreBundle\Security\Authenticator\AdminSessionAuthenticator: ~
+    Mds\PimPrint\CoreBundle\Security\Authenticator\InDesignAuthenticator: ~
+
+    #Bundle Installer
+    Mds\PimPrint\CoreBundle\Tools\Installer:
+        arguments:
+            $bundle: "@=service('kernel').getBundle('MdsPimPrintCoreBundle')"
+        public: true
 
     #Session
     mds.pimprint.session.configurator.mds_pimprint:
