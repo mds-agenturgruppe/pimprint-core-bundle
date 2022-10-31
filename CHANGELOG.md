@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.2] - 2022-10-31
+### Fixed
+- Allow `image/x-eps` to be used in `ImageBox`.
+
 ## [1.3.1] - 2022-09-13
 ### Fixed
 - PHP 7.3 compatibility

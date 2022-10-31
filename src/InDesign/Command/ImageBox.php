@@ -144,6 +144,7 @@ class ImageBox extends AbstractBox implements ParagraphComponent, ImageCollector
         'image/vnd.adobe.photoshop',
         'image/x-photoshop',
         'application/x-photoshop',
+        'image/x-eps',
         'application/photoshop',
         'application/psd',
         'image/psd',
