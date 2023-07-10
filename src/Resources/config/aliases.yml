@@ -1,6 +1,7 @@
 services:
-    # alias to use as parent for concrete rendering services
-    mds.pimprint.core.abstract_project: '@Mds\PimPrint\CoreBundle\Project\AbstractProject'
+    # aliases to use as parent for concrete rendering services
+    mds.pimprint.core.rendering_project: '@Mds\PimPrint\CoreBundle\Project\RenderingProject'
+    mds.pimprint.core.master_locale_rendering_project: '@Mds\PimPrint\CoreBundle\Project\MasterLocaleRenderingProject'
 
     # aliases enabling auto wiring for type hints to our own implementations
     Mds\PimPrint\CoreBundle\Service\UserHelper: '@mds.pimprint.core.user_helper'

@@ -14,19 +14,19 @@
 namespace Mds\PimPrint\CoreBundle\InDesign\Command;
 
 /**
- * Class RemoveEmptyLayers
+ * Class RemoveEmptyPages
  *
  * @package Mds\PimPrint\CoreBundle\InDesign\Command
  */
-class RemoveEmptyLayers extends ExecuteScript
+class RemoveEmptyPages extends ExecuteScript
 {
     /**
-     * RemoveEmptyLayers constructor
+     * RemoveEmptyPages constructor
      *
      * @throws \Exception
      */
     public function __construct()
     {
-        parent::__construct('PimPrintHelper.Document.removeEmptyLayers();');
+        parent::__construct('PimPrintHelper.Document.removeEmptyPages();');
     }
 }

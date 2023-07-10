@@ -37,36 +37,119 @@ class PluginParameters
     const START_ALIGNMENT_RIGHT = 401;
 
     /**
-     * Update mode value "All elements (position and content)"
+     * Render mode "Generate"
+     * Generates or updates elements to position send from server and sets content sent from server.
+     *
+     * Available in projects:
+     * - RenderingProject
+     * - LocalizedRenderingProject (Refers to Master-Language)
      *
      * @var int
      */
-    const UPDATE_ALL_POSITION_CONTENT = 501;
+    const RENDER_MODE_POSITION_CONTENT = 501;
+
 
     /**
-     * Update mode value "All elements (only content)"
+     * Render mode "Update"
+     * Sets content sent from server in all elements. Leaves element positioning untouched.
+     * AbstractBox command fits are executed as sent from server.
+     *
+     * Available in projects:
+     * - RenderingProject
+     * - LocalizedRenderingProject (Refers to Master-Language)
      *
      * @var int
      */
-    const UPDATE_ALL_CONTENT = 502;
+    const RENDER_MODE_CONTENT = 502;
 
     /**
-     * Update mode value "Selected elements (position and content)"
+     * Render mode "Update selected"
+     * Sets content sent from server into selected elements. Leaves element positioning and dimensions untouched.
+     * AbstractBox command fits are executed as sent from server.
+     *
+     * Available in projects:
+     * - RenderingProject
+     * - LocalizedRenderingProject (Refers to Master-Language)
+     *
+     * @var int
+     */
+    const RENDER_MODE_SELECTED_CONTENT = 512;
+
+    /**
+     * Render mode "Generate selected"
+     * Generates or updates selected elements to position send from server and sets content sent from server.
+     *
+     * Available in projects:
+     * - RenderingProject
      *
      * Important:
      * This update mode only works in absolute positioned layouts.
-     * Layouts using relative position or CheckNewPage commands are not absolute positioned.
+     * Layouts using relative position or CheckNewPage commands are not absolutely positioned.
      *
      * @var int
      */
-    const UPDATE_SELECTED_POSITION_CONTENT = 511;
+    const RENDER_MODE_SELECTED_POSITION_CONTENT = 511;
 
     /**
-     * Update mode value "Selected elements (only content)"
+     * Render mode "Generate language variants"
+     * Generates or updates elements for language variants to position from the master-language
+     * and sets content sent from server.
+     *
+     * Available in projects:
+     * - LocalizedRenderingProject (Refers to language variants)
      *
      * @var int
      */
-    const UPDATE_SELECTED_CONTENT = 512;
+    const RENDER_MODE_LOCALIZED_POSITION_CONTENT = 521;
+
+    /**
+     * Render mode "Update language variants"
+     * Sets content sent from server for language variants in all elements. Leaves element positioning and dimensions
+     * untouched.
+     * AbstractBox command fits are executed as sent from server.
+     *
+     * Available in projects:
+     * - LocalizedRenderingProject (Refers to language variants)
+     *
+     * @var int
+     */
+    const RENDER_MODE_LOCALIZED_CONTENT = 522;
+
+    /**
+     * Render mode "Generate language variants positions"
+     * Updates positions for language variants in all elements to the position from the master-language.
+     *
+     * Available in projects:
+     * - LocalizedRenderingProject (Refers to language variants)
+     *
+     *  @var int
+     */
+    const RENDER_MODE_LOCALIZED_POSITIONS = 523;
+
+    /**
+     * Render mode "Update selected language variants"
+     * Sets content sent from server for language variants in selected elements. Leaves element positioning and
+     * dimensions untouched.
+     * AbstractBox command fits are executed as sent from server.
+     *
+     * Available in projects:
+     * - LocalizedRenderingProject (Refers to language variants)
+     *
+     * @var int
+     */
+    const RENDER_MODE_SELECTED_LOCALIZED_CONTENT = 532;
+
+    /**
+     * Render mode "Generate selected language variants positions"
+     * Updates positions for language variants in selected elements to the position from the master-language.
+     *
+     * Available in projects:
+     * - LocalizedRenderingProject (Refers to language variants)
+     *
+     *  @var int
+     */
+    const RENDER_MODE_SELECTED_LOCALIZED_POSITIONS = 533;
+
 
     /**
      * Plugin param publication ident.
@@ -154,7 +237,7 @@ class PluginParameters
     protected array $paramDefinition = [
         self::PARAM_PUBLICATION     => ['required' => null, 'default' => null],
         self::PARAM_LANGUAGE        => ['required' => true, 'default' => null],
-        self::PARAM_UPDATE_MODE     => ['required' => false, 'default' => self::UPDATE_ALL_POSITION_CONTENT],
+        self::PARAM_UPDATE_MODE     => ['required' => false, 'default' => self::RENDER_MODE_POSITION_CONTENT],
         self::PARAM_START_ALIGNMENT => ['required' => false, 'default' => self::START_ALIGNMENT_LEFT],
         self::PARAM_PAGE_START      => ['required' => false, 'default' => 1],
         self::PARAM_PAGE_END        => ['required' => false, 'default' => false],
@@ -195,7 +278,7 @@ class PluginParameters
      *
      * @param string $param
      *
-     * @return mixed|null
+     * @return mixed
      * @throws \Exception
      */
     public function get(string $param): mixed
@@ -241,11 +324,16 @@ class PluginParameters
     public function isUpdateModeSelected(): bool
     {
         $mode = $this->get(self::PARAM_UPDATE_MODE);
-        if (self::UPDATE_ALL_POSITION_CONTENT == $mode || self::UPDATE_ALL_CONTENT == $mode) {
-            return false;
-        }
 
-        return true;
+        return in_array(
+            $mode,
+            [
+                self::RENDER_MODE_SELECTED_POSITION_CONTENT,
+                self::RENDER_MODE_SELECTED_CONTENT,
+                self::RENDER_MODE_SELECTED_LOCALIZED_CONTENT,
+                self::RENDER_MODE_SELECTED_LOCALIZED_POSITIONS,
+            ]
+        );
     }
 
     /**

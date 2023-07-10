@@ -60,7 +60,7 @@ abstract class AbstractPublicationTreeBuilder
     }
 
     /**
-     * Builds an publication tree element array for $object.
+     * Builds a publication tree element array for $object.
      *
      * @param AbstractObject $object
      *
@@ -76,7 +76,7 @@ abstract class AbstractPublicationTreeBuilder
 
     /**
      * Template method.
-     * Returns true if $object is a renderable Publication and should be displayed in PimPrint Plugin an publication.
+     * Returns true if $object is a renderable Publication and should be displayed in PimPrint Plugin a publication.
      *
      * This abstract implementation only checks for visibility to current user. Overwrite for project domain use.
      *

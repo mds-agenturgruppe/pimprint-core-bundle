@@ -51,8 +51,10 @@ class Config implements \ArrayAccess
      * Sets $config array.
      *
      * @param array $config
+     *
+     * @return void
      */
-    public function set(array $config)
+    public function set(array $config): void
     {
         $this->config = $config;
     }
@@ -63,8 +65,10 @@ class Config implements \ArrayAccess
      *
      * @param mixed $offset
      * @param mixed $value
+     *
+     * @return void
      */
-    public function offsetSet(mixed $offset, mixed $value)
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         $this->config[$offset] = $value;
     }
@@ -109,8 +113,10 @@ class Config implements \ArrayAccess
      * Unsets offset
      *
      * @param mixed $offset
+     *
+     * @return void
      */
-    public function offsetUnset(mixed $offset)
+    public function offsetUnset(mixed $offset): void
     {
         unset($this->config[$offset]);
     }

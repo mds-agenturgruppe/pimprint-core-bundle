@@ -42,16 +42,16 @@ class CheckNewPage extends AbstractCommand implements ComponentInterface
     /**
      * GoToPage constructor.
      *
-     * @param float|int|string      $maxYPos Maximum allowed y position on page in mm.
-     * @param float|int|string      $newYPos New y position in mm on next page.
-     * @param float|int|string|null $newXPos Optional new x position in mm on next page.
+     * @param string      $maxYPos Maximum allowed y position on page in mm.
+     * @param string      $newYPos New y position in mm on next page.
+     * @param string|null $newXPos Optional new x position in mm on next page.
      *
      * @throws \Exception
      */
     public function __construct(
-        float|int|string $maxYPos = '',
-        float|int|string $newYPos = '',
-        float|int|string $newXPos = null
+        string $maxYPos = '',
+        string $newYPos = '',
+        string $newXPos = null
     ) {
         $this->initParams($this->availableParams);
 

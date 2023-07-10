@@ -48,8 +48,10 @@ class BruteforceProtectionListener implements EventSubscriberInterface
      * Returns PimPrint InDesign-Plugin error response.
      *
      * @param ExceptionEvent $event
+     *
+     * @return void
      */
-    public function onKernelException(ExceptionEvent $event)
+    public function onKernelException(ExceptionEvent $event): void
     {
         if (false === $this->isInDesignRequest($event->getRequest())) {
             return;

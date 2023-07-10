@@ -13,6 +13,8 @@
 
 namespace Mds\PimPrint\CoreBundle\InDesign\Command;
 
+use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\DefaultLocalizedParamsTrait;
+
 /**
  * Places a copy of a box from template document.
  *
@@ -20,6 +22,8 @@ namespace Mds\PimPrint\CoreBundle\InDesign\Command;
  */
 class CopyBox extends AbstractBox
 {
+    use DefaultLocalizedParamsTrait;
+
     /**
      * Command name.
      *
@@ -30,20 +34,20 @@ class CopyBox extends AbstractBox
     /**
      * CopyBox constructor.
      *
-     * @param string         $elementName Name of template element.
-     * @param float|int|null $left        Left position in mm.
-     * @param float|int|null $top         Top position in mm.
-     * @param float|int|null $width       Width of element in mm.
-     * @param float|int|null $height      Height of element in mm.
+     * @param string     $elementName Name of template element.
+     * @param float|null $left        Left position in mm.
+     * @param float|null $top         Top position in mm.
+     * @param float|null $width       Width of element in mm.
+     * @param float|null $height      Height of element in mm.
      *
      * @throws \Exception
      */
     public function __construct(
         string $elementName = '',
-        float|int $left = null,
-        float|int $top = null,
-        float|int $width = null,
-        float|int $height = null
+        float $left = null,
+        float $top = null,
+        float $width = null,
+        float $height = null
     ) {
         $this->initBoxParams();
 
@@ -57,5 +61,6 @@ class CopyBox extends AbstractBox
         $this->setTop($top);
         $this->setWidth($width);
         $this->setHeight($height);
+        $this->initLocalizedParams();
     }
 }

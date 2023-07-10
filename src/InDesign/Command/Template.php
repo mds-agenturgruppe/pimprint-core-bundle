@@ -85,13 +85,13 @@ class Template extends AbstractCommand implements ImageCollectorInterface
     /**
      * Adds $commands to template.
      *
-     * @param AbstractCommand[] $commands
-     * @param string            $side Single/Facing page documents side
+     * @param array  $commands
+     * @param string $side Single/Facing page documents side
      *
      * @return Template
      * @throws \Exception
      */
-    public function addCommands(array $commands, $side = Template::SIDE_SINGLE)
+    public function addCommands(array $commands, string $side = Template::SIDE_SINGLE): Template
     {
         foreach ($commands as $command) {
             if (false === $command instanceof AbstractCommand) {
@@ -112,7 +112,7 @@ class Template extends AbstractCommand implements ImageCollectorInterface
      * @return Template
      * @throws \Exception
      */
-    public function addCommand(AbstractCommand $command, $side = Template::SIDE_SINGLE)
+    public function addCommand(AbstractCommand $command, string $side = Template::SIDE_SINGLE): Template
     {
         $this->setGenericPostfix($side);
         $this->ensureBoxIdent($command);
@@ -150,7 +150,7 @@ class Template extends AbstractCommand implements ImageCollectorInterface
      *
      * @return Template
      */
-    public function clear()
+    public function clear(): Template
     {
         $this->params['cmds_single'] = [];
         $this->params['cmds_facing_left'] = [];

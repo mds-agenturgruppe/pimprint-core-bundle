@@ -28,7 +28,12 @@ use Mds\PimPrint\CoreBundle\Project\Traits\ProjectAwareTrait;
  */
 abstract class AbstractBox extends AbstractCommand implements DependentInterface
 {
-    use ElementNameTrait, LayerTrait, PositionTrait, SizeTrait, VariableTrait, ProjectAwareTrait;
+    use ElementNameTrait;
+    use LayerTrait;
+    use PositionTrait;
+    use SizeTrait;
+    use VariableTrait;
+    use ProjectAwareTrait;
 
     /**
      * No resize.
@@ -59,13 +64,44 @@ abstract class AbstractBox extends AbstractCommand implements DependentInterface
     const RESIZE_HEIGHT = 3;
 
     /**
+     * Uses Position (left, top) from master locale. Dimensions (width, height) and fit from command.
+     *
+     * @var string
+     */
+    const USE_MASTER_LOCALE_POSITION = 'position';
+
+    /**
+     * Uses Position (left, top) and width from master locale. Height and fit from command.
+     *
+     * @var string
+     */
+    const USE_MASTER_LOCALE_WIDTH = 'width';
+
+    /**
+     * Uses Position (left, top) and height from master locale. Width and fit from command.
+     *
+     * @var string
+     */
+    const USE_MASTER_LOCALE_HEIGHT = 'height';
+
+    /**
+     * Uses Position (left, top) and dimension (width, height) from master locale. No fit is made.
+     *
+     * @var string
+     */
+    const USE_MASTER_LOCALE_ALL = 'all';
+
+    /**
      * Available command params with default values.
      *
      * @var array
      */
     private array $availableParams = [
-        'tid'       => null,
-        'cmdfilter' => null,
+        'tid'                      => null,
+        'cmdfilter'                => null,
+        'localized'                => false,
+        'locale'                   => null,
+        'useMasterLocaleDimension' => self::USE_MASTER_LOCALE_ALL,
     ];
 
     /**
@@ -81,9 +117,23 @@ abstract class AbstractBox extends AbstractCommand implements DependentInterface
     ];
 
     /**
-     * Initializes abstract box.
+     * Allowed master locale modes
+     *
+     * @var array
      */
-    protected function initBoxParams()
+    private static array $allowedMasterLocaleModes = [
+        self::USE_MASTER_LOCALE_ALL,
+        self::USE_MASTER_LOCALE_HEIGHT,
+        self::USE_MASTER_LOCALE_POSITION,
+        self::USE_MASTER_LOCALE_WIDTH,
+    ];
+
+    /**
+     * Initializes abstract box.
+     *
+     * @return void
+     */
+    protected function initBoxParams(): void
     {
         $this->initParams($this->availableParams);
     }
@@ -115,6 +165,130 @@ abstract class AbstractBox extends AbstractCommand implements DependentInterface
         } catch (\Exception) {
             return null;
         }
+    }
+
+    /**
+     * Sets box $localized.
+     *
+     * @param bool $localized
+     *
+     * @return AbstractBox
+     * @throws \Exception
+     */
+    public function setLocalized(bool $localized = true): AbstractBox
+    {
+        $this->setParam('localized', $localized);
+
+        return $this;
+    }
+
+    /**
+     * Returns localized flag.
+     *
+     * @return bool|null
+     */
+    public function getLocalized(): ?bool
+    {
+        try {
+            return $this->getParam('localized');
+        } catch (\Exception $exception) {
+            return null;
+        }
+    }
+
+    /**
+     * Sets box $locale.
+     *
+     * @param string $locale
+     *
+     * @return AbstractBox
+     * @throws \Exception
+     */
+    public function setLocale(string $locale): AbstractBox
+    {
+        $this->setParam('locale', $locale);
+
+        return $this;
+    }
+
+    /**
+     * Returns box locale.
+     *
+     * @return bool|null
+     */
+    public function getLocale(): ?bool
+    {
+        try {
+            return $this->getParam('locale');
+        } catch (\Exception $exception) {
+            return null;
+        }
+    }
+
+    /**
+     * Sets $useMasterLocaleDimension flag.
+     *
+     * Controls the behaviour of the placement of localized elements with reference to the master locale.
+     *
+     * @param string $useMasterLocaleDimension
+     *
+     * @return AbstractBox
+     * @throws \Exception
+     * @see \Mds\PimPrint\CoreBundle\InDesign\Command\AbstractBox::USE_MASTER_LOCALE_HEIGHT
+     * @see \Mds\PimPrint\CoreBundle\InDesign\Command\AbstractBox::USE_MASTER_LOCALE_ALL
+     * @see \Mds\PimPrint\CoreBundle\InDesign\Command\AbstractBox::USE_MASTER_LOCALE_POSITION
+     * @see \Mds\PimPrint\CoreBundle\InDesign\Command\AbstractBox::USE_MASTER_LOCALE_WIDTH
+     */
+    public function setUseMasterLocaleDimension(string $useMasterLocaleDimension): AbstractBox
+    {
+        $this->setParam('useMasterLocaleDimension', $useMasterLocaleDimension);
+
+        return $this;
+    }
+
+    /**
+     * Returns box useMasterLocaleDimension mode.
+     *
+     * @return string|null
+     */
+    public function getUseMasterLocaleDimension(): ?string
+    {
+        try {
+            return $this->getParam('useMasterLocaleDimension');
+        } catch (\Exception $exception) {
+            return null;
+        }
+    }
+
+    /**
+     * Sets $localized as default localized flag for all AbstractBox types.
+     *
+     * @param bool $localized
+     *
+     * @return void
+     */
+    public static function setDefaultLocalized(bool $localized = true): void
+    {
+        CopyBox::setDefaultLocalized($localized);
+        TextBox::setDefaultLocalized($localized);
+        ImageBox::setDefaultLocalized($localized);
+        Table::setDefaultLocalized($localized);
+    }
+
+    /**
+     * Sets $mode as default useMasterLocaleDimension mode for all AbstractBox types.
+     *
+     * @param string $mode
+     *
+     * @return void
+     * @throws \Exception
+     */
+    public static function setDefaultUseMasterLocaleMode(string $mode): void
+    {
+        CopyBox::setDefaultUseMasterLocaleMode($mode);
+        TextBox::setDefaultUseMasterLocaleMode($mode);
+        ImageBox::setDefaultUseMasterLocaleMode($mode);
+        Table::setDefaultUseMasterLocaleMode($mode);
     }
 
     /**
@@ -165,5 +339,22 @@ abstract class AbstractBox extends AbstractCommand implements DependentInterface
     {
         $this->validateElementNameParam();
         $this->setAutoResize();
+    }
+
+    /**
+     * Validates $mode for allowed useMasterLocaleDimension
+     *
+     * @param string $mode
+     *
+     * @return void
+     * @throws \Exception
+     */
+    protected static function validateUseMasterLocaleDimension(string $mode): void
+    {
+        if (false === in_array($mode, self::$allowedMasterLocaleModes)) {
+            throw new \Exception(
+                sprintf("Invalid useMasterLocaleDimension value '%s' in '%s'.", $mode, static::class)
+            );
+        }
     }
 }

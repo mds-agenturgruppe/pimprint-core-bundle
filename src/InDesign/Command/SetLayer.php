@@ -19,7 +19,7 @@ namespace Mds\PimPrint\CoreBundle\InDesign\Command;
  * The layer will be created when a element is placed.
  *
  * Create false:
- * If the layer exists the element is placed on this layer. Otherwise the element is placed on the same layer as
+ * If the layer exists the element is placed on this layer. Otherwise, the element is placed on the same layer as
  * defined in the template.
  *
  * @package Mds\PimPrint\CoreBundle\InDesign\Command
@@ -40,23 +40,20 @@ class SetLayer extends AbstractCommand
      */
     protected array $availableParams = [
         'name'   => '',
-        'create' => 1,
     ];
 
     /**
      * SetLayer constructor.
      *
      * @param string $layerName
-     * @param bool   $create
      *
      * @throws \Exception
      */
-    public function __construct(string $layerName, bool $create = true)
+    public function __construct(string $layerName)
     {
         $this->initParams($this->availableParams);
 
         $this->setLayerName($layerName);
-        $this->setCreate($create);
     }
 
     /**
@@ -75,25 +72,9 @@ class SetLayer extends AbstractCommand
     }
 
     /**
-     * Sets create param.
-     * true: Layer is created and activated in InDesign
-     * false: Layer is not created and only activated in InDesign
-     *
-     * @param bool $create
-     *
-     * @return SetLayer
-     * @throws \Exception
-     */
-    public function setCreate(bool $create): SetLayer
-    {
-        $this->setParam('create', $create ? 1 : 0);
-
-        return $this;
-    }
-
-    /**
      * Validates command
      *
+     * @return void
      * @throws \Exception
      */
     protected function validate(): void

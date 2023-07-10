@@ -85,7 +85,7 @@ class MdsPimPrintCoreExtension extends Extension
             throw new \Exception(sprintf('No PimPrint project service defined for rendering project.'));
         }
         foreach (array_reverse($container->getParameter('kernel.bundles_metadata')) as $bundle) {
-            if (0 === strpos($projectConfig['service'], $bundle['namespace'])) {
+            if (str_starts_with($projectConfig['service'], $bundle['namespace'])) {
                 return $bundle['path'];
             }
         }

@@ -14,6 +14,7 @@
 namespace Mds\PimPrint\CoreBundle\InDesign\Command;
 
 use League\Flysystem\FilesystemException;
+use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\DefaultLocalizedParamsTrait;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\FitTrait;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\ImageCollectorTrait;
 use Mds\PimPrint\CoreBundle\InDesign\Text;
@@ -28,6 +29,7 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
 {
     use FitTrait;
     use ImageCollectorTrait;
+    use DefaultLocalizedParamsTrait;
 
     /**
      * Command name.
@@ -84,11 +86,11 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
      *
      * @var array
      */
-    protected array $allowedFits = array(
+    protected array $allowedFits = [
         self::FIT_NO_ADJUST,
         self::FIT_FRAME_TO_CONTENT,
         self::FIT_FRAME_TO_CONTENT_HEIGHT
-    );
+    ];
 
     /**
      * Column layout definitions.
@@ -148,25 +150,25 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
     /**
      * Table constructor.
      *
-     * @param string         $elementName Name of template element.
-     * @param float|int|null $left        Left position in mm.
-     * @param float|int|null $top         Top position in mm.
-     * @param float|int|null $width       Width of element in mm.
-     * @param float|int|null $height      Height of element in mm.
-     * @param string|null    $tableStyle  InDesign table style.
-     * @param float|int|null $lineHeight  Default line height in mm.
-     * @param int            $fit         Fit mode of table box.
+     * @param string      $elementName Name of template element.
+     * @param float|null  $left        Left position in mm.
+     * @param float|null  $top         Top position in mm.
+     * @param float|null  $width       Width of element in mm.
+     * @param float|null  $height      Height of element in mm.
+     * @param string|null $tableStyle  InDesign table style.
+     * @param float|null  $lineHeight  Default line height in mm.
+     * @param int         $fit         Fit mode of table box.
      *
      * @throws \Exception
      */
     public function __construct(
         string $elementName = '',
-        float|int $left = null,
-        float|int $top = null,
-        float|int $width = null,
-        float|int $height = null,
+        float $left = null,
+        float $top = null,
+        float $width = null,
+        float $height = null,
         string $tableStyle = null,
-        float|int $lineHeight = null,
+        float $lineHeight = null,
         int $fit = self::FIT_NO_ADJUST
     ) {
         $this->initBoxParams();
@@ -190,6 +192,7 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
         }
         $this->setFit($fit);
         $this->setResize(self::RESIZE_WIDTH_HEIGHT);
+        $this->initLocalizedParams();
     }
 
     /**
@@ -364,14 +367,14 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
      * Adds a column with $width, $style and ident to the table.
      *
      *
-     * @param float|int       $width Width of the column.
-     * @param int|string|null $ident Optional ident to be able to identify a cell when adding content.
-     * @param string          $style Optional InDesign Style of the column
+     * @param float       $width Width of the column.
+     * @param string|null $ident Optional ident to be able to identify a cell when adding content.
+     * @param string      $style Optional InDesign Style of the column
      *
      * @return Table
      * @throws \Exception
      */
-    public function addColumn(float|int $width, int|string $ident = null, string $style = ''): Table
+    public function addColumn(float $width, string $ident = null, string $style = ''): Table
     {
         if (null === $ident) {
             $ident = $this->setUpAutoIdent($this->columns, $ident);
@@ -490,18 +493,18 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
      * Adds a cell to the current row when adding cells in sequential mode.
      *
      * @param float|int|string|Paragraph|Text $content     Cell content: String or InDesign Text or Paragraph instance.
-     * @param int|string|null                 $ident       Optional ident of the column to set.
+     * @param string|null                     $ident       Optional ident of the column to set.
      * @param int                             $colspan     Optional colspan
      * @param string|null                     $style       Optional cell style.
      * @param bool                            $appendStyle If true, $style is appended to the default column style,
      *
      * @return Table
-     * @throws \Exception
      * @throws FilesystemException
+     * @throws \Exception
      */
     public function addCell(
         float|Text|Paragraph|int|string $content,
-        int|string $ident = null,
+        string $ident = null,
         int $colspan = 1,
         string $style = null,
         bool $appendStyle = false
@@ -629,9 +632,8 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
     public function buildCommand(bool $addCmd = true): array
     {
         $this->endRow();
-        if (0 === count($this->rows)) {
-            throw new \Exception('Table must contain at least one row.');
-        }
+        $this->assertDimensions();
+        $this->assertRows();
 
         $columnOrder = [];
         $columns = [];
@@ -678,5 +680,18 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
         $this->removeParam('rowHeight');
 
         return parent::buildCommand(true);
+    }
+
+    /**
+     * Asserts that table has rows.
+     *
+     * @return void
+     * @throws \Exception
+     */
+    private function assertRows(): void
+    {
+        if (0 === count($this->rows)) {
+            throw new \Exception('Table must contain at least one row.');
+        }
     }
 }

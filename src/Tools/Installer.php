@@ -93,7 +93,7 @@ class Installer extends AbstractInstaller implements InstallerInterface
     /**
      * Returns if bundle is installed
      *
-     * @return boolean
+     * @return bool
      * @throws \Exception
      */
     public function isInstalled(): bool

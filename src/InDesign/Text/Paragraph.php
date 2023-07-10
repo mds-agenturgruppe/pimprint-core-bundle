@@ -13,6 +13,8 @@
 
 namespace Mds\PimPrint\CoreBundle\InDesign\Text;
 
+use Mds\PimPrint\CoreBundle\InDesign\Command\AbstractBox;
+use Mds\PimPrint\CoreBundle\InDesign\Command\FileBox;
 use Mds\PimPrint\CoreBundle\InDesign\Command\ImageBox;
 use Mds\PimPrint\CoreBundle\InDesign\Command\ImageCollectorInterface;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\ImageCollectorTrait;
@@ -207,7 +209,7 @@ class Paragraph implements ImageCollectorInterface
             return $array;
         }
         foreach ($this->components as $component) {
-            if ($component instanceof ImageBox) {
+            if ($component instanceof FileBox) {
                 $this->ensureBoxIdent($component);
                 $imageCommand = $component->buildCommand();
                 $this->addCollectedImages($component);

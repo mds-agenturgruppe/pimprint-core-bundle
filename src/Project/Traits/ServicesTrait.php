@@ -21,6 +21,8 @@ use Mds\PimPrint\CoreBundle\Service\SpecialChars;
 use Mds\PimPrint\CoreBundle\Service\ThumbnailHelper;
 use Pimcore\Http\RequestHelper;
 use Pimcore\Localization\LocaleServiceInterface;
+use Pimcore\Model\User;
+use Pimcore\Security\User\UserLoader;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -86,6 +88,23 @@ trait ServicesTrait
      * @var LocaleServiceInterface
      */
     protected LocaleServiceInterface $localeService;
+
+    /**
+     * Pimcore UserLoader
+     *
+     * @var UserLoader
+     */
+    private UserLoader $userLoader;
+
+    /**
+     * Returns project configuration
+     *
+     * @return Config
+     */
+    public function config(): Config
+    {
+        return $this->config;
+    }
 
     /**
      * Sets PluginParameters helper service.
@@ -236,6 +255,8 @@ trait ServicesTrait
      * Sets LocaleService instance.
      *
      * @param LocaleServiceInterface $localeService
+     *
+     * @return void
      */
     public function setLocaleService(LocaleServiceInterface $localeService): void
     {
@@ -243,13 +264,35 @@ trait ServicesTrait
     }
 
     /**
-     * Returns project configuration
+     * Sets Pimcore UserLoader
      *
-     * @return Config
+     * @param UserLoader $userLoader
+     *
+     * @return void
      */
-    public function config(): Config
+    public function setUserLoader(UserLoader $userLoader): void
     {
-        return $this->config;
+        $this->userLoader = $userLoader;
+    }
+
+    /**
+     * Returns Pimcore UserLoader
+     *
+     * @return UserLoader
+     */
+    protected function getUserLoader(): UserLoader
+    {
+        return $this->userLoader;
+    }
+
+    /**
+     * Returns currently logged in Pimcore User
+     *
+     * @return User
+     */
+    protected function getUser(): User
+    {
+        return $this->userLoader->getUser();
     }
 
     /**
@@ -282,6 +325,7 @@ trait ServicesTrait
             $this->thumbnailHelper,
             $this->config,
             $this->localeService,
+            $this->userLoader,
         ];
         foreach ($services as $service) {
             if (null === $service) {

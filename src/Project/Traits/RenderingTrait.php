@@ -16,6 +16,7 @@ namespace Mds\PimPrint\CoreBundle\Project\Traits;
 use Mds\PimPrint\CoreBundle\InDesign\Command\GoToPage;
 use Mds\PimPrint\CoreBundle\InDesign\Command\OpenDocument;
 use Mds\PimPrint\CoreBundle\InDesign\Command\RemoveEmptyLayers;
+use Mds\PimPrint\CoreBundle\InDesign\Command\RemoveEmptyPages;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Variable;
 use Mds\PimPrint\CoreBundle\Project\AbstractProject;
 use Pimcore\Localization\IntlFormatter;
@@ -36,23 +37,6 @@ trait RenderingTrait
      * @var bool
      */
     private bool $generationActive = false;
-
-    /**
-     * Reference string for box ident generation.
-     * Used to generate unique content related box idents to create coupling between Pimcore content
-     * (Objects, Assets, Documents) and InDesign elements.
-     * Typical usage: use Object-Ids here.
-     *
-     * @var string
-     */
-    private string $boxIdentReference = '';
-
-    /**
-     * Postfix used in generic box ident generation.
-     *
-     * @var string
-     */
-    private string $boxIdentGenericPostfix = '';
 
     /**
      * Generates PimPrint commands to build a publication in InDesign.
@@ -80,62 +64,6 @@ trait RenderingTrait
     }
 
     /**
-     * Returns $boxIdentReference.
-     *
-     * @return string
-     */
-    public function getBoxIdentReference(): string
-    {
-        return $this->boxIdentReference;
-    }
-
-    /**
-     * Sets $ident as boxIdentReference for content aware updates.
-     *
-     * @param string $ident
-     *
-     * @see RenderingTrait::$boxIdentReference
-     */
-    public function setBoxIdentReference(string $ident): void
-    {
-        $this->boxIdentReference = $ident;
-    }
-
-    /**
-     * Appends $ident to existing for content aware updates.
-     *
-     * @param string $ident
-     *
-     * @see RenderingTrait::$boxIdentReference
-     */
-    public function appendToBoxIdentReference(string $ident): void
-    {
-        $this->setBoxIdentReference(
-            $this->getBoxIdentReference() . $ident
-        );
-    }
-
-    /**
-     * Returns $boxIdentGenericPostfix.
-     *
-     * @return string
-     */
-    public function getBoxIdentGenericPostfix(): string
-    {
-        return $this->boxIdentGenericPostfix;
-    }
-
-    /**
-     * Sets $boxIdentGenericPostfix.
-     *
-     * @param string $postfix
-     */
-    public function setBoxIdentGenericPostfix(string $postfix): void
-    {
-        $this->boxIdentGenericPostfix = $postfix;
-    }
-
-    /**
      * Convenience method that initializes renderMode, opens InDesign template and jumps to first page.
      *
      * @param bool $openFirstPage
@@ -150,6 +78,27 @@ trait RenderingTrait
         if ($openFirstPage) {
             $this->addCommand(new GoToPage(1, false));
         }
+    }
+
+    /**
+     * Convenience method that is called at the end of the rendering process.
+     *
+     * @param bool $removeEmptyLayers
+     * @param bool $removeEmptyPages
+     *
+     * @return AbstractProject
+     * @throws \Exception
+     */
+    protected function stopRendering(bool $removeEmptyLayers = true, bool $removeEmptyPages = true): AbstractProject
+    {
+        if ($removeEmptyLayers) {
+            $this->addCommand(new RemoveEmptyLayers());
+        }
+        if ($removeEmptyPages) {
+            $this->addCommand(new RemoveEmptyPages());
+        }
+
+        return $this;
     }
 
     /**
@@ -189,19 +138,6 @@ trait RenderingTrait
         if ($service instanceof IntlFormatter) {
             $service->setLocale($locale);
         }
-    }
-
-    /**
-     * Convenience method that ends the rendering process by sending a RemoveEmptyLayers command.
-     *
-     * @return AbstractProject
-     * @throws \Exception
-     */
-    protected function stopRendering(): AbstractProject
-    {
-        $this->addCommand(new RemoveEmptyLayers());
-
-        return $this;
     }
 
     /**
@@ -264,7 +200,7 @@ trait RenderingTrait
             $template = $template->getFilename();
         }
         //Declares current open InDesign document as target document to generate publication in.
-        $this->addCommand(new OpenDocument(OpenDocument::TYPE_USECURRENT))
+        $this->addCommand(new OpenDocument(OpenDocument::TYPE_USECURRENT, $this->getLanguage()))
             //opens the InDesign template document.
              ->addCommand(new OpenDocument(OpenDocument::TYPE_TEMPLATE, '0', $template))
              ->addCommand(new Variable('GENERATED_AT', time()));

@@ -25,6 +25,7 @@ use Mds\PimPrint\CoreBundle\InDesign\Command\Variables\AbstractMath;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Variables\DependentInterface as VariableDependentInterface;
 use Mds\PimPrint\CoreBundle\InDesign\Traits\BoxIdentBuilderTrait;
 use Mds\PimPrint\CoreBundle\Service\PluginParameters;
+use Mds\PimPrint\CoreBundle\Service\ProjectsManager;
 
 /**
  * Class CommandQueue
@@ -47,12 +48,12 @@ class CommandQueue
      *
      * @var AbstractCommand[]
      */
-    protected $commands = [];
+    protected array $commands = [];
 
     /**
      * Last stored yPos.
      *
-     * @var float
+     * @var int|float
      */
     protected $yPos = 0;
 
@@ -61,7 +62,7 @@ class CommandQueue
      *
      * @var int
      */
-    protected $pageNumber = 0;
+    protected int $pageNumber = 0;
 
     /**
      * Array with registered variables via Variable or VariableTrait.
@@ -69,21 +70,21 @@ class CommandQueue
      *
      * @var array
      */
-    protected $registeredVariables = [];
+    protected array $registeredVariables = [];
 
     /**
      * Array with all assets used in generated publication.
      *
      * @var array
      */
-    protected $registeredAssets = [];
+    protected array $registeredAssets = [];
 
     /**
      * Array with missing assets used in generated publication.
      *
      * @var array
      */
-    protected $missingAssets = [
+    protected array $missingAssets = [
         'assetIds' => [],
         'elements' => 0,
     ];
@@ -93,7 +94,7 @@ class CommandQueue
      *
      * @return int
      */
-    public function getPageNumber()
+    public function getPageNumber(): int
     {
         return $this->pageNumber;
     }
@@ -119,7 +120,7 @@ class CommandQueue
      *
      * @return int
      */
-    public function incrementPageNumber(int $increment = 1)
+    public function incrementPageNumber(int $increment = 1): int
     {
         $this->pageNumber += $increment;
 
@@ -131,7 +132,7 @@ class CommandQueue
      *
      * @return float|int
      */
-    public function getYPos()
+    public function getYPos(): float|int
     {
         return $this->yPos;
     }
@@ -146,7 +147,7 @@ class CommandQueue
      * @return CommandQueue
      * @throws \Exception
      */
-    public function setYPos($value, bool $sendCommand = false): CommandQueue
+    public function setYPos(float|int $value, bool $sendCommand = false): CommandQueue
     {
         $this->yPos = $value;
         if ($sendCommand) {
@@ -166,7 +167,7 @@ class CommandQueue
      * @return float
      * @throws \Exception
      */
-    public function incrementYPos($value, bool $sendCommand = false): float
+    public function incrementYPos(float|int $value, bool $sendCommand = false): float
     {
         $this->setYPos($this->getYPos() + $value, $sendCommand);
 
@@ -178,7 +179,7 @@ class CommandQueue
      *
      * @return array
      */
-    public function getCommandsRaw()
+    public function getCommandsRaw(): array
     {
         return $this->commands;
     }
@@ -189,7 +190,7 @@ class CommandQueue
      * @return array
      * @throws \Exception
      */
-    public function getCommands()
+    public function getCommands(): array
     {
         if (true === $this->getProject()
                           ->pluginParams()
@@ -207,7 +208,6 @@ class CommandQueue
      *
      * @return array
      * @throws \Exception
-     * @todo Filter PageMessages for associated selected elements.
      */
     protected function filterSelectedCommands(array $commands): array
     {
@@ -222,6 +222,10 @@ class CommandQueue
         if (empty($selectedElements)) {
             return [];
         }
+        if (ProjectsManager::isLocalizedProject()) {
+            $this->removeLocaleFromSelectedElements($selectedElements);
+        }
+
         $commandWhitelist = [
             OpenDocument::CMD,
             GoToPage::CMD,
@@ -229,12 +233,18 @@ class CommandQueue
             Variable::CMD,
             PageMessage::CMD
         ];
+
         $return = [];
         $updateElements = new UpdateElements($selectedElements);
         $return[] = $updateElements->buildCommand();
         foreach ($commands as $command) {
             if (isset($command['tid'])) {
-                $boxName = $command['name'] . '#' . $command['tid'] . '#';
+                if (isset($command['localized']) && $command['localized']) {
+                    $boxName = preg_replace('/#(\w{2}|\w{2}_\w{2})$/', '#', $command['tid']);
+                    $boxName = $command['name'] . '#' . $boxName;
+                } else {
+                    $boxName = $command['name'] . '#' . $command['tid'] . '#';
+                }
                 if (true === in_array($boxName, $selectedElements)) {
                     $return[] = $command;
                 }
@@ -271,9 +281,10 @@ class CommandQueue
      *
      * @param AbstractCommand $command
      *
+     * @return void
      * @throws \Exception
      */
-    protected function processVariables(AbstractCommand $command)
+    protected function processVariables(AbstractCommand $command): void
     {
         $this->registerVariables($command);
         $this->validateVariables($command);
@@ -284,9 +295,10 @@ class CommandQueue
      *
      * @param AbstractCommand $command
      *
+     * @return void
      * @throws \Exception
      */
-    protected function registerVariables(AbstractCommand $command)
+    protected function registerVariables(AbstractCommand $command): void
     {
         if ($command instanceof Variable) {
             $this->registeredVariables[] = $command->getName();
@@ -308,9 +320,10 @@ class CommandQueue
      *
      * @param AbstractCommand $command
      *
+     * @return void
      * @throws \Exception
      */
-    protected function validateVariables(AbstractCommand $command)
+    protected function validateVariables(AbstractCommand $command): void
     {
         if (false === $command instanceof VariableDependentInterface) {
             return;
@@ -332,7 +345,7 @@ class CommandQueue
      * @return CommandQueue
      * @throws \Exception
      */
-    public function addPageMessage(string $message, bool $onPage = false)
+    public function addPageMessage(string $message, bool $onPage = false): CommandQueue
     {
         $this->addCommand(
             new PageMessage($message, $onPage)
@@ -345,8 +358,10 @@ class CommandQueue
      * Registers used asset.
      *
      * @param AbstractCommand $command
+     *
+     * @return void
      */
-    private function registerAsset(AbstractCommand $command)
+    private function registerAsset(AbstractCommand $command): void
     {
         if (false === $command instanceof ImageCollectorInterface) {
             return;
@@ -359,7 +374,7 @@ class CommandQueue
      *
      * @return array
      */
-    public function getRegisteredAssets()
+    public function getRegisteredAssets(): array
     {
         return $this->registeredAssets;
     }
@@ -368,8 +383,10 @@ class CommandQueue
      * Increments missing asset counter for $assetId.
      *
      * @param int $assetId
+     *
+     * @return void
      */
-    public function incrementMissingAssetCounter(int $assetId)
+    public function incrementMissingAssetCounter(int $assetId): void
     {
         if (false === isset($this->missingAssets['assetIds'][$assetId])) {
             $this->missingAssets['assetIds'][$assetId] = 0;
@@ -383,8 +400,22 @@ class CommandQueue
      *
      * @return array
      */
-    public function getMissingAssets()
+    public function getMissingAssets(): array
     {
         return $this->missingAssets;
+    }
+
+    /**
+     * Removes locale-idents from $selectedElements boxNames
+     *
+     * @param array $selectedElements
+     *
+     * @return void
+     */
+    private function removeLocaleFromSelectedElements(array &$selectedElements): void
+    {
+        foreach ($selectedElements as &$boxName) {
+            $boxName = preg_replace('/#(\w{2}|\w{2}_\w{2})#$/', '#', $boxName);
+        }
     }
 }

@@ -44,8 +44,9 @@ trait PositionTrait
     {
         $this->initParams(
             [
-                'left' => 0,
-                'top'  => 0,
+                'left'                => 0,
+                'top'                 => 0,
+                'useTemplatePosition' => false,
             ]
         );
     }
@@ -83,16 +84,31 @@ trait PositionTrait
     }
 
     /**
+     * Sets $useTemplatePosition to place the box at the template document position.
+     *
+     * @param bool $useTemplatePosition
+     *
+     * @return AbstractBox|$this
+     * @throws \Exception
+     */
+    public function setUseTemplatePosition(bool $useTemplatePosition): AbstractBox|static
+    {
+        $this->setParam('useTemplatePosition', $useTemplatePosition);
+
+        return $this;
+    }
+
+    /**
      * Sets $position relative to $variable with an optional $margin.
      *
-     * @param string    $position Left or top position for relative positioning.
-     * @param string    $variable Variable name in InDesign for relative positioning.
-     * @param float|int $margin   Margin in mm to the InDesign variable.
+     * @param string $position Left or top position for relative positioning.
+     * @param string $variable Variable name in InDesign for relative positioning.
+     * @param float  $margin   Margin in mm to the InDesign variable.
      *
      * @return PositionTrait|AbstractBox
      * @throws \Exception
      */
-    public function setRelativePosition(string $position, string $variable, float|int $margin = 0): AbstractBox|static
+    public function setRelativePosition(string $position, string $variable, float $margin = 0): AbstractBox|static
     {
         $this->validateRelativePosition($position);
         $this->relativePositionVariables[$position] = $variable;
@@ -104,13 +120,13 @@ trait PositionTrait
     /**
      * Convenience method to set relative left position to $variable and $margin.
      *
-     * @param string    $variable Variable name in InDesign for relative positioning.
-     * @param float|int $margin   Margin in mm to the InDesign variable.
+     * @param string $variable Variable name in InDesign for relative positioning.
+     * @param float  $margin   Margin in mm to the InDesign variable.
      *
      * @return AbstractBox|PositionTrait
      * @throws \Exception
      */
-    public function setLeftRelative(string $variable, float|int $margin = 0): AbstractBox|static
+    public function setLeftRelative(string $variable, float $margin = 0): AbstractBox|static
     {
         return $this->setRelativePosition(Variable::POSITION_LEFT, $variable, $margin);
     }
@@ -118,13 +134,13 @@ trait PositionTrait
     /**
      * Convenience method to set relative top position to $variable and $margin.
      *
-     * @param string    $variable Variable name in InDesign for relative positioning.
-     * @param float|int $margin   Margin in mm to the InDesign variable.
+     * @param string $variable Variable name in InDesign for relative positioning.
+     * @param float  $margin   Margin in mm to the InDesign variable.
      *
      * @return AbstractBox|PositionTrait
      * @throws \Exception
      */
-    public function setTopRelative(string $variable, float|int $margin = 0): AbstractBox|static
+    public function setTopRelative(string $variable, float $margin = 0): AbstractBox|static
     {
         return $this->setRelativePosition(Variable::POSITION_TOP, $variable, $margin);
     }

@@ -1,11 +1,14 @@
 # Search
-The custom field `\Mds\PimPrint\CoreBundle\InDesign\CustomField\Search`, creates a input field with a search button. The search is sent to an endpoint to the Pimcore server, where custom PHP source can create a result list to be selectable in a [select field](./02_CustomField_Select.md) in the InDesign plugin.
+
+The custom field `\Mds\PimPrint\CoreBundle\InDesign\CustomField\Search`, creates a input field with a search button. The search is sent to an endpoint to the Pimcore server, where
+custom PHP source can create a result list to be selectable in a [select field](./02_CustomField_Select.md) in the InDesign plugin.
 
 * [Options](#page_options)
 * [Usage in PHP API](#page_Usage_in_PHP_API)
 * [Display in InDesign](#page_Display_in_InDesign)
 
 ## Options
+
 | Option         | Default | Required | Documentation                                                                                                   |
 |----------------|---------|----------|-----------------------------------------------------------------------------------------------------------------|
 | param          | `null`  | Yes      | Internal identifier of the custom field                                                                         |
@@ -20,10 +23,12 @@ The custom field `\Mds\PimPrint\CoreBundle\InDesign\CustomField\Search`, creates
 > All options are set via setters in the custom field type class.
 
 ## Usage in PHP API
+
 The `Search` field must be a concrete implementation of the abstract class: \
 `\Mds\PimPrint\CoreBundle\InDesign\CustomField\Search`
 
-The concrete class must implement `\Mds\PimPrint\CoreBundle\InDesign\CustomField\Search::search`. This method executes the search process and returns a `\Mds\PimPrint\CoreBundle\InDesign\CustomField\Search\Result`.
+The concrete class must implement `\Mds\PimPrint\CoreBundle\InDesign\CustomField\Search::search`. This method executes the search process and returns
+a `\Mds\PimPrint\CoreBundle\InDesign\CustomField\Search\Result`.
 
 > You can register your concrete class as a Symfony service too
 
@@ -91,6 +96,7 @@ class MySearch extends Search
 For implementation details see [custom field search endpoint page](../../25_Development/13_CustomField_Search_Endpoint.md).
 
 Adding the field to the project service:
+
 ```php
 <?php
 class GettingStarted extends AbstractProject
@@ -110,6 +116,7 @@ class GettingStarted extends AbstractProject
 ```
 
 Accessing the input in rendering process:
+
 ```php
 class GettingStarted extends AbstractProject
 {
@@ -128,6 +135,7 @@ class GettingStarted extends AbstractProject
 ```
 
 ## Display in InDesign
+
 Empty search field: \
 ![Plugin CustomField Search](../../img/plugin-customField_search.png)
 

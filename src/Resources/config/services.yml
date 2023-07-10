@@ -9,8 +9,8 @@ services:
         public: true
         tags: ['controller.service_arguments']
 
-    #Abstract PimPrint rendering project services
-    Mds\PimPrint\CoreBundle\Project\AbstractProject:
+    #PimPrint rendering project service
+    Mds\PimPrint\CoreBundle\Project\RenderingProject:
         abstract: true
         calls:
             - [setRequestHelper, ['@Pimcore\Http\RequestHelper']]
@@ -20,6 +20,20 @@ services:
             - [setThumbnailHelper, ['@mds.pimprint.core.thumbnail_helper']]
             - [setUrlGenerator, ['@cmf_routing.router']]
             - [setLocaleService, ['@pimcore.locale']]
+            - [setUserLoader, ['@pimcore_admin.security.user_loader']]
+
+    #PimPrint master locale rendering project service
+    Mds\PimPrint\CoreBundle\Project\MasterLocaleRenderingProject:
+        abstract: true
+        calls:
+            - [ setRequestHelper, [ '@Pimcore\Http\RequestHelper' ] ]
+            - [ setPluginParams, [ '@mds.pimprint.core.plugin_parameters' ] ]
+            - [ setImageDimensions, [ '@mds.pimprint.core.image_dimensions' ] ]
+            - [ setSpecialChars, [ '@mds.pimprint.core.special_chars' ] ]
+            - [ setThumbnailHelper, [ '@mds.pimprint.core.thumbnail_helper' ] ]
+            - [ setUrlGenerator, [ '@cmf_routing.router' ] ]
+            - [ setLocaleService, [ '@pimcore.locale' ] ]
+            - [setUserLoader, ['@pimcore_admin.security.user_loader']]
 
     #Helper services
     mds.pimprint.core.user_helper:

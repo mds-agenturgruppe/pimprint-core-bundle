@@ -60,14 +60,20 @@ trait BoxIdentBuilderTrait
         if (false === $command instanceof AbstractBox) {
             return;
         }
-        /* @var AbstractBox $command */
         $boxIdent = $command->getBoxIdent();
         if (false === empty($boxIdent)) {
+            $command->setBoxIdent($this->appendLocaleToBoxIdent($command, $boxIdent));
             $this->ensureUniqueBoxIdent($command);
 
             return;
         }
-        $command->setBoxIdent($this->buildGenericBoxIdent($command));
+
+        $command->setBoxIdent(
+            $this->appendLocaleToBoxIdent(
+                $command,
+                $this->buildGenericBoxIdent($command)
+            )
+        );
         $this->ensureUniqueBoxIdent($command);
     }
 
@@ -138,9 +144,24 @@ trait BoxIdentBuilderTrait
      *
      * @throws \Exception
      */
-    private function ensureUniqueBoxIdent(AbstractBox $command)
+    private function ensureUniqueBoxIdent(AbstractBox $command): void
     {
-        $ident = $command->getElementName() . '#' . $command->getBoxIdent();
+        $boxIdent = $command->getBoxIdent();
+        try {
+            if ($command->getLocalized()) {
+                if (mb_substr_count($boxIdent, '#') > 1) {
+                    throw new \Exception();
+                }
+            } else {
+                if (str_contains($boxIdent, '#')) {
+                    throw new \Exception();
+                }
+            }
+        } catch (\Exception $exception) {
+            throw new \Exception('Error: BoxIdent can not contain # char: ' . $boxIdent);
+        }
+
+        $ident = $command->getElementName() . '#' . $boxIdent;
         if (isset(self::$generatedBoxes[$ident])) {
             $this->getCommandQueue()
                  ->addPageMessage('Error: Duplicate BoxIdent found:' . $ident, true);
@@ -161,5 +182,29 @@ trait BoxIdentBuilderTrait
         } catch (\Exception) {
             return 0;
         }
+    }
+
+    /**
+     * Adds locale to $ident of $abstractBox is localized
+     *
+     * @param AbstractBox $abstractBox
+     * @param string      $ident
+     *
+     * @return string
+     * @throws \Exception
+     */
+    private function appendLocaleToBoxIdent(AbstractBox $abstractBox, string $ident): string
+    {
+        if (!$abstractBox->getLocalized()) {
+            return $ident;
+        }
+        $language = $this->getProject()
+                         ->getLanguage();
+
+        if (empty($abstractBox->getLocale())) {
+            $abstractBox->setLocale($language);
+        }
+
+        return $ident . '#' . $language;
     }
 }

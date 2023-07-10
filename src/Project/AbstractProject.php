@@ -13,27 +13,19 @@
 
 namespace Mds\PimPrint\CoreBundle\Project;
 
+use League\Flysystem\FilesystemException;
 use Mds\PimPrint\CoreBundle\InDesign\Command\AbstractCommand;
 use Mds\PimPrint\CoreBundle\InDesign\CommandQueue;
+use Mds\PimPrint\CoreBundle\Project\Traits\BoxIdentTrait;
 use Mds\PimPrint\CoreBundle\Project\Traits\FormFieldsTrait;
 use Mds\PimPrint\CoreBundle\Project\Traits\ServicesTrait;
 use Mds\PimPrint\CoreBundle\Project\Traits\RenderingTrait;
 use Mds\PimPrint\CoreBundle\Project\Traits\TemplateTrait;
 use Mds\PimPrint\CoreBundle\Service\PluginParameters;
-use Pimcore\Model\User;
 use Pimcore\Tool;
 
 /**
- * AbstractProject all concrete rendering project services must extend.
- *
- * Class is registered as abstract service in 'src/Resources/config/services.yml'
- * and aliased as 'mds.pimprint.core.abstract_project' to be used in concrete service definitions as parent.
- *
- * Example:
- * {code}
- * Mds\PimPrint\DemoBundle\Service\CommandDemo:
- *   parent: mds.pimprint.core.abstract_project
- * {code}
+ * Class AbstractProject
  *
  * @package Mds\PimPrint\CoreBundle\Project
  */
@@ -43,6 +35,7 @@ abstract class AbstractProject
     use TemplateTrait;
     use RenderingTrait;
     use FormFieldsTrait;
+    use BoxIdentTrait;
 
     /**
      * CommandQueue instance.
@@ -121,10 +114,11 @@ abstract class AbstractProject
     final public function getLanguages(): array
     {
         $languages = [];
-        $locale = $this->localeService->findLocale();
+        $locale = $this->getUser()
+                       ->getLanguage();
 
         if (null === $locale) {
-            throw new \RuntimeException('Locale could not be found!');
+            throw new \RuntimeException('No locale found for logged in user!');
         }
 
         if (!Tool::isValidLanguage($locale)) {
@@ -132,33 +126,61 @@ abstract class AbstractProject
         }
 
         foreach ($this->getUserLanguages() as $code) {
-            $languages[] = [
+            $label = \Locale::getDisplayLanguage($code, $locale);
+            $displayRegion = \Locale::getDisplayRegion($code, $locale);
+
+            if ($displayRegion) {
+                $label .= ' (' . $displayRegion . ')';
+            }
+
+            if ($label) {
+                $label .= ' (' . $code . ')';
+            } else {
+                $label = $code;
+            }
+
+            $languages[$label] = [
                 'iso'   => $code,
-                'label' => \Locale::getDisplayLanguage($code, $locale),
+                'label' => $label,
             ];
         }
 
-        return $languages;
+        ksort($languages);
+        $this->postProcessLanguages($languages);
+
+        return array_values($languages);
+    }
+
+    /**
+     * Template method for post-processing available languages sent to InDesign plugin.
+     *
+     * @param array $languages
+     *
+     * @return void
+     */
+    protected function postProcessLanguages(array &$languages): void
+    {
     }
 
     /**
      * Builds project settings for InDesign plugin.
      *
      * @return array
+     * @throws FilesystemException
      * @throws \Exception
      */
-    final public function getSettings(): array
+    public function getSettings(): array
     {
         return [
-            'createUpdateInfoBox' => $this->config()
-                                          ->offsetGet('create_update_info'),
-            'assets'              => [
+            'assets'             => [
                 'download'    => $this->config()
                                       ->offsetGet('assets')['download'],
                 'preDownload' => $this->config()
                                       ->offsetGet('assets')['pre_download']
             ],
-            'template'            => $this->buildTemplateSettings()
+            'template'           => $this->buildTemplateSettings(),
+            'createUpdateLayers' => $this->config()
+                                         ->offsetGet('create_update_layers'),
         ];
     }
 
@@ -173,11 +195,7 @@ abstract class AbstractProject
      */
     protected function getUserLanguages(): array
     {
-        $user = Tool\Admin::getCurrentUser();
-
-        if (!$user instanceof User) {
-            return Tool::getValidLanguages();
-        }
+        $user = $this->getUser();
 
         return true === $user->isAdmin() ? Tool::getValidLanguages() : $user->getContentLanguages();
     }
@@ -188,7 +206,7 @@ abstract class AbstractProject
      * @return string
      * @throws \Exception
      */
-    protected function getLanguage(): string
+    public function getLanguage(): string
     {
         return $this->pluginParams()
                     ->get(PluginParameters::PARAM_LANGUAGE);
@@ -227,7 +245,7 @@ abstract class AbstractProject
     /**
      * Convenience (facade) method to add $commands array to CommandQueue.
      *
-     * @param AbstractCommand[] $commands
+     * @param array $commands
      *
      * @return AbstractProject
      * @throws \Exception

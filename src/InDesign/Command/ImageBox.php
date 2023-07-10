@@ -14,11 +14,8 @@
 namespace Mds\PimPrint\CoreBundle\InDesign\Command;
 
 use League\Flysystem\FilesystemException;
-use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\FitTrait;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\ImageCollectorTrait;
-use Mds\PimPrint\CoreBundle\InDesign\Text\ParagraphComponent;
 use Mds\PimPrint\CoreBundle\InDesign\Traits\MissingAssetNotifierTrait;
-use Mds\PimPrint\CoreBundle\Project\Traits\ProjectAwareTrait;
 use Pimcore\Model\Asset;
 use Pimcore\Model\Asset\Document as DocumentAsset;
 use Pimcore\Model\Asset\Image as ImageAsset;
@@ -29,10 +26,8 @@ use Pimcore\Tool\Storage;
  *
  * @package Mds\PimPrint\CoreBundle\InDesign\Command
  */
-class ImageBox extends AbstractBox implements ParagraphComponent, ImageCollectorInterface
+class ImageBox extends FileBox implements ImageCollectorInterface
 {
-    use FitTrait;
-    use ProjectAwareTrait;
     use ImageCollectorTrait;
     use MissingAssetNotifierTrait;
 
@@ -42,82 +37,6 @@ class ImageBox extends AbstractBox implements ParagraphComponent, ImageCollector
      * @var string
      */
     const CMD = 'pbox';
-
-    /**
-     * Centers content in the frame; preserves the frame size as well as content size and proportions.
-     * Note: If the content is larger than the frame, content around the edges is obscured.
-     *
-     * @see https://www.indesignjs.de/extendscriptAPI/indesign-latest/#FitOptions.html
-     * @var string
-     */
-    const FIT_CENTER_CONTENT = 'CENTER_CONTENT';
-
-    /**
-     * Selects best crop region of the content for the frame based on Adobe Sensei.
-     * Note: Preserves frame size but might scale the content size.
-     *
-     * @see https://www.indesignjs.de/extendscriptAPI/indesign-latest/#FitOptions.html
-     * @var string
-     */
-    const FIT_CONTENT_AWARE_FIT = 'CONTENT_AWARE_FIT';
-
-    /**
-     * Resizes content to fit the frame.
-     * Note: Content that is a different size than the frame appears stretched or squeezed.
-     *
-     * @see https://www.indesignjs.de/extendscriptAPI/indesign-latest/#FitOptions.html
-     * @var string
-     */
-    const FIT_CONTENT_TO_FRAME = 'CONTENT_TO_FRAME';
-
-    /**
-     * Resizes content to fill the frame while perserving the proportions of the content.
-     * If the content and frame have different proportions, some of the content is obscured by
-     * the bounding box of the frame.
-     *
-     * @see https://www.indesignjs.de/extendscriptAPI/indesign-latest/#FitOptions.html
-     * @var string
-     */
-    const FIT_FILL_PROPORTIONALLY = 'FILL_PROPORTIONALLY';
-
-    /**
-     * Resizes the frame so it fits the content.
-     *
-     * @see https://www.indesignjs.de/extendscriptAPI/indesign-latest/#FitOptions.html
-     * @var string
-     */
-    const FIT_FRAME_TO_CONTENT = 'FRAME_TO_CONTENT';
-
-    /**
-     * Resizes content to fit the frame while preserving content proportions.
-     * If the content and frame have different proportions, some empty space appears in the frame.
-     *
-     * @see https://www.indesignjs.de/extendscriptAPI/indesign-latest/#FitOptions.html
-     * @var string
-     */
-    const FIT_PROPORTIONALLY = 'PROPORTIONALLY';
-
-    /**
-     * Asset property name with Model\Asset to use for placement in InDesign.
-     * Property can optionally be assigned to assets in Pimcore to explicitly set the used asset for PimPrint.
-     *
-     * @var string
-     */
-    const PROPERTY_PIMPRINT_ASSET = 'pimprint_asset';
-
-    /**
-     * Array with all allowed fits for validation.
-     *
-     * @var array
-     */
-    protected array $allowedFits = [
-        self::FIT_PROPORTIONALLY,
-        self::FIT_FILL_PROPORTIONALLY,
-        self::FIT_CONTENT_TO_FRAME,
-        self::FIT_CENTER_CONTENT,
-        self::FIT_CONTENT_AWARE_FIT,
-        self::FIT_FRAME_TO_CONTENT
-    ];
 
     /**
      * Available command params with default values.
@@ -158,22 +77,23 @@ class ImageBox extends AbstractBox implements ParagraphComponent, ImageCollector
     /**
      * CopyBox constructor.
      *
-     * @param string         $elementName Name of template element.
-     * @param float|int|null $left        Left position in mm.
-     * @param float|int|null $top         Top position in mm.
-     * @param float|int|null $width       Width of element in mm.
-     * @param float|int|null $height      Height of element in mm.
-     * @param Asset|null     $asset       Asset to be placed.
-     * @param string         $fit         Fit mode of image in image-box. Use FIT class constants.
+     * @param string     $elementName Name of template element.
+     * @param float|null $left        Left position in mm.
+     * @param float|null $top         Top position in mm.
+     * @param float|null $width       Width of element in mm.
+     * @param float|null $height      Height of element in mm.
+     * @param Asset|null $asset       Asset to be placed.
+     * @param string     $fit         Fit mode of image in image-box. Use FIT class constants.
      *
-     * @throws \Exception|FilesystemException
+     * @throws FilesystemException
+     * @throws \Exception
      */
     public function __construct(
         string $elementName = '',
-        float|int $left = null,
-        float|int $top = null,
-        float|int $width = null,
-        float|int $height = null,
+        float $left = null,
+        float $top = null,
+        float $width = null,
+        float $height = null,
         Asset $asset = null,
         string $fit = self::FIT_PROPORTIONALLY
     ) {
@@ -195,6 +115,8 @@ class ImageBox extends AbstractBox implements ParagraphComponent, ImageCollector
         if ($asset instanceof Asset) {
             $this->setAsset($asset);
         }
+
+        $this->initLocalizedParams();
     }
 
     /**
@@ -215,7 +137,7 @@ class ImageBox extends AbstractBox implements ParagraphComponent, ImageCollector
         string $thumbnailName = null,
         bool $resize = false,
         array $defaultDpi = [300, 300]
-    ): static {
+    ): ImageBox {
         $fallback = $asset->getProperty(self::PROPERTY_PIMPRINT_ASSET);
         if ($fallback instanceof Asset) {
             $asset = $fallback;
@@ -248,9 +170,10 @@ class ImageBox extends AbstractBox implements ParagraphComponent, ImageCollector
      * @param Asset       $asset
      * @param string|null $thumbnailName
      *
+     * @return void
      * @throws \Exception
      */
-    private function assureValidAsset(Asset $asset, string $thumbnailName = null)
+    private function assureValidAsset(Asset $asset, string $thumbnailName = null): void
     {
         if (false === $asset instanceof ImageAsset && false === $asset instanceof DocumentAsset) {
             throw new \Exception(
@@ -285,9 +208,11 @@ class ImageBox extends AbstractBox implements ParagraphComponent, ImageCollector
      * @param Asset       $asset
      * @param string|null $thumbnailName
      *
-     * @throws \Exception|FilesystemException
+     * @return void
+     * @throws FilesystemException
+     * @throws \Exception
      */
-    private function addDownloadParams(Asset $asset, string $thumbnailName = null)
+    private function addDownloadParams(Asset $asset, string $thumbnailName = null): void
     {
         if (false === $this->getProject()
                            ->config()
@@ -344,9 +269,10 @@ class ImageBox extends AbstractBox implements ParagraphComponent, ImageCollector
      *
      * @param ImageAsset\Thumbnail $thumbnail
      *
+     * @return void
      * @throws \Exception
      */
-    private function addForcedThumbnailParams(ImageAsset\Thumbnail $thumbnail)
+    private function addForcedThumbnailParams(ImageAsset\Thumbnail $thumbnail): void
     {
         $thumbnailHelper = $this->getProject()
                                 ->thumbnailHelper();
@@ -389,5 +315,18 @@ class ImageBox extends AbstractBox implements ParagraphComponent, ImageCollector
         $this->collectImage($this);
 
         return parent::buildCommand($addCmd);
+    }
+
+    /**
+     * Usage of setSrc not allowed in ImageBox. Use setAsset instead.
+     *
+     * @param string $src
+     *
+     * @return FileBox
+     * @throws \Exception
+     */
+    public function setSrc(string $src): FileBox
+    {
+        throw new \Exception('Usage of setSrc not allowed in ImageBox. Use setAsset instead.');
     }
 }

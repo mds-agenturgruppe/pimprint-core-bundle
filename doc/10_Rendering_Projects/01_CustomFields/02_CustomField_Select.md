@@ -1,4 +1,5 @@
 # Select
+
 The custom field `\Mds\PimPrint\CoreBundle\InDesign\CustomField\Select`, creates a selection in the InDesign plugin.
 
 * [Options](#page_options)
@@ -6,6 +7,7 @@ The custom field `\Mds\PimPrint\CoreBundle\InDesign\CustomField\Select`, creates
 * [Display in InDesign](#page_Display_in_InDesign)
 
 ## Options
+
 | Option         | Default | Required | Documentation                                                                                                      |
 |----------------|---------|----------|--------------------------------------------------------------------------------------------------------------------|
 | param          | `null`  | Yes      | Internal identifier of the custom field                                                                            |
@@ -14,9 +16,11 @@ The custom field `\Mds\PimPrint\CoreBundle\InDesign\CustomField\Select`, creates
 | multiple       | `false` | No       | Multiple `true` or `false` will render a list of Checkboxes or Radios                                              |
 | collapseAmount | `5`     | No       | If values count is greater than `collapseAmount`, field will be rendered as a select field. `0` means no collapse. |
 | values         | `[]`    | No       | Selectable values                                                                                                  |
+
 > All options are set via setters in the custom field type class.
 
 ## Usage in PHP API
+
 You can create your own select field class by extending: \
 `\Mds\PimPrint\CoreBundle\InDesign\CustomField\Select`
 
@@ -69,6 +73,7 @@ class MySelect extends Select
 ```
 
 Adding the field to the project service:
+
 ```php
 <?php
 class GettingStarted extends AbstractProject
@@ -86,6 +91,7 @@ class GettingStarted extends AbstractProject
 ```
 
 Accessing the input in rendering process:
+
 ```php
 class GettingStarted extends AbstractProject
 {
@@ -104,6 +110,7 @@ class GettingStarted extends AbstractProject
 ```
 
 ## Display in InDesign
+
 Single select list: \
 ![Plugin CustomField Select single](../../img/plugin-customField_select_single.png)
 

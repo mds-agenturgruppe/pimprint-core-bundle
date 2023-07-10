@@ -96,7 +96,7 @@ class FragmentParser extends AbstractParser
      * @param string     $html  HTML strings to parse.
      * @param Style|null $style Optional Style to apply to the parsed HTML.
      *
-     * @return AbstractParser|AbstractBox[]
+     * @return AbstractParser|array
      * @throws FilesystemException
      */
     public function parse(string $html, Style $style = null): AbstractParser|array

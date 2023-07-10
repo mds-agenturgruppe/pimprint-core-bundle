@@ -9,12 +9,12 @@ The following chapters shows the basic steps to create a rendering project that 
 The `GettingStarted` example below is integrated in [PimPrint-Demo](../05_PimPrint-Demo/README.md). 
 
 ## Creating a project
-Create a class which extends `\Mds\PimPrint\CoreBundle\Project\AbstractProject`.
+Create a class which extends `\Mds\PimPrint\CoreBundle\Project\RenderingProject`.
 ```php
 <?php
-use Mds\PimPrint\CoreBundle\Project\AbstractProject;
+use Mds\PimPrint\CoreBundle\Project\RenderingProject;
 
-class GettingStarted extends AbstractProject
+class GettingStarted extends RenderingProject
 {
     /**
      * Returns all publications in tree structure to display in InDesign-Plugin.
@@ -39,18 +39,18 @@ class GettingStarted extends AbstractProject
 Register the class as a Symfony service.
 ```yaml
 services:
-    _defaults:
-        autowire: true
-        autoconfigure: true
-        public: false
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
 
-    AppBundle\Services\GettingStarted:
-        parent: mds.pimprint.core.abstract_project
-        public: true   
-        autowire: true
-        autoconfigure: false
+  AppBundle\Services\GettingStarted:
+    parent: mds.pimprint.core.rendering_project
+    public: true
+    autowire: true
+    autoconfigure: false
 ```  
-Project services must use `mds.pimprint.core.abstract_project` as `parent` and be defined as `public` service. 
+Project services must use `mds.pimprint.core.rendering_project` as `parent` and be defined as `public` service. 
 
 The project must be registered in `MdsPimPrintCoreBundle` by adding configuration to the `mds_pim_print_core` node:
 ```yaml
@@ -92,7 +92,7 @@ Custom domain logic can be implemented by extending the service like shown in [P
 <?php
 use Mds\PimPrint\CoreBundle\Service\InDesign\PublicationTreeBuilder;
 
-class GettingStarted extends AbstractProject
+class GettingStarted extends RenderingProject
 {
     /**
      * PublicationTreeBuilder instance.

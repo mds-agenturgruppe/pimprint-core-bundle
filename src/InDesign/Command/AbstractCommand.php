@@ -16,6 +16,8 @@ namespace Mds\PimPrint\CoreBundle\InDesign\Command;
 /**
  * Class AbstractCommand
  *
+ * @SuppressWarnings(PHPMD.NumberOfChildren)
+ *
  * @package Mds\PimPrint\CoreBundle\InDesign\Command
  */
 abstract class AbstractCommand
@@ -57,7 +59,7 @@ abstract class AbstractCommand
     }
 
     /**
-     * Method is used internaly to remove empty params before generating the InDesign command.
+     * Method is used internally to remove empty params before generating the InDesign command.
      *
      * @param string $param
      *

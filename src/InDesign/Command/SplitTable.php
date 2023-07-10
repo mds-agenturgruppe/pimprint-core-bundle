@@ -135,7 +135,7 @@ class SplitTable extends AbstractCommand implements ImageCollectorInterface
     /**
      * Registers pre commands.
      *
-     * @param AbstractCommand[] $preCommands
+     * @param array $preCommands
      *
      * @return SplitTable
      */

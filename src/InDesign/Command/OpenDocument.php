@@ -125,9 +125,10 @@ class OpenDocument extends AbstractCommand
      *
      * @param string $value
      *
+     * @return void
      * @throws \Exception
      */
-    protected function validateType(string $value)
+    protected function validateType(string $value): void
     {
         switch ($value) {
             case self::TYPE_USECURRENT:

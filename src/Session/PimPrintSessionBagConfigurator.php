@@ -35,8 +35,10 @@ class PimPrintSessionBagConfigurator implements SessionConfiguratorInterface
      * Configure the session (e.g. register a bag)
      *
      * @param SessionInterface $session
+     *
+     * @return void
      */
-    public function configure(SessionInterface $session)
+    public function configure(SessionInterface $session): void
     {
         $bag = new AttributeBag('_' . self::NAMESPACE);
         $bag->setName(self::NAMESPACE);

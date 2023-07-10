@@ -1,4 +1,5 @@
 # Input
+
 The most basic custom field is `\Mds\PimPrint\CoreBundle\InDesign\CustomField\Input`. It creates a simple input field for manual user content in the InDesign plugin.
 
 * [Options](#page_options)
@@ -6,6 +7,7 @@ The most basic custom field is `\Mds\PimPrint\CoreBundle\InDesign\CustomField\In
 * [Display in InDesign](#page_Display_in_InDesign)
 
 ## Options
+
 | Option   | Default | Required | Documentation                                                        |
 |----------|---------|----------|----------------------------------------------------------------------|
 | param    | `null`  | Yes      | Internal identifier of the custom field                              |
@@ -15,6 +17,7 @@ The most basic custom field is `\Mds\PimPrint\CoreBundle\InDesign\CustomField\In
 > All options are set via setters in the custom field type class.
 
 ## Usage in PHP API
+
 You can create your own input field class by extending: \
 `\Mds\PimPrint\CoreBundle\InDesign\CustomField\Input`
 
@@ -41,6 +44,7 @@ class MyInput extends Input
 ```
 
 Adding the field to the project service:
+
 ```php
 <?php
 class GettingStarted extends AbstractProject
@@ -58,6 +62,7 @@ class GettingStarted extends AbstractProject
 ```
 
 Accessing the input in rendering process:
+
 ```php
 class GettingStarted extends AbstractProject
 {
@@ -76,4 +81,5 @@ class GettingStarted extends AbstractProject
 ```
 
 ## Display in InDesign
+
 ![Plugin CustomField Input](../../img/plugin-customField_input.png)

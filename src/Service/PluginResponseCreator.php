@@ -13,6 +13,7 @@
 
 namespace Mds\PimPrint\CoreBundle\Service;
 
+use League\Flysystem\FilesystemException;
 use Mds\PimPrint\CoreBundle\InDesign\Traits\MissingAssetNotifierTrait;
 use Mds\PimPrint\CoreBundle\Session\PimPrintSessionBagConfigurator;
 use Pimcore\Http\RequestHelper;
@@ -97,6 +98,7 @@ class PluginResponseCreator
      *
      * @return JsonResponse
      * @throws \Exception
+     * @throws FilesystemException
      */
     protected function buildResponse(array $data, int $status = Response::HTTP_OK): JsonResponse
     {
@@ -158,6 +160,7 @@ class PluginResponseCreator
      *
      * @return void
      * @throws \Exception
+     * @throws FilesystemException
      */
     private function addSettings(array &$data): void
     {

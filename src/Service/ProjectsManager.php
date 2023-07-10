@@ -15,6 +15,7 @@ namespace Mds\PimPrint\CoreBundle\Service;
 
 use Mds\PimPrint\CoreBundle\Project\AbstractProject;
 use Mds\PimPrint\CoreBundle\Project\Config;
+use Mds\PimPrint\CoreBundle\Project\MasterLocaleRenderingProject;
 
 /**
  * ProjectsManager registers all configured PimPrint rendering project services defined in
@@ -99,6 +100,17 @@ class ProjectsManager
         }
 
         return self::$project;
+    }
+
+    /**
+     * Returns true if current rendered project is a LocalizedRenderingProject
+     *
+     * @return bool
+     * @throws \Exception
+     */
+    public static function isLocalizedProject(): bool
+    {
+        return self::getProject() instanceof MasterLocaleRenderingProject;
     }
 
     /**

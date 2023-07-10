@@ -179,4 +179,22 @@ trait SizeTrait
             $this->setResize(AbstractBox::RESIZE_WIDTH_HEIGHT);
         }
     }
+
+    /**
+     * Asserts that width and height parameters are set.
+     *
+     * @return void
+     * @throws \Exception
+     */
+    protected function assertDimensions(): void
+    {
+        $width = $this->getParam('width');
+        $height = $this->getParam('height');
+
+        if (empty($width) && empty($height)) {
+            throw new \Exception(
+                sprintf("Element '%s' must have 'width' and 'height' parameter set.", static::class)
+            );
+        }
+    }
 }

@@ -43,8 +43,10 @@ class Configuration implements ConfigurationInterface
      * Add PimPrint projects configuration.
      *
      * @param ArrayNodeDefinition $rootNode
+     *
+     * @return void
      */
-    private function addProjectConfig(ArrayNodeDefinition $rootNode)
+    private function addProjectConfig(ArrayNodeDefinition $rootNode): void
     {
         $rootNode->children()
                     ->arrayNode('lc_numeric')
@@ -72,8 +74,8 @@ class Configuration implements ConfigurationInterface
                                 ->info('Name of project displayed in InDesign-Plugin.')->end()
                             ->scalarNode('service')->isRequired()
                                 ->info('Service to use to render the project. Must inherit AbstractProject.')->end()
-                            ->booleanNode('create_update_info')->defaultValue(true)
-                                ->info('Toggles creation of update info layers.')->end()
+                            ->booleanNode('create_update_layers')->defaultValue(true)
+                                ->info('Toggles creation of update info articles.')->end()
                             ->arrayNode('template')->isRequired()
                                 ->info('InDesign Template settings.')
                                 ->children()
@@ -93,7 +95,7 @@ class Configuration implements ConfigurationInterface
                                         ->info('Show fields for update modes.')->end()
                                     ->arrayNode('update_modes')
                                         ->info('Available update modes for project.')
-                                    ->defaultValue([501, 502, 512])
+                                    ->defaultValue([])
                                         ->prototype('scalar')->end()
                                     ->end()
                                     ->booleanNode('start_alignment')->defaultValue(false)

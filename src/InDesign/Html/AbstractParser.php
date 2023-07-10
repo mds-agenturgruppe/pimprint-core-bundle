@@ -527,8 +527,8 @@ abstract class AbstractParser
      * Creates a new paragraph with all $characters and $style.
      * If no content is inside $components an exception is thrown.
      *
-     * @param ParagraphComponent[] $components
-     * @param string|null          $style
+     * @param array       $components
+     * @param string|null $style
      *
      * @return Paragraph
      * @throws \Exception

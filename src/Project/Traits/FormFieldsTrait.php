@@ -15,7 +15,6 @@ namespace Mds\PimPrint\CoreBundle\Project\Traits;
 
 use Mds\PimPrint\CoreBundle\InDesign\CustomField\AbstractField;
 use Mds\PimPrint\CoreBundle\Project\AbstractProject;
-use Mds\PimPrint\CoreBundle\Service\PluginParameters;
 
 /**
  * Trait FormFieldsTrait
@@ -34,18 +33,6 @@ trait FormFieldsTrait
         'page_bounds'     => 'pageBounds',
         'update_mode'     => 'updateMode',
         'publications'    => 'publications',
-    ];
-
-    /**
-     * Allowed update modes.
-     *
-     * @var array
-     */
-    protected array $allowedUpdateModes = [
-        PluginParameters::UPDATE_ALL_POSITION_CONTENT,
-        PluginParameters::UPDATE_ALL_CONTENT,
-        PluginParameters::UPDATE_SELECTED_POSITION_CONTENT,
-        PluginParameters::UPDATE_SELECTED_CONTENT,
     ];
 
     /**
@@ -89,9 +76,13 @@ trait FormFieldsTrait
                 $return[$field] = false;
             }
         }
-        foreach ($this->allowedUpdateModes as $mode) {
-            if (true === in_array($mode, $config['update_modes'])) {
-                $return['updateModes'][] = $mode;
+        if (empty($config['update_modes'])) {
+            $return['updateModes'] = $this->defaultUpdateModes;
+        } else {
+            foreach ($this->allowedUpdateModes as $mode) {
+                if (in_array($mode, $config['update_modes'])) {
+                    $return['updateModes'][] = $mode;
+                }
             }
         }
 
@@ -101,6 +92,7 @@ trait FormFieldsTrait
 
         return $return;
     }
+
 
     /**
      * Template method to be extended in concrete rendering projects to create custom form fields in InDesign plugin.
