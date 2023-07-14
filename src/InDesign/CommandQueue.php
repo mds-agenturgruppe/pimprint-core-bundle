@@ -240,7 +240,7 @@ class CommandQueue
         foreach ($commands as $command) {
             if (isset($command['tid'])) {
                 if (isset($command['localized']) && $command['localized']) {
-                    $boxName = preg_replace('/#(\w{2}|\w{2}_\w{2})$/', '#', $command['tid']);
+                    $boxName = preg_replace('/#(\w{2,3}|\w{2,3}_\w{2,4}|\w{2,3}_\w{2,4}_\w{2,5})$/', '#', $command['tid']);
                     $boxName = $command['name'] . '#' . $boxName;
                 } else {
                     $boxName = $command['name'] . '#' . $command['tid'] . '#';
@@ -415,7 +415,7 @@ class CommandQueue
     private function removeLocaleFromSelectedElements(array &$selectedElements): void
     {
         foreach ($selectedElements as &$boxName) {
-            $boxName = preg_replace('/#(\w{2}|\w{2}_\w{2})#$/', '#', $boxName);
+            $boxName = preg_replace('/#(\w{2,3}|\w{2,3}_\w{2,4}|\w{2,3}_\w{2,4}_\w{2,5})#$/', '#', $boxName);
         }
     }
 }
