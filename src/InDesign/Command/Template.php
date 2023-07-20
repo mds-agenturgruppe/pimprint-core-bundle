@@ -41,7 +41,7 @@ class Template extends AbstractCommand implements ImageCollectorInterface
      *
      * @var string
      */
-    const IDENT_PREFIX = 'T-AUTO#';
+    const IDENT_PREFIX = 'T-AUTO-';
 
     /**
      * Defines commands for use on single page documents.
