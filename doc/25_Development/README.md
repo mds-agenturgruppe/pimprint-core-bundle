@@ -14,11 +14,11 @@ This chapter gives a quick introduction to implement InDesign document generatio
 ## Start developing
 
 To start developing with PimPrint good entry points are the fully documented example projects provided with the [PimPrint-Demo](../05_PimPrint-Demo/README.md).
-Start with the [demo rendering Services](https://github.com/mds-agenturgruppe/pimprint-demo-bundle/tree/master/src/Service) and
+Start with the [demo rendering Services](https://github.com/mds-agenturgruppe/pimprint-demo-bundle/tree/3.x/src/Service) and
 perhaps [step through them with a debugger](#page_Debugging).
 
 For a full documented demo of all [Rendering Commands](../15_Rendering_Commands.md) refer to
-the [Command demos classes](https://github.com/mds-agenturgruppe/pimprint-demo-bundle/tree/master/src/Project/CommandDemo) also included
+the [Command demos classes](https://github.com/mds-agenturgruppe/pimprint-demo-bundle/tree/3.x/src/Project/CommandDemo) also included
 in [PimPrint-Demo](../05_PimPrint-Demo/README.md).
 
 ## REST API

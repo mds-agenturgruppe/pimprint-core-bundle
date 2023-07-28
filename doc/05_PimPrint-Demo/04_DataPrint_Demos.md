@@ -57,8 +57,6 @@ comprehensive feedback of the update generation process. Click on `Window > Arti
 | PimPrint-Updated | Element content was updated.                                                                                                                                                                     |
 | PimPrint-Created | New created elements.                                                                                                                                                                            |
 
-![PimPrint - Comprehensive Update Layers](../img/plugin-comprehensive_update_layers.png)
-
 ### Render Modes
 
 PimPrint offers different render modes.
