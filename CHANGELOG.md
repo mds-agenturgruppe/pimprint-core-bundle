@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Breaking changes
-
+- Compatibility to mds PimPrint 2 InDesign Plugin with overall performance improvements in InDesign.
 - Removed `\Mds\PimPrint\CoreBundle\InDesign\Command\TextBox::setDefaultUseLanguageLayer`
     - Use localized InDesign page-elements feature
 - Renamed config parameter `create_update_info` to `create_update_layers`
@@ -37,6 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - `\Mds\PimPrint\CoreBundle\Project\LocalizedRenderingProject`
 - ScaledImageBox for scaling and offset ImageBoxes:
     - `\Mds\PimPrint\CoreBundle\InDesign\Command\ImageBoxScaled`
+- Add `\Mds\PimPrint\CoreBundle\InDesign\Command\VariableOutput` to output InDesign variables in the plugin.
 
 ### Fix
 

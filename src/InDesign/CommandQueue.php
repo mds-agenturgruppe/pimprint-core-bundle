@@ -240,7 +240,11 @@ class CommandQueue
         foreach ($commands as $command) {
             if (isset($command['tid'])) {
                 if (isset($command['localized']) && $command['localized']) {
-                    $boxName = preg_replace('/#(\w{2,3}|\w{2,3}_\w{2,4}|\w{2,3}_\w{2,4}_\w{2,5})$/', '#', $command['tid']);
+                    $boxName = preg_replace(
+                        '/#(\w{2,3}|\w{2,3}_\w{2,4}|\w{2,3}_\w{2,4}_\w{2,5})$/',
+                        '#',
+                        $command['tid']
+                    );
                     $boxName = $command['name'] . '#' . $boxName;
                 } else {
                     $boxName = $command['name'] . '#' . $command['tid'] . '#';
@@ -268,7 +272,10 @@ class CommandQueue
     {
         $this->processVariables($command);
         $this->ensureBoxIdent($command);
-        $this->commands[] = $command->buildCommand();
+        $array = $command->buildCommand();
+        if (!empty($array)) {
+            $this->commands[] = $array;
+        }
         $this->registerAsset($command);
 
         return $this;

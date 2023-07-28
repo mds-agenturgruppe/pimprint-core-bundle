@@ -69,7 +69,7 @@ The InDesign plugin provided by mds as an CEP-Extension ZXP-File. Please email <
 information.
 
 For easy installation of the ZXP-File we recommend [Anastasiy’s Extension Manager](https://install.anastasiy.com) available for Mac and Windows platforms.
-Install the extension manager, launch it and choose the `mds.pimprint.indesign.plugin.v2-x.x.x.zxp` extension file to install.
+Install the extension manager, launch it and choose the `mds.pimprint.v2.indesign.plugin-2.x.x.zxp` extension file to install.
 
 ## Connecting the InDesign-Plugin with Pimcore
 
