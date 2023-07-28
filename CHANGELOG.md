@@ -7,7 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.0] - 2023-07-28
+
 ### Breaking changes
+
 - Compatibility to mds PimPrint 2 InDesign Plugin with overall performance improvements in InDesign.
 - Removed `\Mds\PimPrint\CoreBundle\InDesign\Command\TextBox::setDefaultUseLanguageLayer`
     - Use localized InDesign page-elements feature
