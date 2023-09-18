@@ -13,6 +13,7 @@
 
 namespace Mds\PimPrint\CoreBundle\InDesign\Command;
 
+use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\DefaultLocalizedTrait;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\FitTrait;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\ImageCollectorTrait;
 use Mds\PimPrint\CoreBundle\InDesign\Text;
@@ -27,6 +28,7 @@ class TextBox extends AbstractBox implements ImageCollectorInterface
 {
     use FitTrait;
     use ImageCollectorTrait;
+    use DefaultLocalizedTrait;
 
     /**
      * Command name.
@@ -51,7 +53,7 @@ class TextBox extends AbstractBox implements ImageCollectorInterface
     const FIT_FRAME_TO_CONTENT = 1;
 
     /**
-     * Resizes the frame so it fits the content but keeps height.
+     * Resizes the frame, so it fits the content but keeps height.
      *
      * @var int
      */
@@ -69,19 +71,11 @@ class TextBox extends AbstractBox implements ImageCollectorInterface
     );
 
     /**
-     * Default value for automatic text language layers.
-     *
-     * @var bool
-     */
-    protected static $useLanguageLayer = true;
-
-    /**
      * Available command params with default values.
      *
      * @var array
      */
     private $availableParams = [
-        'nolnglayer' => null,
         'values'     => [],
         'fit'        => self::FIT_NO_ADJUST,
     ];
@@ -121,6 +115,7 @@ class TextBox extends AbstractBox implements ImageCollectorInterface
         $this->setHeight($height);
         $this->setFit($fit);
         $this->setResize(self::RESIZE_WIDTH_HEIGHT);
+        $this->setDefaultLocalizedParam();
     }
 
     /**
@@ -134,37 +129,6 @@ class TextBox extends AbstractBox implements ImageCollectorInterface
     public function setFit($fit)
     {
         $this->setParam('fit', $fit);
-
-        return $this;
-    }
-
-    /**
-     * Sets the default behaviour of language text layers. By default every text box uses this value.
-     * The predefined value is true.
-     *
-     * @param bool $useLanguageLayer
-     *
-     * @return void
-     */
-    public static function setDefaultUseLanguageLayer(bool $useLanguageLayer)
-    {
-        self::$useLanguageLayer = $useLanguageLayer;
-    }
-
-    /**
-     * Sets if text box should be placed on language layers
-     *
-     * @param bool $useLanguageLayer
-     *
-     * @return TextBox
-     * @throws \Exception
-     */
-    public function setUseLanguageLayer(bool $useLanguageLayer)
-    {
-        $this->setParam(
-            'nolnglayer',
-            $useLanguageLayer ? 0 : 1
-        );
 
         return $this;
     }
@@ -231,22 +195,5 @@ class TextBox extends AbstractBox implements ImageCollectorInterface
         $this->collectedImages = [];
 
         return $this;
-    }
-
-    /**
-     * Builds command array that is sent as JSON to InDesign.
-     *
-     * @param bool $addCmd
-     *
-     * @return array
-     * @throws \Exception
-     */
-    public function buildCommand(bool $addCmd = true)
-    {
-        if (false === isset($this->params['nolnglayer'])) {
-            $this->params['nolnglayer'] = self::$useLanguageLayer ? 0 : 1;
-        }
-
-        return parent::buildCommand($addCmd);
     }
 }

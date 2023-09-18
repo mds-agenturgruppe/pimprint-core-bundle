@@ -59,14 +59,20 @@ trait BoxIdentBuilderTrait
         if (false === $command instanceof AbstractBox) {
             return;
         }
-        /* @var AbstractBox $command */
         $boxIdent = $command->getBoxIdent();
         if (false === empty($boxIdent)) {
+            $command->setBoxIdent($this->appendLocaleToBoxIdent($command, $boxIdent));
             $this->ensureUniqueBoxIdent($command);
 
             return;
         }
-        $command->setBoxIdent($this->buildGenericBoxIdent($command));
+
+        $command->setBoxIdent(
+            $this->appendLocaleToBoxIdent(
+                $command,
+                $this->buildGenericBoxIdent($command)
+            )
+        );
         $this->ensureUniqueBoxIdent($command);
     }
 
@@ -158,5 +164,29 @@ trait BoxIdentBuilderTrait
         } catch (\Exception $e) {
             return 0;
         }
+    }
+
+    /**
+     * Adds locale to $ident of $abstractBox is localized
+     *
+     * @param AbstractBox $abstractBox
+     * @param string      $ident
+     *
+     * @return string
+     * @throws \Exception
+     */
+    private function appendLocaleToBoxIdent(AbstractBox $abstractBox, string $ident): string
+    {
+        if (!$abstractBox->getLocalized()) {
+            return $ident;
+        }
+        $language = $this->getProject()
+                         ->getLanguage();
+
+        if (empty($abstractBox->getLocale())) {
+            $abstractBox->setLocale($language);
+        }
+
+        return $ident . '#' . $language;
     }
 }

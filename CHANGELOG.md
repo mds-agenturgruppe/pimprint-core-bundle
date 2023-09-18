@@ -6,6 +6,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.0] - 2023-09-18
+### Breaking changes
+- Removed `\Mds\PimPrint\CoreBundle\InDesign\Command\TextBox::setDefaultUseLanguageLayer`
+    - Use localized InDesign Page-Elements feature
+
+### Feature
+- Localized InDesign Page-Elements
+  - `\Mds\PimPrint\CoreBundle\InDesign\Command\AbstractBox::setLocalized`
+  - Default setting for all `AbstractBox` types via:
+    - `\Mds\PimPrint\CoreBundle\InDesign\Command\Traits\DefaultLocalizedTrait::setDefaultLocalized`
+    - `\Mds\PimPrint\CoreBundle\InDesign\Command\AbstractBox::setDefaultLocalized`
+- Enhanced `boxIdentReference` handling for content sensitive updated 
+  - `\Mds\PimPrint\CoreBundle\Project\Traits\BoxIdentTrait::$boxIdentReference`
+
 ## [1.3.2] - 2022-10-31
 ### Fixed
 - Allow `image/x-eps` to be used in `ImageBox`.

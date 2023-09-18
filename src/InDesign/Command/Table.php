@@ -13,6 +13,7 @@
 
 namespace Mds\PimPrint\CoreBundle\InDesign\Command;
 
+use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\DefaultLocalizedTrait;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\FitTrait;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\ImageCollectorTrait;
 use Mds\PimPrint\CoreBundle\InDesign\Text;
@@ -27,6 +28,7 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
 {
     use FitTrait;
     use ImageCollectorTrait;
+    use DefaultLocalizedTrait;
 
     /**
      * Command name.

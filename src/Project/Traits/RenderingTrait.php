@@ -38,23 +38,6 @@ trait RenderingTrait
     private $generationActive = false;
 
     /**
-     * Reference string for box ident generation.
-     * Used to generate unique content related box idents to create coupling between Pimcore content
-     * (Objects, Assets, Documents) and InDesign elements.
-     * Typical usage: use Object-Ids here.
-     *
-     * @var string
-     */
-    private $boxIdentReference = '';
-
-    /**
-     * Postfix used in generic box ident generation.
-     *
-     * @var string
-     */
-    private $boxIdentGenericPostfix = '';
-
-    /**
      * Generates PimPrint commands to build a publication in InDesign.
      *
      * @return array
@@ -77,64 +60,6 @@ trait RenderingTrait
     final public function isGenerationActive()
     {
         return $this->generationActive;
-    }
-
-    /**
-     * Returns $boxIdentReference.
-     *
-     * @return string
-     */
-    public function getBoxIdentReference(): string
-    {
-        return $this->boxIdentReference;
-    }
-
-    /**
-     * Sets $ident as boxIdentReference for content aware updates.
-     *
-     * @param string $ident
-     *
-     * @see RenderingTrait::$boxIdentReference
-     *
-     */
-    public function setBoxIdentReference(string $ident)
-    {
-        $this->boxIdentReference = $ident;
-    }
-
-    /**
-     * Appends $ident to existing for content aware updates.
-     *
-     * @param string $ident
-     *
-     * @see RenderingTrait::$boxIdentReference
-     *
-     */
-    public function appendToBoxIdentReference(string $ident)
-    {
-        $this->setBoxIdentReference(
-            $this->getBoxIdentReference() . $ident
-        );
-    }
-
-    /**
-     * Returns $boxIdentGenericPostfix.
-     *
-     * @return string
-     */
-    public function getBoxIdentGenericPostfix(): string
-    {
-        return $this->boxIdentGenericPostfix;
-    }
-
-    /**
-     * Sets $boxIdentGenericPostfix.
-     *
-     * @param string $postfix
-     */
-    public function setBoxIdentGenericPostfix(string $postfix)
-    {
-        $this->boxIdentGenericPostfix = $postfix;
     }
 
     /**
@@ -203,7 +128,6 @@ trait RenderingTrait
     {
         $this->addCommand(new RemoveEmptyLayers());
 
-        /* @var AbstractProject $this */
         return $this;
     }
 
@@ -218,7 +142,6 @@ trait RenderingTrait
         $this->setPhpSettings();
         $this->setNumericLocale();
 
-        /* @var AbstractProject $this */
         return $this;
     }
 
@@ -269,7 +192,6 @@ trait RenderingTrait
              ->addCommand(new OpenDocument(OpenDocument::TYPE_TEMPLATE, '0', $template))
              ->addCommand(new Variable('GENERATED_AT', time()));
 
-        /* @var AbstractProject $this */
         return $this;
     }
 }

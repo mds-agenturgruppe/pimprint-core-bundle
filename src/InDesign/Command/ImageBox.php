@@ -13,6 +13,7 @@
 
 namespace Mds\PimPrint\CoreBundle\InDesign\Command;
 
+use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\DefaultLocalizedTrait;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\FitTrait;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\ImageCollectorTrait;
 use Mds\PimPrint\CoreBundle\InDesign\Text\ParagraphComponent;
@@ -33,6 +34,7 @@ class ImageBox extends AbstractBox implements ParagraphComponent, ImageCollector
     use ProjectAwareTrait;
     use ImageCollectorTrait;
     use MissingAssetNotifierTrait;
+    use DefaultLocalizedTrait;
 
     /**
      * Command name.
@@ -193,6 +195,8 @@ class ImageBox extends AbstractBox implements ParagraphComponent, ImageCollector
         if ($asset instanceof Asset) {
             $this->setAsset($asset);
         }
+
+        $this->setDefaultLocalizedParam();
     }
 
     /**

@@ -13,6 +13,8 @@
 
 namespace Mds\PimPrint\CoreBundle\InDesign\Command;
 
+use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\DefaultLocalizedTrait;
+
 /**
  * Places a copy of a box from template document.
  *
@@ -20,6 +22,8 @@ namespace Mds\PimPrint\CoreBundle\InDesign\Command;
  */
 class CopyBox extends AbstractBox
 {
+    use DefaultLocalizedTrait;
+
     /**
      * Command name.
      *
@@ -57,5 +61,6 @@ class CopyBox extends AbstractBox
         $this->setTop($top);
         $this->setWidth($width);
         $this->setHeight($height);
+        $this->setDefaultLocalizedParam();
     }
 }
