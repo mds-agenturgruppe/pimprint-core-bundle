@@ -20,7 +20,6 @@ use Pimcore\Http\RequestHelper;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBag;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
  * Class PluginResponseCreator
@@ -182,17 +181,20 @@ class PluginResponseCreator
     private function addSession(array &$data): void
     {
         $request = $this->requestHelper->getMainRequest();
-        $session = $request->getSession();
-        if (false === $session instanceof SessionInterface) {
+        try {
+            $session = $request->getSession();
+        } catch (\Exception) {
             return;
         }
+
         $sessionBag = $session->getBag(PimPrintSessionBagConfigurator::NAMESPACE);
-        if (false === $sessionBag instanceof AttributeBag) {
+        if (!$sessionBag instanceof AttributeBag) {
             return;
         }
-        if (false === $sessionBag->has('sendId')) {
+        if (!$sessionBag->has('sendId')) {
             return;
         }
+
         $data['session'] = [
             'name' => $session->getName(),
             'id'   => $session->getId(),
@@ -235,7 +237,7 @@ class PluginResponseCreator
     {
         try {
             $project = ProjectsManager::getProject();
-            if (false === $project->config()
+            if (!$project->config()
                                   ->isAssetDownloadEnabled()) {
                 return;
             }

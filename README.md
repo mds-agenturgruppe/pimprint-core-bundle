@@ -4,29 +4,36 @@ mds PimPrint CoreBundle - The InDesign Printing Solution for Pimcore.
 
 ## Supported Pimcore Versions
 
+- Pimcore 11: `mds-agenturgruppe/pimprint-core-bundle:^4.0`
 - Pimcore 10: `mds-agenturgruppe/pimprint-core-bundle:^3.0`
-- Pimcore 10: `mds-agenturgruppe/pimprint-core-bundle:^2.0`
 - Pimcore 5/6: `mds-agenturgruppe/pimprint-core-bundle:^1.0`
 
 ## Prerequisites
 
-- [PHP 8.0](https://secure.php.net/) or higher
-- [Pimcore](https://github.com/pimcore/pimcore) Version 10.x
+- [PHP 8.1](https://secure.php.net/) or higher
+- [Pimcore](https://github.com/pimcore/pimcore) Version 11.x
 
-## Installation for Pimcore 10
+## Installation for Pimcore 11
 
-Install the `MdsPimPrintCoreBundle` into your Pimcore by issuing:
+Install `MdsPimPrintCoreBundle` into your Pimcore by issuing:
 
 ```bash
-composer require mds-agenturgruppe/pimprint-core-bundle:^3.0
+composer require mds-agenturgruppe/pimprint-core-bundle:^4.0
 ```
 
-Enable and install `MdsPimPrintCoreBundle` with:
+Enable `MdsPimPrintCoreBundle` in `config/bundles.php`:
+
+```php
+MdsPimPrintCoreBundle::class => ['all' => true],
+```
+
+Install `MdsPimPrintCoreBundle` with:
 
 ```bash
-bin/console pimcore:bundle:enable MdsPimPrintCoreBundle
 bin/console pimcore:bundle:install MdsPimPrintCoreBundle
 ```
+
+For further details please refer the [installation guide](https://pimprint.mds.eu/docs/Getting_Started/Installation.html) in the documentation.
 
 ## InDesign Plugin
 

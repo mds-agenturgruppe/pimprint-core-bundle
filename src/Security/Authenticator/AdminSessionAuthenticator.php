@@ -14,13 +14,18 @@
 namespace Mds\PimPrint\CoreBundle\Security\Authenticator;
 
 use Mds\PimPrint\CoreBundle\Security\Traits\InDesignRequestDetector;
-use Pimcore\Bundle\AdminBundle\Security\Authenticator\AdminSessionAuthenticator as PimcoreAdminSessionAuthenticator;
+use Pimcore\Bundle\AdminBundle\Security\Authenticator\AdminAbstractAuthenticator;
+use Pimcore\Security\User\User;
 use Pimcore\Tool\Authentication;
+use Pimcore\Tool\Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
+use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
 
 /**
@@ -28,7 +33,7 @@ use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface
  *
  * @package Security\Authenticator
  */
-class AdminSessionAuthenticator extends PimcoreAdminSessionAuthenticator implements AuthenticationEntryPointInterface
+class AdminSessionAuthenticator extends AdminAbstractAuthenticator implements AuthenticationEntryPointInterface
 {
     use InDesignRequestDetector;
 
@@ -63,12 +68,32 @@ class AdminSessionAuthenticator extends PimcoreAdminSessionAuthenticator impleme
      * @param Request $request
      *
      * @return Passport
+     * @see \Pimcore\Bundle\AdminBundle\Security\Authenticator\AdminTokenAuthenticator::authenticate
      */
     public function authenticate(Request $request): Passport
     {
-        $this->user = Authentication::authenticateSession($request);
+        $pimcoreUser = Authentication::authenticateSession($request);
 
-        return parent::authenticate($request);
+        if ($pimcoreUser) {
+            $pimcoreUser->setTwoFactorAuthentication('required', false);
+
+            $userBadge = new UserBadge($pimcoreUser->getUsername(), function () use ($pimcoreUser) {
+                return new User($pimcoreUser);
+            });
+
+            if ($request->get('reset', false)) {
+                // save the information to session when the user want's to reset the password
+                // this is because otherwise the old password is required => see also PIMCORE-1468
+
+                Session::useBag($request->getSession(), function (AttributeBagInterface $adminSession) {
+                    $adminSession->set('password_reset', true);
+                });
+            }
+
+            return new SelfValidatingPassport($userBadge);
+        }
+
+        throw new AuthenticationException('Failed to authenticate with username and token');
     }
 
     /**
@@ -89,11 +114,11 @@ class AdminSessionAuthenticator extends PimcoreAdminSessionAuthenticator impleme
      *
      * @param Request        $request
      * @param TokenInterface $token
-     * @param string         $providerKey
+     * @param string         $firewallName
      *
      * @return Response|null
      */
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey): ?Response
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
         return null;
     }

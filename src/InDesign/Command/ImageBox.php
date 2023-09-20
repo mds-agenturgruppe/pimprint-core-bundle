@@ -253,7 +253,8 @@ class ImageBox extends FileBox implements ImageCollectorInterface
                         ->getHostUrl();
         $this->setParam('assetId', $asset->getId());
         if (null === $thumbnailName) {
-            $thumbUrl = $thumbnailHelper->replaceNotSupported($thumbnail->getPath(true));
+            $args['deferredAllowed'] = true;
+            $thumbUrl = $thumbnailHelper->replaceNotSupported($thumbnail->getPath($args));
             $this->setParam('src', $asset->getRealFullPath());
             $this->setParam('mtime', $storage->lastModified($asset->getRealFullPath()));
             $this->setParam('srcFileSize', $asset->getFileSize());
@@ -276,7 +277,8 @@ class ImageBox extends FileBox implements ImageCollectorInterface
     {
         $thumbnailHelper = $this->getProject()
                                 ->thumbnailHelper();
-        $srcUrl = $thumbnail->getPath(false);
+        $args['deferredAllowed'] = false;
+        $srcUrl = $thumbnail->getPath($args);
         if ($thumbnailHelper->isNotSupportedImage($srcUrl)) {
             $srcUrl = $thumbnailHelper->replaceNotSupported($srcUrl);
             $fileSize = 259010;

@@ -16,6 +16,7 @@ namespace Mds\PimPrint\CoreBundle\DependencyInjection;
 use Mds\PimPrint\CoreBundle\Service\ProjectsManager;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
 
@@ -24,7 +25,7 @@ use Symfony\Component\DependencyInjection\Loader;
  *
  * @package Mds\PimPrint\CoreBundle\DependencyInjection
  */
-class MdsPimPrintCoreExtension extends Extension
+class MdsPimPrintCoreExtension extends Extension implements PrependExtensionInterface
 {
     /**
      * Loads a specific configuration.
@@ -32,9 +33,10 @@ class MdsPimPrintCoreExtension extends Extension
      * @param array            $configs
      * @param ContainerBuilder $container
      *
+     * @return void
      * @throws \Exception
      */
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
@@ -48,14 +50,39 @@ class MdsPimPrintCoreExtension extends Extension
     }
 
     /**
+     * {@inheritDoc}
+     *
+     * @param ContainerBuilder $container
+     *
+     * @return void
+     */
+    public function prepend(ContainerBuilder $container): void
+    {
+        $config = [
+            'pattern'               => '^/pimprint-api',
+            'stateless'             => false,
+            'provider'              => 'pimcore_admin',
+            'user_checker'          => 'Pimcore\Security\User\UserChecker',
+            'entry_point'           => 'Mds\PimPrint\CoreBundle\Security\Authenticator\AdminSessionAuthenticator',
+            'custom_authenticators' => [
+                'Mds\PimPrint\CoreBundle\Security\Authenticator\AdminSessionAuthenticator',
+                'Mds\PimPrint\CoreBundle\Security\Authenticator\InDesignAuthenticator',
+            ]
+        ];
+
+        $container->setParameter('mds.pimprint.core.firewall_settings', $config);
+    }
+
+    /**
      * Registers projects from configuration in Projects service.
      *
      * @param ContainerBuilder $container
      * @param array            $config
      *
+     * @return void
      * @throws \Exception
      */
-    public function registerProjects(ContainerBuilder $container, array $config)
+    public function registerProjects(ContainerBuilder $container, array $config): void
     {
         if (false === isset($config['projects'])) {
             return;

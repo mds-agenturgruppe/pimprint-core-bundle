@@ -18,9 +18,9 @@ use Mds\PimPrint\CoreBundle\Service\JsonRequestDecoder;
 use Mds\PimPrint\CoreBundle\Service\PluginParameters;
 use Mds\PimPrint\CoreBundle\Service\PluginResponseCreator;
 use Mds\PimPrint\CoreBundle\Service\ProjectsManager;
-use Pimcore\Bundle\AdminBundle\Security\User\UserLoader;
 use Pimcore\Controller\FrontendController;
 use Pimcore\Http\RequestHelper;
+use Pimcore\Security\User\UserLoader;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\Stream;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -76,7 +76,7 @@ class InDesignController extends FrontendController
         RequestHelper $requestHelper,
         ProjectsManager $projectsManager,
         PluginResponseCreator $pluginResponse,
-        UserLoader $userLoader,
+        UserLoader $userLoader
     ) {
         $this->requestHelper = $requestHelper;
         $this->projectsManager = $projectsManager;
