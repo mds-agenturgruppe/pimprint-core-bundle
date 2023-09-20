@@ -7,8 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [3.2.0] - 2023-11-27
-
 ### Feature
 
 - Asset remote File Storage support
@@ -18,13 +16,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Refactor `\Mds\PimPrint\CoreBundle\Service\ProjectsManager::$project` to non `static` member variable.
 
-## [3.1.0] - 2023-10-11
+## [4.0.0] - 2023-09-20
 
-### Feature
+### Features
 
-- Scalable Vector Graphics (SVG) support in `ImageBox` Command
-    - SVG support can be disabled via `mds_pim_print_core.svg_support` configuration parameter.
-    - Note: SVG support was dropped with CS4, but resumed with version CC 2020 (15.0)
+- Pimcore 11 compatibility
 
 ## [3.0.0] - 2023-07-28
 

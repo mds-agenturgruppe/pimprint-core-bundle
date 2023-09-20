@@ -13,16 +13,17 @@
 
 namespace Mds\PimPrint\CoreBundle\Session;
 
-use Pimcore\Session\SessionConfiguratorInterface;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBag;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
  * Class PimPrintSessionBagConfigurator
  *
  * @package Mds\PimPrint\CoreBundle\Session
  */
-class PimPrintSessionBagConfigurator implements SessionConfiguratorInterface
+class PimPrintSessionBagConfigurator implements EventSubscriberInterface
 {
     /**
      * Session namespace.
@@ -32,14 +33,42 @@ class PimPrintSessionBagConfigurator implements SessionConfiguratorInterface
     const NAMESPACE = 'mds_pimprint';
 
     /**
-     * Configure the session (e.g. register a bag)
+     * {@inheritDoc}
      *
-     * @param SessionInterface $session
+     * @return array[]
+     */
+    public static function getSubscribedEvents(): array
+    {
+        return [
+            KernelEvents::REQUEST => ['onKernelRequest', 127],
+        ];
+    }
+
+    /**
+     * Register session bag
+     *
+     * @param RequestEvent $event
      *
      * @return void
+     *
      */
-    public function configure(SessionInterface $session): void
+    public function onKernelRequest(RequestEvent $event): void
     {
+        if (!$event->isMainRequest()) {
+            return;
+        }
+
+        if ($event->getRequest()->attributes->get('_stateless', false)) {
+            return;
+        }
+
+        $session = $event->getRequest()
+                         ->getSession();
+
+        if ($session->isStarted()) {
+            return;
+        }
+
         $bag = new AttributeBag('_' . self::NAMESPACE);
         $bag->setName(self::NAMESPACE);
 
