@@ -2,58 +2,33 @@
 
 ## Prerequisites
 
-The following guide assumes you have a running [Pimcore](https://pimcore.com) 10.x installation. For installing Pimcore please visit
-the [Pimcore Installation documentation](https://pimcore.com/docs/pimcore/current/Development_Documentation/Getting_Started/Installation.html).
+The following guide assumes you have a running [Pimcore](https://pimcore.com) 11.x installation. For installing Pimcore please visit
+the [Pimcore Getting Started documentation](https://pimcore.com/docs/platform/Pimcore/Getting_Started).
 
 For other Pimcore versions, please refer to the [Supported Pimcore Versions](../README.md#page_Supported_Pimcore_Versions) section.
 
-## Installing PimPrint into Pimcore 10
+## Installing PimPrint into Pimcore 11
 
-Install the `MdsPimPrintCoreBundle` into your Pimcore by issuing:
+Install `MdsPimPrintCoreBundle` into your Pimcore by issuing:
 
 ```bash
-composer require mds-agenturgruppe/pimprint-core-bundle:^3.0
+composer require mds-agenturgruppe/pimprint-core-bundle:^4.0
 ```
 
-Enable `MdsPimPrintCoreBundle` with:
+Enable `MdsPimPrintCoreBundle` in `config/bundles.php`:
 
-```bash
-bin/console pimcore:bundle:enable MdsPimPrintCoreBundle
+```php
+MdsPimPrintCoreBundle::class => ['all' => true],
 ```
 
 PimPrint needs a Symfony security firewall for handling the user authentication process.
-Add the firewall configuration right after `pimcore_admin` in the `firewall` section of your `security.yaml` file.
-
-Choose the right configuration for Authenricator or Guard based security.
-
-#### Authenticator based security
+Add the firewall configuration right after `pimcore_admin` in the `firewall` section of your `config/packages/security.yaml` file.
 
 ```yaml
-pimprint_api:
-    pattern: ^/pimprint-api
-    stateless: true
-    provider: pimcore_admin
-    entry_point: Mds\PimPrint\CoreBundle\Security\Authenticator\AdminSessionAuthenticator
-    custom_authenticators:
-        - Mds\PimPrint\CoreBundle\Security\Authenticator\AdminSessionAuthenticator
-        - Mds\PimPrint\CoreBundle\Security\Authenticator\InDesignAuthenticator
+pimprint_api: '%mds.pimprint.core.firewall_settings%'
 ```
 
-#### Guard based security
-
-```yaml
-pimprint_api:
-    pattern: ^/pimprint-api
-    stateless: true
-    provider: pimcore_admin
-    guard:
-        entry_point: Mds\PimPrint\CoreBundle\Security\Guard\AdminSessionAuthenticator
-        authenticators:
-            - Mds\PimPrint\CoreBundle\Security\Guard\InDesignAuthenticator
-            - Mds\PimPrint\CoreBundle\Security\Guard\AdminSessionAuthenticator 
-```
-
-To automatically add the matching firewall by the installer issue:
+To automatically add the firewall configuration by the installer issue:
 
 ```shell
  bin/console pimcore:bundle:install MdsPimPrintCoreBundle -n
@@ -62,6 +37,8 @@ To automatically add the matching firewall by the installer issue:
 > <strong>Attention</strong>:<br>
 > Do not be surprised that your `security.yaml` looks ugly after automatic installation!<br>
 > `\Symfony\Component\Yaml\Yaml::dump()` sometimes creates really ugly files.
+> 
+> We recomend to add the firewall configuration manually to your `security.yaml`.
 
 ## Installing PimPrint InDesign-Plugin
 

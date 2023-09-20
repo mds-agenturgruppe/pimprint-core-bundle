@@ -17,14 +17,17 @@ PimPrint is the flexible InDesign Printing Solution for Pimcore.
 
 ## Supported Pimcore Versions
 
-PimPrint supports Pimcore 5.x, 6.x and 10.x. Use the apropiate PimPrint Version matching your Pimcore Version.
+PimPrint supports Pimcore 5.x, 6.x, 10.x and 11.x. Use the apropiate PimPrint Version matching your Pimcore Version.
+
+### Pimcore 11.x:
+
+* [PimPrint v4.x on GitHub](https://github.com/mds-agenturgruppe/pimprint-core-bundle/tree/4.x)
+* [PimPrint v4.x Documentation](https://pimprint.mds.eu/docs)
 
 ### Pimcore 10.x:
 
 * [PimPrint v3.x on GitHub](https://github.com/mds-agenturgruppe/pimprint-core-bundle/tree/3.x)
-* [PimPrint v3.x Documentation](https://pimprint.mds.eu/docs)
-* [PimPrint v2.x on GitHub](https://github.com/mds-agenturgruppe/pimprint-core-bundle/tree/2.x)
-* [PimPrint v2.x Documentation](https://pimprint.mds.eu/docs/2.x)
+* [PimPrint v3.x Documentation](https://pimprint.mds.eu/docs/3.x)
 
 ### Pimcore 5.x/6.x:
 

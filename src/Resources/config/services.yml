@@ -20,7 +20,7 @@ services:
             - [setThumbnailHelper, ['@mds.pimprint.core.thumbnail_helper']]
             - [setUrlGenerator, ['@cmf_routing.router']]
             - [setLocaleService, ['@pimcore.locale']]
-            - [setUserLoader, ['@pimcore_admin.security.user_loader']]
+            - [setUserLoader, ['@Pimcore\Security\User\UserLoader']]
 
     #PimPrint master locale rendering project service
     Mds\PimPrint\CoreBundle\Project\MasterLocaleRenderingProject:
@@ -33,7 +33,7 @@ services:
             - [ setThumbnailHelper, [ '@mds.pimprint.core.thumbnail_helper' ] ]
             - [ setUrlGenerator, [ '@cmf_routing.router' ] ]
             - [ setLocaleService, [ '@pimcore.locale' ] ]
-            - [setUserLoader, ['@pimcore_admin.security.user_loader']]
+            - [setUserLoader, ['@Pimcore\Security\User\UserLoader']]
 
     #Helper services
     mds.pimprint.core.user_helper:
@@ -58,8 +58,6 @@ services:
 
     #Security
     Mds\PimPrint\CoreBundle\EventListener\BruteforceProtectionListener: ~
-    Mds\PimPrint\CoreBundle\Security\Guard\AdminSessionAuthenticator: ~
-    Mds\PimPrint\CoreBundle\Security\Guard\InDesignAuthenticator: ~
     Mds\PimPrint\CoreBundle\Security\Authenticator\AdminSessionAuthenticator: ~
     Mds\PimPrint\CoreBundle\Security\Authenticator\InDesignAuthenticator: ~
 

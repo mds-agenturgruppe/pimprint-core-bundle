@@ -254,27 +254,7 @@ class Installer extends AbstractInstaller implements InstallerInterface
         $message .= PHP_EOL . $this->getSecurityConfigFile() . PHP_EOL . PHP_EOL;
 
         $firewall = "# mds PimPrint api
-pimprint_api:
-    pattern: ^/pimprint-api
-    stateless: true
-    provider: pimcore_admin
-    guard:
-        entry_point: Mds\PimPrint\CoreBundle\Security\Guard\AdminSessionAuthenticator
-        authenticators:
-            - Mds\PimPrint\CoreBundle\Security\Guard\InDesignAuthenticator
-            - Mds\PimPrint\CoreBundle\Security\Guard\AdminSessionAuthenticator";
-
-        if ($this->isAuthenticatorManagerActive()) {
-            $firewall = "# mds PimPrint api
-pimprint_api:
-    pattern: ^/pimprint-api
-    stateless: true
-    provider: pimcore_admin
-    entry_point: Mds\PimPrint\CoreBundle\Security\Authenticator\AdminSessionAuthenticator
-    custom_authenticators:
-        - Mds\PimPrint\CoreBundle\Security\Authenticator\AdminSessionAuthenticator
-        - Mds\PimPrint\CoreBundle\Security\Authenticator\InDesignAuthenticator";
-        }
+pimprint_api: '%mds.pimprint.core.firewall_settings%'";
 
         $message .= $firewall . PHP_EOL . PHP_EOL;
         $message .= 'To have this installer add the \'pimprint_api\' firewall to your security configuration, ';
@@ -307,31 +287,7 @@ pimprint_api:
         foreach ($config['security']['firewalls'] as $key => $firewall) {
             $firewalls[$key] = $firewall;
             if ('pimcore_admin' == $key) {
-                if ($this->isAuthenticatorManagerActive()) {
-                    $firewalls['pimprint_api'] = [
-                        'pattern'               => '^/pimprint-api',
-                        'stateless'             => true,
-                        'provider'              => 'pimcore_admin',
-                        'entry_point'           => 'Mds\PimPrint\CoreBundle\Security\Authenticator\AdminSessionAuthenticator',
-                        'custom_authenticators' => [
-                            'Mds\PimPrint\CoreBundle\Security\Authenticator\AdminSessionAuthenticator',
-                            'Mds\PimPrint\CoreBundle\Security\Authenticator\InDesignAuthenticator',
-                        ]
-                    ];
-                } else {
-                    $firewalls['pimprint_api'] = [
-                        'pattern'   => '^/pimprint-api',
-                        'stateless' => true,
-                        'provider'  => 'pimcore_admin',
-                        'guard'     => [
-                            'entry_point'    => 'Mds\PimPrint\CoreBundle\Security\Guard\AdminSessionAuthenticator',
-                            'authenticators' => [
-                                'Mds\PimPrint\CoreBundle\Security\Guard\InDesignAuthenticator',
-                                'Mds\PimPrint\CoreBundle\Security\Guard\AdminSessionAuthenticator',
-                            ]
-                        ]
-                    ];
-                }
+                $firewalls['pimprint_api'] = '%mds.pimprint.core.firewall_settings%';
             }
         }
 
@@ -397,21 +353,5 @@ pimprint_api:
             $this->getSecurityConfigFile(),
             Yaml::dump($config, 5)
         );
-    }
-
-    /**
-     * Returns true if security enable_authenticator_manager is activated.
-     *
-     * @return bool
-     * @throws \Exception
-     */
-    private function isAuthenticatorManagerActive(): bool
-    {
-        $config = $this->getSecurityConfig();
-        if (isset($config['security']['enable_authenticator_manager'])) {
-            return (bool)$config['security']['enable_authenticator_manager'];
-        }
-
-        return false;
     }
 }

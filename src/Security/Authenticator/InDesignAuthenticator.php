@@ -13,26 +13,25 @@
 
 namespace Mds\PimPrint\CoreBundle\Security\Authenticator;
 
-use Mds\PimPrint\CoreBundle\Security\Guard\InDesignAuthenticator as InDesignGuard;
 use Mds\PimPrint\CoreBundle\Security\Traits\InDesignRequestDetector;
 use Mds\PimPrint\CoreBundle\Service\JsonRequestDecoder;
 use Mds\PimPrint\CoreBundle\Session\PimPrintSessionBagConfigurator;
-use Pimcore\Bundle\AdminBundle\Security\Authenticator\AdminLoginAuthenticator as PimcoreAdminLoginAuthenticator;
-use Pimcore\Model\User;
-use Pimcore\Tool\Authentication;
+use Pimcore\Security\User\UserChecker;
+use Pimcore\Security\User\UserProvider;
 use Pimcore\Tool\Session;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\PreAuthenticatedUserBadge;
+use Symfony\Component\Security\Http\Authenticator\Passport\Badge\RememberMeBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
+use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordCredentials;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class InDesignAuthenticator
@@ -41,9 +40,30 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *
  * @package Mds\PimPrint\CoreBundle\Security\Authenticator
  */
-class InDesignAuthenticator extends PimcoreAdminLoginAuthenticator
+class InDesignAuthenticator extends AbstractAuthenticator
 {
     use InDesignRequestDetector;
+
+    /**
+     * HTTP username param.
+     *
+     * @var string
+     */
+    const PARAM_USERNAME = 'username';
+
+    /**
+     * HTTP password param.
+     *
+     * @var string
+     */
+    const PARAM_PASSWORD = 'password';
+
+    /**
+     * Exception code 'no credentials'.
+     *
+     * @var int
+     */
+    const ERROR_CODE_NO_CREDENTIALS = 10;
 
     /**
      * JsonRequestDecoder
@@ -53,22 +73,34 @@ class InDesignAuthenticator extends PimcoreAdminLoginAuthenticator
     private JsonRequestDecoder $jsonRequestDecoder;
 
     /**
+     * Pimcore Security UserChecker
+     *
+     * @var UserChecker
+     */
+    private UserChecker $userChecker;
+
+    /**
+     * Pimcore Security UserProvider
+     *
+     * @var UserProvider
+     */
+    private UserProvider $userProvider;
+
+    /**
      * InDesignAuthenticator constructor.
      *
-     * @param EventDispatcherInterface $dispatcher
-     * @param RouterInterface          $router
-     * @param TranslatorInterface      $translator
-     * @param JsonRequestDecoder       $jsonRequestDecoder
+     * @param UserChecker        $userChecker
+     * @param UserProvider       $userProvider
+     * @param JsonRequestDecoder $jsonRequestDecoder
      */
     public function __construct(
-        EventDispatcherInterface $dispatcher,
-        RouterInterface $router,
-        TranslatorInterface $translator,
-        JsonRequestDecoder $jsonRequestDecoder
+        UserChecker $userChecker,
+        UserProvider $userProvider,
+        JsonRequestDecoder $jsonRequestDecoder,
     ) {
-        parent::__construct($dispatcher, $router, $translator);
-
         $this->jsonRequestDecoder = $jsonRequestDecoder;
+        $this->userChecker = $userChecker;
+        $this->userProvider = $userProvider;
     }
 
     /**
@@ -120,57 +152,27 @@ class InDesignAuthenticator extends PimcoreAdminLoginAuthenticator
     {
         $this->jsonRequestDecoder->decode($request);
 
-        $username = $request->get(InDesignGuard::PARAM_USERNAME);
-        $password = $request->get(InDesignGuard::PARAM_PASSWORD);
+        $username = $request->get(self::PARAM_USERNAME);
+        $password = $request->get(self::PARAM_PASSWORD);
 
         if ($username && $password) {
-            $passport = parent::authenticate($request);
-            $session = Session::get(PimPrintSessionBagConfigurator::NAMESPACE);
+            $userBadge = new UserBadge($username, $this->userProvider->loadUserByIdentifier(...));
+            $passport = new Passport($userBadge, new PasswordCredentials($password), [new RememberMeBadge()]);
+
+            $session = Session::getSessionBag(
+                $request->getSession(),
+                PimPrintSessionBagConfigurator::NAMESPACE
+            );
             $session->set('sendId', true);
 
             return $passport;
-        } elseif (Session::requestHasSessionId($request, true)) {
+        }
+
+        if (!empty($request->getSession()->getName())) {
             return $this->authenticateSession($request);
-        } else {
-            throw new AuthenticationException('', InDesignGuard::ERROR_CODE_NO_CREDENTIALS);
-        }
-    }
-
-    /**
-     * Authenticates against session.
-     *
-     * @param Request $request
-     *
-     * @return SelfValidatingPassport
-     * @see \Pimcore\Bundle\AdminBundle\Security\Authenticator\AdminSessionAuthenticator::authenticate
-     */
-    public function authenticateSession(Request $request): SelfValidatingPassport
-    {
-        if (!Session::requestHasSessionId($request, true)) {
-            throw new AuthenticationException('No session id');
-        }
-        if ('POST' == $request->getMethod()) {
-            @session_id(Session::getSessionIdFromRequest($request, true));
         }
 
-        $user = Authentication::authenticateSession($request);
-        if (!$user instanceof User) {
-            throw new AuthenticationException('Invalid User!');
-        }
-
-        $session = Session::getReadOnly();
-        if ($session->has('2fa_required') && $session->get('2fa_required') === true) {
-            $this->twoFactorRequired = true;
-        }
-
-        $badges = [
-            new PreAuthenticatedUserBadge(),
-        ];
-
-        return new SelfValidatingPassport(
-            new UserBadge($user->getUsername()),
-            $badges
-        );
+        throw new AuthenticationException('', self::ERROR_CODE_NO_CREDENTIALS);
     }
 
     /**
@@ -183,14 +185,10 @@ class InDesignAuthenticator extends PimcoreAdminLoginAuthenticator
      */
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): JsonResponse
     {
-        switch ($exception->getCode()) {
-            case InDesignGuard::ERROR_CODE_NO_CREDENTIALS:
-                $message = 'Please provide username and password.';
-                break;
-
-            default:
-                $message = 'Invalid username or password.';
-        }
+        $message = match ($exception->getCode()) {
+            self::ERROR_CODE_NO_CREDENTIALS => 'Please provide username and password.',
+            default => 'Invalid username or password.',
+        };
 
         return new JsonResponse(
             [
@@ -207,12 +205,68 @@ class InDesignAuthenticator extends PimcoreAdminLoginAuthenticator
      *
      * @param Request        $request
      * @param TokenInterface $token
-     * @param string         $providerKey
+     * @param string         $firewallName
      *
      * @return Response|null
      */
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey): ?Response
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
         return null;
+    }
+
+    /**
+     * Authenticates against session.
+     *
+     * @param Request $request
+     *
+     * @return SelfValidatingPassport
+     */
+    private function authenticateSession(Request $request): SelfValidatingPassport
+    {
+        $this->initPostSession($request);
+
+        $user = null;
+        $session = $request->getSession();
+        $session->start();
+
+        $token = $session->get('_security_pimprint_api');
+        $token = $token ? unserialize($token) : null;
+
+        if ($token instanceof TokenInterface) {
+            $token->setUser($this->userProvider->refreshUser($token->getUser()));
+            $user = $token->getUser();
+        }
+
+        if (!$user instanceof UserInterface) {
+            throw new AuthenticationException('Invalid User!');
+        }
+
+        return new SelfValidatingPassport(
+            new UserBadge($user->getUserIdentifier()),
+            [new PreAuthenticatedUserBadge()]
+        );
+    }
+
+    /**
+     * Initializes session for POST requests without cookie
+     *
+     * @param Request $request
+     *
+     * @return void
+     */
+    private function initPostSession(Request $request): void
+    {
+        if ('POST' != $request->getMethod()) {
+            return;
+        }
+        $sessionId = $request->get(
+            $request->getSession()
+                    ->getName()
+        );
+        if (empty($sessionId)) {
+            throw new AuthenticationException('No session id');
+        }
+
+        @session_id($sessionId);
     }
 }

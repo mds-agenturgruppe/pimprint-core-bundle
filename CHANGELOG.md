@@ -7,14 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [3.2.1] - 2023-12-05
-
 ### Fixed
 
 - Selected elements update modes
     - Removed `static` access to `\Mds\PimPrint\CoreBundle\Service\ProjectsManager::isLocalizedProject`
 
-## [3.2.0] - 2023-11-27
+## [4.2.0] - 2023-11-27
 
 ### Feature
 
@@ -25,13 +23,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Refactor `\Mds\PimPrint\CoreBundle\Service\ProjectsManager::$project` to non `static` member variable.
 
-## [3.1.0] - 2023-10-11
+## [4.1.0] - 2023-10-11
 
 ### Feature
 
 - Scalable Vector Graphics (SVG) support in `ImageBox` Command
     - SVG support can be disabled via `mds_pim_print_core.svg_support` configuration parameter.
     - Note: SVG support was dropped with CS4, but resumed with version CC 2020 (15.0)
+
+## [4.0.0] - 2023-09-20
+
+### Features
+
+- Pimcore 11 compatibility
 
 ## [3.0.0] - 2023-07-28
 

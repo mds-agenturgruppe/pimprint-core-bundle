@@ -312,9 +312,7 @@ class ImageBox extends FileBox implements ImageCollectorInterface
         }
 
         if ($thumbnail) {
-            $thumbUrl = $thumbnail->getPath(true);
-//            Pimcore >= 10.6
-//            $thumbUrl = $thumbnail->getPath(['deferredAllowed' => true, 'frontend' => true]);
+            $thumbUrl = $thumbnail->getPath(['deferredAllowed' => true, 'frontend' => true]);
             $thumbUrl = $this->getProject()
                              ->thumbnailHelper()
                              ->replaceNotSupported($thumbUrl);
@@ -335,9 +333,7 @@ class ImageBox extends FileBox implements ImageCollectorInterface
     {
         $thumbnailHelper = $this->getProject()
                                 ->thumbnailHelper();
-        $srcUrl = $thumbnail->getPath(false);
-//        Pimcore >= 10.6
-//        $srcUrl = $thumbnail->getPath(['deferredAllowed' => false, 'frontend' => true]);
+        $srcUrl = $thumbnail->getPath(['deferredAllowed' => false, 'frontend' => true]);
         if ($thumbnailHelper->isNotSupportedImage($srcUrl)) {
             $srcUrl = $thumbnailHelper->replaceNotSupported($srcUrl);
             $fileSize = 259010;
