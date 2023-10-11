@@ -16,6 +16,7 @@ namespace Mds\PimPrint\CoreBundle\InDesign\Command;
 use League\Flysystem\FilesystemException;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\ImageCollectorTrait;
 use Mds\PimPrint\CoreBundle\InDesign\Traits\MissingAssetNotifierTrait;
+use Mds\PimPrint\CoreBundle\Service\ProjectsManager;
 use Pimcore\Model\Asset;
 use Pimcore\Model\Asset\Document as DocumentAsset;
 use Pimcore\Model\Asset\Image as ImageAsset;
@@ -39,25 +40,18 @@ class ImageBox extends FileBox implements ImageCollectorInterface
     const CMD = 'pbox';
 
     /**
-     * Available command params with default values.
+     * SVG MIME-Type
      *
-     * @var array
+     * @var string
      */
-    private array $availableParams = [
-        'fit'          => self::FIT_PROPORTIONALLY,
-        'src'          => '',
-        'assetId'      => '',
-        'mtime'        => '',
-        'thumbnailUrl' => '',
-        'srcUrl'       => '',
-    ];
+    const MIME_TYPE_SVG = 'image/svg+xml';
 
     /**
      * Allowed MIME types for Asset.
      *
      * @var array
      */
-    private array $allowedMimeTypes = [
+    private static array $baseAllowedMimeTypes = [
         'image/bmp',
         'image/jpeg',
         'image/png',
@@ -72,6 +66,27 @@ class ImageBox extends FileBox implements ImageCollectorInterface
         'application/postscript',
         'application/pdf',
         'application/ai',
+    ];
+
+    /**
+     * Runtime cache
+     *
+     * @var array
+     */
+    private static array $allowedMimeTypes;
+
+    /**
+     * Available command params with default values.
+     *
+     * @var array
+     */
+    private array $availableParams = [
+        'fit'          => self::FIT_PROPORTIONALLY,
+        'src'          => '',
+        'assetId'      => '',
+        'mtime'        => '',
+        'thumbnailUrl' => '',
+        'srcUrl'       => '',
     ];
 
     /**
@@ -189,7 +204,7 @@ class ImageBox extends FileBox implements ImageCollectorInterface
         if (null !== $thumbnailName) {
             return;
         }
-        if (false === in_array($asset->getMimetype(), $this->allowedMimeTypes)) {
+        if (false === in_array($asset->getMimetype(), $this->getAllowedMimeTypes())) {
             throw new \Exception(
                 sprintf(
                     "Invalid MIME-type '%s' of asset id %s (%s).",
@@ -330,5 +345,26 @@ class ImageBox extends FileBox implements ImageCollectorInterface
     public function setSrc(string $src): FileBox
     {
         throw new \Exception('Usage of setSrc not allowed in ImageBox. Use setAsset instead.');
+    }
+
+    /**
+     * Returns allowed MIME-Types
+     *
+     * @return array
+     * @throws \Exception
+     */
+    private function getAllowedMimeTypes(): array
+    {
+        if (!isset(self::$allowedMimeTypes)) {
+            self::$allowedMimeTypes = self::$baseAllowedMimeTypes;
+            $svgEnabled = ProjectsManager::getProject()
+                                         ->config()
+                                         ->offsetGet('svg_support');
+            if ($svgEnabled) {
+                self::$allowedMimeTypes[] = self::MIME_TYPE_SVG;
+            }
+        }
+
+        return self::$allowedMimeTypes;
     }
 }
