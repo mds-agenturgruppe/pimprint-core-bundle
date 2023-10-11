@@ -28,6 +28,8 @@ mds_pim_print_core:
 
         # Port
         port: ~
+    # Enables SVG support in ImageBox command. SVG support was dropped with CS4, but resumed with version CC 2020 (15.0)
+    svg_support:          true
     projects:
 
         # Prototype

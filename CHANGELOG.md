@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.0] - 2023-10-11
+
+### Feature
+
+- Scalable Vector Graphics (SVG) support in `ImageBox` Command
+    - SVG support can be disabled via `mds_pim_print_core.svg_support` configuration parameter.
+    - Note: SVG support was dropped with CS4, but resumed with version CC 2020 (15.0)
+
 ## [3.0.0] - 2023-07-28
 
 ### Breaking changes
