@@ -18,7 +18,6 @@ use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\FitTrait;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\ImageCollectorTrait;
 use Mds\PimPrint\CoreBundle\InDesign\Text\ParagraphComponent;
 use Mds\PimPrint\CoreBundle\InDesign\Traits\MissingAssetNotifierTrait;
-use Mds\PimPrint\CoreBundle\Project\Traits\ProjectAwareTrait;
 use Pimcore\Model\Asset;
 use Pimcore\Model\Asset\Document as DocumentAsset;
 use Pimcore\Model\Asset\Image as ImageAsset;
@@ -31,7 +30,6 @@ use Pimcore\Model\Asset\Image as ImageAsset;
 class ImageBox extends AbstractBox implements ParagraphComponent, ImageCollectorInterface
 {
     use FitTrait;
-    use ProjectAwareTrait;
     use ImageCollectorTrait;
     use MissingAssetNotifierTrait;
     use DefaultLocalizedTrait;

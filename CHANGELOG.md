@@ -1,4 +1,5 @@
 # Changelog
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
@@ -6,54 +7,75 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.1] - 2023-11-17
+
+### Fixed
+
+- Refactor `\Mds\PimPrint\CoreBundle\Service\ProjectsManager::$project` to non `static` member variable.
+
 ## [1.4.0] - 2023-09-18
+
 ### Breaking changes
+
 - Removed `\Mds\PimPrint\CoreBundle\InDesign\Command\TextBox::setDefaultUseLanguageLayer`
     - Use localized InDesign Page-Elements feature
 
 ### Feature
+
 - Localized InDesign Page-Elements
-  - `\Mds\PimPrint\CoreBundle\InDesign\Command\AbstractBox::setLocalized`
-  - Default setting for all `AbstractBox` types via:
-    - `\Mds\PimPrint\CoreBundle\InDesign\Command\Traits\DefaultLocalizedTrait::setDefaultLocalized`
-    - `\Mds\PimPrint\CoreBundle\InDesign\Command\AbstractBox::setDefaultLocalized`
-- Enhanced `boxIdentReference` handling for content sensitive updated 
-  - `\Mds\PimPrint\CoreBundle\Project\Traits\BoxIdentTrait::$boxIdentReference`
+    - `\Mds\PimPrint\CoreBundle\InDesign\Command\AbstractBox::setLocalized`
+    - Default setting for all `AbstractBox` types via:
+        - `\Mds\PimPrint\CoreBundle\InDesign\Command\Traits\DefaultLocalizedTrait::setDefaultLocalized`
+        - `\Mds\PimPrint\CoreBundle\InDesign\Command\AbstractBox::setDefaultLocalized`
+- Enhanced `boxIdentReference` handling for content sensitive updated
+    - `\Mds\PimPrint\CoreBundle\Project\Traits\BoxIdentTrait::$boxIdentReference`
 
 ## [1.3.2] - 2022-10-31
+
 ### Fixed
+
 - Allow `image/x-eps` to be used in `ImageBox`.
 
 ## [1.3.1] - 2022-09-13
+
 ### Fixed
+
 - PHP 7.3 compatibility
-  - `\Mds\PimPrint\CoreBundle\Service\PluginParameters` 
-  - `\Mds\PimPrint\CoreBundle\Service\UrlGeneratorAccessor` 
+    - `\Mds\PimPrint\CoreBundle\Service\PluginParameters`
+    - `\Mds\PimPrint\CoreBundle\Service\UrlGeneratorAccessor`
 
 ## [1.3.0] - 2022-08-29
+
 ### Feature
+
 - Custom fields in InDesign PimPrint-Plugin:
-  - `\Mds\PimPrint\CoreBundle\InDesign\CustomField\Input`
-  - `\Mds\PimPrint\CoreBundle\InDesign\CustomField\Select`
-  - `\Mds\PimPrint\CoreBundle\InDesign\CustomField\Search`
+    - `\Mds\PimPrint\CoreBundle\InDesign\CustomField\Input`
+    - `\Mds\PimPrint\CoreBundle\InDesign\CustomField\Select`
+    - `\Mds\PimPrint\CoreBundle\InDesign\CustomField\Search`
 - Configuration options for factory PimPrint-Plugin field Publication:
-  - visibility
-  - required
-  - custom label
+    - visibility
+    - required
+    - custom label
 
 ### Fix
+
 - PHP Session detection for JSON encoded POST requests.
 
 ## [1.2.1] - 2022-04-25
+
 ### Fix
--  [[AbstractProject] Loading languages in multi-domain setup #1](https://github.com/mds-agenturgruppe/pimprint-core-bundle/pull/1)
-  - Uses `\Pimcore\Localization\LocaleService` instead of `\Mds\PimPrint\CoreBundle\Service\UserHelper`
+
+- [[AbstractProject] Loading languages in multi-domain setup #1](https://github.com/mds-agenturgruppe/pimprint-core-bundle/pull/1)
+- Uses `\Pimcore\Localization\LocaleService` instead of `\Mds\PimPrint\CoreBundle\Service\UserHelper`
 
 ### Breaking changes
+
 - Removed `\Mds\PimPrint\CoreBundle\Service\UserHelper`
 
 ## [1.2.0] - 2020-10-22
+
 ### Features
+
 - InDesign template file download with PimPrint-Plugin.
 - Simplified API for content aware updates.
 - `PublicationTreeBuilder` service for direct usage.
@@ -61,12 +83,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `SplitTable` command for automatic table splitting across multiple pages.
 
 ### Breaking changes
+
 - Change `GoToPage` and `NextPage` constructor signature.
 - Rename namespace to `Mds\PimPrint\CoreBundle\InDesign\Command\Variables`.
-- Move `host` node in `mds_pim_print_core` configuration. 
+- Move `host` node in `mds_pim_print_core` configuration.
 
 ## [1.1.0] - 2020-09-01
+
 ### Features
+
 - Add UpdateElements command and selected elements filtering in `CommandQueue`.
 - Add helper traits for concrete rendering services (E.g. `ElementCollectionRenderingTrait`).
 - Add abstract template classes for standardized paper sizes.
@@ -75,16 +100,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add extension possibilities to `AbstractPublicationTreeBuilder`.
 
 ### Breaking changes
+
 - Change `GroupEnd` constructor signature.
 
 ### Fix
+
 - Add configurable `LC_NUMERIC` locale setting to ensure InDesign compatible float to string conversion.
 
 ## [1.0.1] - 2020-08-06
+
 ### Changed
-- Ensure float margin values in `PositionTrait`. 
+
+- Ensure float margin values in `PositionTrait`.
 - Update `mds-agenturgruppe/php-code-checker` to v1.0.1.
 
 ### Fixed
+
 - BruteforceProtectionListener checks for InDesign requests.
  
