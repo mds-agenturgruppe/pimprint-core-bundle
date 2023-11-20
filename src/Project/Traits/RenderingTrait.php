@@ -38,23 +38,6 @@ trait RenderingTrait
     private bool $generationActive = false;
 
     /**
-     * Reference string for box ident generation.
-     * Used to generate unique content related box idents to create coupling between Pimcore content
-     * (Objects, Assets, Documents) and InDesign elements.
-     * Typical usage: use Object-Ids here.
-     *
-     * @var string
-     */
-    private string $boxIdentReference = '';
-
-    /**
-     * Postfix used in generic box ident generation.
-     *
-     * @var string
-     */
-    private string $boxIdentGenericPostfix = '';
-
-    /**
      * Generates PimPrint commands to build a publication in InDesign.
      *
      * @return array
@@ -77,62 +60,6 @@ trait RenderingTrait
     final public function isGenerationActive(): bool
     {
         return $this->generationActive;
-    }
-
-    /**
-     * Returns $boxIdentReference.
-     *
-     * @return string
-     */
-    public function getBoxIdentReference(): string
-    {
-        return $this->boxIdentReference;
-    }
-
-    /**
-     * Sets $ident as boxIdentReference for content aware updates.
-     *
-     * @param string $ident
-     *
-     * @see RenderingTrait::$boxIdentReference
-     */
-    public function setBoxIdentReference(string $ident): void
-    {
-        $this->boxIdentReference = $ident;
-    }
-
-    /**
-     * Appends $ident to existing for content aware updates.
-     *
-     * @param string $ident
-     *
-     * @see RenderingTrait::$boxIdentReference
-     */
-    public function appendToBoxIdentReference(string $ident): void
-    {
-        $this->setBoxIdentReference(
-            $this->getBoxIdentReference() . $ident
-        );
-    }
-
-    /**
-     * Returns $boxIdentGenericPostfix.
-     *
-     * @return string
-     */
-    public function getBoxIdentGenericPostfix(): string
-    {
-        return $this->boxIdentGenericPostfix;
-    }
-
-    /**
-     * Sets $boxIdentGenericPostfix.
-     *
-     * @param string $postfix
-     */
-    public function setBoxIdentGenericPostfix(string $postfix): void
-    {
-        $this->boxIdentGenericPostfix = $postfix;
     }
 
     /**

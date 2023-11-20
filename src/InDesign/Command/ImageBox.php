@@ -14,6 +14,7 @@
 namespace Mds\PimPrint\CoreBundle\InDesign\Command;
 
 use League\Flysystem\FilesystemException;
+use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\DefaultLocalizedTrait;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\FitTrait;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\ImageCollectorTrait;
 use Mds\PimPrint\CoreBundle\InDesign\Text\ParagraphComponent;
@@ -33,6 +34,7 @@ class ImageBox extends AbstractBox implements ParagraphComponent, ImageCollector
     use FitTrait;
     use ImageCollectorTrait;
     use MissingAssetNotifierTrait;
+    use DefaultLocalizedTrait;
 
     /**
      * Command name.
@@ -193,6 +195,8 @@ class ImageBox extends AbstractBox implements ParagraphComponent, ImageCollector
         if ($asset instanceof Asset) {
             $this->setAsset($asset);
         }
+
+        $this->setDefaultLocalizedParam();
     }
 
     /**
@@ -246,9 +250,10 @@ class ImageBox extends AbstractBox implements ParagraphComponent, ImageCollector
      * @param Asset       $asset
      * @param string|null $thumbnailName
      *
+     * @return void
      * @throws \Exception
      */
-    private function assureValidAsset(Asset $asset, string $thumbnailName = null)
+    private function assureValidAsset(Asset $asset, string $thumbnailName = null): void
     {
         if (false === $asset instanceof ImageAsset && false === $asset instanceof DocumentAsset) {
             throw new \Exception(
@@ -283,9 +288,11 @@ class ImageBox extends AbstractBox implements ParagraphComponent, ImageCollector
      * @param Asset       $asset
      * @param string|null $thumbnailName
      *
-     * @throws \Exception|FilesystemException
+     * @return void
+     * @throws FilesystemException
+     * @throws \Exception
      */
-    private function addDownloadParams(Asset $asset, string $thumbnailName = null)
+    private function addDownloadParams(Asset $asset, string $thumbnailName = null): void
     {
         if (false === $this->getProject()
                            ->config()

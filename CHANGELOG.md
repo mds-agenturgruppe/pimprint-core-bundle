@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Feature
+
+- Removed `\Mds\PimPrint\CoreBundle\InDesign\Command\TextBox::setDefaultUseLanguageLayer`
+    - Use localized InDesign page-elements feature
+- Enhanced `boxIdentReference` handling for content sensitive updated
+    - `\Mds\PimPrint\CoreBundle\Project\Traits\BoxIdentTrait::$boxIdentReference`
+
 ### Fixed
 
 - Refactor `\Mds\PimPrint\CoreBundle\Service\ProjectsManager::$project` to non `static` member variable.

@@ -16,6 +16,7 @@ namespace Mds\PimPrint\CoreBundle\Project;
 use League\Flysystem\FilesystemException;
 use Mds\PimPrint\CoreBundle\InDesign\Command\AbstractCommand;
 use Mds\PimPrint\CoreBundle\InDesign\CommandQueue;
+use Mds\PimPrint\CoreBundle\Project\Traits\BoxIdentTrait;
 use Mds\PimPrint\CoreBundle\Project\Traits\FormFieldsTrait;
 use Mds\PimPrint\CoreBundle\Project\Traits\ServicesTrait;
 use Mds\PimPrint\CoreBundle\Project\Traits\RenderingTrait;
@@ -44,6 +45,7 @@ abstract class AbstractProject
     use TemplateTrait;
     use RenderingTrait;
     use FormFieldsTrait;
+    use BoxIdentTrait;
 
     /**
      * CommandQueue instance.
@@ -190,7 +192,7 @@ abstract class AbstractProject
      * @return string
      * @throws \Exception
      */
-    protected function getLanguage(): string
+    public function getLanguage(): string
     {
         return $this->pluginParams()
                     ->get(PluginParameters::PARAM_LANGUAGE);

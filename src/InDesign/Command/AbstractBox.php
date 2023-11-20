@@ -66,6 +66,8 @@ abstract class AbstractBox extends AbstractCommand implements DependentInterface
     private array $availableParams = [
         'tid'       => null,
         'cmdfilter' => null,
+        'localized' => false,
+        'locale'    => null,
     ];
 
     /**
@@ -115,6 +117,79 @@ abstract class AbstractBox extends AbstractCommand implements DependentInterface
         } catch (\Exception) {
             return null;
         }
+    }
+
+    /**
+     * Sets box $localized.
+     *
+     * @param bool $localized
+     *
+     * @return AbstractBox
+     * @throws \Exception
+     */
+    public function setLocalized(bool $localized = true)
+    {
+        $this->setParam('localized', $localized);
+
+        return $this;
+    }
+
+    /**
+     * Returns localized flag.
+     *
+     * @return bool|null
+     */
+    public function getLocalized()
+    {
+        try {
+            return $this->getParam('localized');
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+
+    /**
+     * Sets box $locale.
+     *
+     * @param string $locale
+     *
+     * @return AbstractBox
+     * @throws \Exception
+     */
+    public function setLocale(string $locale)
+    {
+        $this->setParam('locale', $locale);
+
+        return $this;
+    }
+
+    /**
+     * Returns box locale.
+     *
+     * @return bool|null
+     */
+    public function getLocale()
+    {
+        try {
+            return $this->getParam('locale');
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+
+    /**
+     * Sets $localized as default localized flag for all AbstractBox types.
+     *
+     * @param bool $localized
+     *
+     * @return void
+     */
+    public static function setDefaultLocalized(bool $localized = true): void
+    {
+        CopyBox::setDefaultLocalized($localized);
+        TextBox::setDefaultLocalized($localized);
+        ImageBox::setDefaultLocalized($localized);
+        Table::setDefaultLocalized($localized);
     }
 
     /**
