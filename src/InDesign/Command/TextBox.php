@@ -62,11 +62,11 @@ class TextBox extends AbstractBox implements ImageCollectorInterface
      *
      * @var array
      */
-    protected array $allowedFits = array(
+    protected array $allowedFits = [
         self::FIT_NO_ADJUST,
         self::FIT_FRAME_TO_CONTENT,
         self::FIT_FRAME_TO_CONTENT_HEIGHT
-    );
+    ];
 
     /**
      * Default value for automatic text language layers.

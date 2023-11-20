@@ -15,7 +15,7 @@ namespace Mds\PimPrint\CoreBundle\Project\Traits;
 
 use Mds\PimPrint\CoreBundle\InDesign\CommandQueue;
 use Mds\PimPrint\CoreBundle\Project\AbstractProject;
-use Mds\PimPrint\CoreBundle\Service\ProjectsManager;
+use Mds\PimPrint\CoreBundle\Service\AccessorTraits\ProjectsManagerTrait;
 
 /**
  * Trait ProjectAwareTrait
@@ -24,6 +24,8 @@ use Mds\PimPrint\CoreBundle\Service\ProjectsManager;
  */
 trait ProjectAwareTrait
 {
+    use ProjectsManagerTrait;
+
     /**
      * Returns currently generated project.
      *
@@ -32,7 +34,8 @@ trait ProjectAwareTrait
      */
     protected function getProject(): AbstractProject
     {
-        return ProjectsManager::getProject();
+        return $this->getProjectsManager()
+                    ->getProject();
     }
 
     /**

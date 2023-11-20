@@ -13,6 +13,7 @@
 
 namespace Mds\PimPrint\CoreBundle\Service;
 
+use League\Flysystem\FilesystemException;
 use Mds\PimPrint\CoreBundle\InDesign\Traits\MissingAssetNotifierTrait;
 use Mds\PimPrint\CoreBundle\Session\PimPrintSessionBagConfigurator;
 use Pimcore\Http\RequestHelper;
@@ -45,13 +46,22 @@ class PluginResponseCreator
     private RequestHelper $requestHelper;
 
     /**
+     * PimPrint ProjectsManager
+     *
+     * @var ProjectsManager
+     */
+    private ProjectsManager $projectsManager;
+
+    /**
      * PluginResponseCreator constructor.
      *
-     * @param RequestHelper $requestHelper
+     * @param RequestHelper   $requestHelper
+     * @param ProjectsManager $projectsManager
      */
-    public function __construct(RequestHelper $requestHelper)
+    public function __construct(RequestHelper $requestHelper, ProjectsManager $projectsManager)
     {
         $this->requestHelper = $requestHelper;
+        $this->projectsManager = $projectsManager;
     }
 
     /**
@@ -60,7 +70,7 @@ class PluginResponseCreator
      * @param array $data
      *
      * @return JsonResponse
-     * @throws \Exception
+     * @throws FilesystemException
      */
     public function success(array $data): JsonResponse
     {
@@ -97,6 +107,7 @@ class PluginResponseCreator
      *
      * @return JsonResponse
      * @throws \Exception
+     * @throws FilesystemException
      */
     protected function buildResponse(array $data, int $status = Response::HTTP_OK): JsonResponse
     {
@@ -157,12 +168,12 @@ class PluginResponseCreator
      * @param array $data
      *
      * @return void
-     * @throws \Exception
+     * @throws FilesystemException
      */
     private function addSettings(array &$data): void
     {
         try {
-            $project = ProjectsManager::getProject();
+            $project = $this->projectsManager->getProject();
         } catch (\Exception) {
             return;
         }
@@ -207,8 +218,8 @@ class PluginResponseCreator
     private function addMessages(array &$data): void
     {
         try {
-            $messages = ProjectsManager::getProject()
-                                       ->getPreMessages();
+            $messages = $this->projectsManager->getProject()
+                                              ->getPreMessages();
             if (empty($messages)) {
                 throw new \Exception();
             }
@@ -231,7 +242,7 @@ class PluginResponseCreator
     private function addImages(array &$data): void
     {
         try {
-            $project = ProjectsManager::getProject();
+            $project = $this->projectsManager->getProject();
             if (false === $project->config()
                                   ->isAssetDownloadEnabled()) {
                 return;

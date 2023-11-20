@@ -74,8 +74,8 @@ trait TemplateTrait
      * Builds settings array for InDesign template file.
      *
      * @return array
-     * @throws \Exception
      * @throws FilesystemException
+     * @throws \Exception
      */
     final protected function buildTemplateSettings(): array
     {

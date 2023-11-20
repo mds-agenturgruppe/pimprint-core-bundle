@@ -13,6 +13,7 @@
 
 namespace Mds\PimPrint\CoreBundle\Project;
 
+use League\Flysystem\FilesystemException;
 use Mds\PimPrint\CoreBundle\InDesign\Command\AbstractCommand;
 use Mds\PimPrint\CoreBundle\InDesign\CommandQueue;
 use Mds\PimPrint\CoreBundle\Project\Traits\FormFieldsTrait;
@@ -145,6 +146,7 @@ abstract class AbstractProject
      * Builds project settings for InDesign plugin.
      *
      * @return array
+     * @throws FilesystemException
      * @throws \Exception
      */
     final public function getSettings(): array

@@ -36,7 +36,8 @@ services:
         public: true
 
     #Basic services
-    Mds\PimPrint\CoreBundle\Service\ProjectsManager: ~
+    Mds\PimPrint\CoreBundle\Service\ProjectsManager:
+        public: true
     Mds\PimPrint\CoreBundle\Service\PluginResponseCreator: ~
     Mds\PimPrint\CoreBundle\Service\JsonRequestDecoder: ~
     Mds\PimPrint\CoreBundle\Service\InDesign\PublicationTreeBuilder: ~
