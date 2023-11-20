@@ -5,7 +5,6 @@ mds PimPrint CoreBundle - The InDesign Printing Solution for Pimcore.
 ## Supported Pimcore Versions
 
 - Pimcore 10: `mds-agenturgruppe/pimprint-core-bundle:^3.0`
-- Pimcore 10: `mds-agenturgruppe/pimprint-core-bundle:^2.0`
 - Pimcore 5/6: `mds-agenturgruppe/pimprint-core-bundle:^1.0`
 
 ## Prerequisites

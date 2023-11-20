@@ -46,13 +46,22 @@ class PluginResponseCreator
     private RequestHelper $requestHelper;
 
     /**
+     * PimPrint ProjectsManager
+     *
+     * @var ProjectsManager
+     */
+    private ProjectsManager $projectsManager;
+
+    /**
      * PluginResponseCreator constructor.
      *
-     * @param RequestHelper $requestHelper
+     * @param RequestHelper   $requestHelper
+     * @param ProjectsManager $projectsManager
      */
-    public function __construct(RequestHelper $requestHelper)
+    public function __construct(RequestHelper $requestHelper, ProjectsManager $projectsManager)
     {
         $this->requestHelper = $requestHelper;
+        $this->projectsManager = $projectsManager;
     }
 
     /**
@@ -61,7 +70,7 @@ class PluginResponseCreator
      * @param array $data
      *
      * @return JsonResponse
-     * @throws \Exception
+     * @throws FilesystemException
      */
     public function success(array $data): JsonResponse
     {
@@ -165,7 +174,7 @@ class PluginResponseCreator
     private function addSettings(array &$data): void
     {
         try {
-            $project = ProjectsManager::getProject();
+            $project = $this->projectsManager->getProject();
         } catch (\Exception) {
             return;
         }
@@ -210,8 +219,8 @@ class PluginResponseCreator
     private function addMessages(array &$data): void
     {
         try {
-            $messages = ProjectsManager::getProject()
-                                       ->getPreMessages();
+            $messages = $this->projectsManager->getProject()
+                                              ->getPreMessages();
             if (empty($messages)) {
                 throw new \Exception();
             }
@@ -234,7 +243,7 @@ class PluginResponseCreator
     private function addImages(array &$data): void
     {
         try {
-            $project = ProjectsManager::getProject();
+            $project = $this->projectsManager->getProject();
             if (false === $project->config()
                                   ->isAssetDownloadEnabled()) {
                 return;

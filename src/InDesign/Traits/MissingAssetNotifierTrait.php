@@ -13,7 +13,7 @@
 
 namespace Mds\PimPrint\CoreBundle\InDesign\Traits;
 
-use Mds\PimPrint\CoreBundle\Service\ProjectsManager;
+use Mds\PimPrint\CoreBundle\Service\AccessorTraits\ProjectsManagerTrait;
 
 /**
  * Trait MissingAssetNotifierTrait
@@ -22,6 +22,8 @@ use Mds\PimPrint\CoreBundle\Service\ProjectsManager;
  */
 trait MissingAssetNotifierTrait
 {
+    use ProjectsManagerTrait;
+
     /**
      * Adds $message as notification for missing asset for $assetId.
      * If config variable imageWarningsOnPage is true a onPage message will be generated.
@@ -35,7 +37,8 @@ trait MissingAssetNotifierTrait
      */
     protected function notifyMissingAsset(string $message, int $assetId): void
     {
-        $project = ProjectsManager::getProject();
+        $project = $this->getProjectsManager()
+                        ->getProject();
         $project->getCommandQueue()
                 ->incrementMissingAssetCounter($assetId);
         $project->addPageMessage(
@@ -54,8 +57,9 @@ trait MissingAssetNotifierTrait
     protected function addMissingAssetPreMessage(): void
     {
         try {
-            $project = ProjectsManager::getProject();
-        } catch (\Exception) {
+            $project = $this->getProjectsManager()
+                            ->getProject();
+        } catch (\Exception $e) {
             return;
         }
         $missingAssets = $project->getCommandQueue()

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Refactor `\Mds\PimPrint\CoreBundle\Service\ProjectsManager::$project` to non `static` member variable.
+
 ## [3.1.0] - 2023-10-11
 
 ### Feature

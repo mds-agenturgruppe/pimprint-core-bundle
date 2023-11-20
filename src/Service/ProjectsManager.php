@@ -35,9 +35,9 @@ class ProjectsManager
     /**
      * Instance of current selected project for generation.
      *
-     * @var AbstractProject|null
+     * @var AbstractProject
      */
-    private static ?AbstractProject $project = null;
+    private AbstractProject $project;
 
     /**
      * Projects constructor.
@@ -71,7 +71,7 @@ class ProjectsManager
     }
 
     /**
-     * Returns a array with information for all projects.
+     * Returns an array with information for all projects.
      *
      * @return array
      * @throws \Exception
@@ -93,13 +93,13 @@ class ProjectsManager
      * @return AbstractProject
      * @throws \Exception
      */
-    public static function getProject(): AbstractProject
+    public function getProject(): AbstractProject
     {
-        if (false === self::$project instanceof AbstractProject) {
+        if (!isset($this->project)) {
             throw new \Exception('No project selected for generation.');
         }
 
-        return self::$project;
+        return $this->project;
     }
 
     /**
@@ -151,7 +151,7 @@ class ProjectsManager
         $service->setConfig(new Config($config));
         $service->assertServiceInitialized();
         if (true === $registerSelected) {
-            self::$project = $service;
+            $this->project = $service;
         }
 
         return $service;

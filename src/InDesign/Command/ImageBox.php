@@ -16,7 +16,6 @@ namespace Mds\PimPrint\CoreBundle\InDesign\Command;
 use League\Flysystem\FilesystemException;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\ImageCollectorTrait;
 use Mds\PimPrint\CoreBundle\InDesign\Traits\MissingAssetNotifierTrait;
-use Mds\PimPrint\CoreBundle\Service\ProjectsManager;
 use Pimcore\Model\Asset;
 use Pimcore\Model\Asset\Document as DocumentAsset;
 use Pimcore\Model\Asset\Image as ImageAsset;
@@ -355,9 +354,10 @@ class ImageBox extends FileBox implements ImageCollectorInterface
     {
         if (!isset(self::$allowedMimeTypes)) {
             self::$allowedMimeTypes = self::$baseAllowedMimeTypes;
-            $svgEnabled = ProjectsManager::getProject()
-                                         ->config()
-                                         ->offsetGet('svg_support');
+            $svgEnabled = $this->getProjectsManager()
+                               ->getProject()
+                               ->config()
+                               ->offsetGet('svg_support');
             if ($svgEnabled) {
                 self::$allowedMimeTypes[] = self::MIME_TYPE_SVG;
             }
