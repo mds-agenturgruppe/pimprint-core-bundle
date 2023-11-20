@@ -59,8 +59,10 @@ trait ImageCollectorTrait
      * Registers asset in $imageBox in $images.
      *
      * @param ImageBox $imageBox
+     *
+     * @return void
      */
-    protected function collectImage(ImageBox $imageBox)
+    protected function collectImage(ImageBox $imageBox): void
     {
         try {
             if (false === $this->getProject()
@@ -79,7 +81,7 @@ trait ImageCollectorTrait
                 'srcFileSize' => $imageBox->getParam('srcFileSize'),
                 'mtime'       => $imageBox->getParam('mtime'),
             ];
-        } catch (\Exceptione) {
+        } catch (\Exception) {
             //do nothing
         }
     }
@@ -88,8 +90,10 @@ trait ImageCollectorTrait
      * If $element is instance of ImageCollectorInterface collectedImages will be added.
      *
      * @param mixed|ImageCollectorInterface $element
+     *
+     * @return void
      */
-    protected function addCollectedImages($element)
+    protected function addCollectedImages($element): void
     {
         if ($element instanceof ImageCollectorInterface) {
             $this->collectedImages += $element->getCollectedImages();
