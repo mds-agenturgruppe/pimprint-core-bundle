@@ -14,6 +14,7 @@
 namespace Mds\PimPrint\CoreBundle\InDesign\Command;
 
 use League\Flysystem\FilesystemException;
+use League\Flysystem\FilesystemOperator;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\ImageCollectorTrait;
 use Mds\PimPrint\CoreBundle\InDesign\Traits\MissingAssetNotifierTrait;
 use Pimcore\Model\Asset;
@@ -228,30 +229,10 @@ class ImageBox extends FileBox implements ImageCollectorInterface
      */
     private function addDownloadParams(Asset $asset, string $thumbnailName = null): void
     {
-        if (false === $this->getProject()
-                           ->config()
-                           ->isAssetDownloadEnabled()) {
+        if (!$this->getProject()
+                  ->config()
+                  ->isAssetDownloadEnabled()) {
             return;
-        }
-        $thumbnailHelper = $this->getProject()
-                                ->thumbnailHelper();
-        $thumbnailConfig = $thumbnailHelper->getThumbnailConfig($thumbnailName);
-        $thumbnail = null;
-        if ($asset instanceof ImageAsset) {
-            $thumbnail = $asset->getThumbnail($thumbnailConfig);
-        } elseif ($asset instanceof DocumentAsset) {
-            $thumbnail = $asset->getImageThumbnail($thumbnailConfig);
-        }
-        if (null === $thumbnail) {
-            throw new \Exception(
-                sprintf(
-                    "Thumbnail '%s' could be create for asset id %s (%s).",
-                    $thumbnailName,
-                    $asset->getId(),
-                    $asset->getFilename()
-                ),
-                $asset->getId()
-            );
         }
 
         $storage = Storage::get('asset');
@@ -263,18 +244,79 @@ class ImageBox extends FileBox implements ImageCollectorInterface
 
             return;
         }
-        $hostUrl = $this->getProject()
-                        ->getHostUrl();
+
+        $thumbnail = null;
+        if ($thumbnailName || !$this->getProject()
+                                    ->config()
+                                    ->isAssetPreDownloadEnabled()) {
+            $thumbnailConfig = $this->getProject()
+                                    ->thumbnailHelper()
+                                    ->getThumbnailConfig($thumbnailName);
+            if ($asset instanceof ImageAsset) {
+                $thumbnail = $asset->getThumbnail($thumbnailConfig);
+            } elseif ($asset instanceof DocumentAsset) {
+                $thumbnail = $asset->getImageThumbnail($thumbnailConfig);
+            }
+            if (null === $thumbnail) {
+                throw new \Exception(
+                    sprintf(
+                        "Thumbnail '%s' could be create for asset id %s: %s",
+                        $thumbnailName,
+                        $asset->getId(),
+                        $asset->getRealFullPath()
+                    ),
+                    $asset->getId()
+                );
+            }
+        }
+
         $this->setParam('assetId', $asset->getId());
-        if (null === $thumbnailName) {
-            $thumbUrl = $thumbnailHelper->replaceNotSupported($thumbnail->getPath(true));
-            $this->setParam('src', $asset->getRealFullPath());
+        if ($thumbnailName) {
+            $this->addForcedThumbnailParams($thumbnail, $asset);
+
+            return;
+        }
+
+        $this->addThumbnailParams($asset, $storage, $thumbnail);
+    }
+
+    /**
+     * Adds download params for $asset
+     *
+     * @param Asset                                                  $asset
+     * @param FilesystemOperator                                     $storage
+     * @param ImageAsset\Thumbnail|DocumentAsset\ImageThumbnail|null $thumbnail
+     *
+     * @return void
+     * @throws FilesystemException
+     * @throws \Exception
+     */
+    public function addThumbnailParams(
+        Asset $asset,
+        FilesystemOperator $storage,
+        ImageAsset\Thumbnail|DocumentAsset\ImageThumbnail|null $thumbnail
+    ): void {
+        $thumbnailHelper = $this->getProject()
+                                ->thumbnailHelper();
+
+        $this->setParam('src', $asset->getRealFullPath());
+        $this->setParam('srcFileSize', $asset->getFileSize());
+        $this->setParam('srcUrl', $thumbnailHelper->prependHostUrl($asset->getFrontendFullPath()));
+
+        if ($this->getProject()
+                 ->config()
+                 ->offsetGet('file_storage_mtime')) {
             $this->setParam('mtime', $storage->lastModified($asset->getRealFullPath()));
-            $this->setParam('srcFileSize', $asset->getFileSize());
-            $this->setParam('srcUrl', $hostUrl . urlencode_ignore_slash($asset->getRealFullPath()));
-            $this->setParam('thumbnailUrl', $hostUrl . $thumbUrl);
         } else {
-            $this->addForcedThumbnailParams($thumbnail);
+            $this->setParam('mtime', (int)$asset->getModificationDate());
+        }
+
+        if ($thumbnail) {
+            $thumbUrl = $thumbnail->getPath(['deferredAllowed' => true, 'frontend' => true]);
+            $thumbUrl = $this->getProject()
+                             ->thumbnailHelper()
+                             ->replaceNotSupported($thumbUrl);
+            $this->setParam('thumbnailUrl', $thumbnailHelper->prependHostUrl($thumbUrl));
         }
     }
 
@@ -282,20 +324,21 @@ class ImageBox extends FileBox implements ImageCollectorInterface
      * Adds download params for forced thumbnail.
      *
      * @param ImageAsset\Thumbnail $thumbnail
+     * @param Asset                $asset
      *
      * @return void
      * @throws \Exception
      */
-    private function addForcedThumbnailParams(ImageAsset\Thumbnail $thumbnail): void
+    private function addForcedThumbnailParams(ImageAsset\Thumbnail $thumbnail, Asset $asset): void
     {
         $thumbnailHelper = $this->getProject()
                                 ->thumbnailHelper();
-        $srcUrl = $thumbnail->getPath(false);
+        $srcUrl = $thumbnail->getPath(['deferredAllowed' => false, 'frontend' => true]);
         if ($thumbnailHelper->isNotSupportedImage($srcUrl)) {
             $srcUrl = $thumbnailHelper->replaceNotSupported($srcUrl);
             $fileSize = 259010;
         } else {
-            if (false === file_exists($thumbnail->getLocalFile())) {
+            if (!file_exists($thumbnail->getLocalFile())) {
                 $this->notifyMissingAsset(
                     sprintf("Thumbnail '%s' could not be created.", $thumbnail->getLocalFile()),
                     $thumbnail->getAsset()
@@ -305,15 +348,23 @@ class ImageBox extends FileBox implements ImageCollectorInterface
                 return;
             }
             $fileSize = $thumbnail->getFileSize();
-            $this->setParam('mtime', @filemtime($thumbnail->getLocalFile()));
+
+            if ($this->getProject()
+                     ->config()
+                     ->offsetGet('file_storage_mtime')) {
+                $this->setParam('mtime', @filemtime($thumbnail->getLocalFile()));
+            } else {
+                $this->setParam('mtime', (int)$asset->getModificationDate());
+            }
         }
 
-        $hostUrl = $this->getProject()
-                        ->getHostUrl();
-        $this->setParam('src', str_replace('%20', ' ', $srcUrl));
+        $src = parse_url($srcUrl, PHP_URL_PATH);
+        $srcUrl = $thumbnailHelper->prependHostUrl($srcUrl);
+
+        $this->setParam('src', urldecode($src));
         $this->setParam('srcFileSize', $fileSize);
-        $this->setParam('srcUrl', $hostUrl . $srcUrl);
-        $this->setParam('thumbnailUrl', '');
+        $this->setParam('srcUrl', $srcUrl);
+        $this->setParam('thumbnailUrl', $srcUrl);
     }
 
     /**

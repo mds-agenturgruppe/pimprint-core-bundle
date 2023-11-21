@@ -102,9 +102,8 @@ trait TemplateTrait
      */
     private function addTemplateDownloadData(array &$settings): void
     {
-        $settings['url'] = $this->buildTemplateUrl();
-
         $template = $this->getTemplate();
+
         if ($template instanceof Asset) {
             $storage = Storage::get('asset');
             if (false === $storage->fileExists($template->getFullPath())) {
@@ -112,8 +111,17 @@ trait TemplateTrait
                     sprintf('InDesign template file not found: %s', $template->getFullPath())
                 );
             }
-            $settings['mtime'] = $storage->lastModified($template->getFullPath());
+
+            $settings['url'] = $this->thumbnailHelper()
+                                    ->prependHostUrl($template->getFrontendFullPath());
             $settings['fileSize'] = $template->getFileSize();
+
+            if ($this->config()
+                     ->offsetGet('file_storage_mtime')) {
+                $settings['mtime'] = $storage->lastModified($template->getFullPath());
+            } else {
+                $settings['mtime'] = (int)$template->getModificationDate();
+            }
 
             return;
         }
@@ -122,33 +130,19 @@ trait TemplateTrait
         if (false === file_exists($filePath)) {
             throw new \Exception(sprintf('InDesign template file not found on server: %s', $template));
         }
+
+        $url = $this->getUrlGenerator()
+                    ->generate(
+                        'mds_pimprint_downlaod_template',
+                        [
+                            'identifier' => $this->getIdent(),
+                            'templateFile' => urlencode($template),
+                        ]
+                    );
+
+        $settings['url'] = $this->thumbnailHelper()
+                                ->prependHostUrl($url);
         $settings['mtime'] = @filemtime($filePath);
         $settings['fileSize'] = @filesize($filePath);
-    }
-
-    /**
-     * Builds the template download url.
-     * If template is a Pimcore Asset object the public url is used.
-     * Otherwise, the template file form the project bundle is downloaded via:
-     * \Mds\PimPrint\CoreBundle\Controller\InDesignController::downloadTemplateAction
-     *
-     * @return string
-     * @throws \Exception
-     */
-    private function buildTemplateUrl(): string
-    {
-        $template = $this->getTemplate();
-        if ($template instanceof Asset) {
-            return $this->getHostUrl() . urlencode_ignore_slash($template->getRealFullPath());
-        }
-
-        return $this->getHostUrl() . $this->getUrlGenerator()
-                                          ->generate(
-                                              'mds_pimprint_downlaod_template',
-                                              [
-                                                  'identifier'   => $this->getIdent(),
-                                                  'templateFile' => urlencode($template),
-                                              ]
-                                          );
     }
 }

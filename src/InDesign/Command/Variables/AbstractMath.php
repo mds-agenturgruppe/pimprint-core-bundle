@@ -51,7 +51,7 @@ abstract class AbstractMath extends ExecuteScript implements DependentInterface
      *
      * @throws \Exception
      */
-    public function __construct($name, array $variables = [])
+    public function __construct(string $name, array $variables = [])
     {
         parent::__construct('');
 

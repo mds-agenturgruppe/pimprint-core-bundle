@@ -83,7 +83,9 @@ class ThumbnailHelper
     }
 
     /**
-     * Validates configured asset thumbnail configuration exists and if it generated images usable in InDesign.
+     * Validates configured asset thumbnail configuration:
+     * - Checks for existence
+     * - Generated images usable in InDesign
      *
      * @return void
      * @throws \Exception
@@ -106,7 +108,7 @@ class ThumbnailHelper
                 )
             );
         }
-        if (false === in_array($thumbnail->getFormat(), $this->allowedThumbnailFormats)) {
+        if (!in_array($thumbnail->getFormat(), $this->allowedThumbnailFormats)) {
             throw new \Exception(
                 sprintf(
                     "Thumbnail config '%s' for project '%s' uses no InDesign compatible file format '%s'.",
@@ -133,7 +135,7 @@ class ThumbnailHelper
         if (null === $thumbnailName) {
             $config = $this->getProjectConfig()
                            ->offsetGet('assets');
-            if (true === isset($config['thumbnail'])) {
+            if (isset($config['thumbnail'])) {
                 $thumbnailName = $config['thumbnail'];
             } else {
                 $thumbnailConfig = $this->createDefaultThumbnailConfig();
@@ -141,16 +143,57 @@ class ThumbnailHelper
         }
         if (null !== $thumbnailName) {
             $thumbnailConfig = ThumbnailConfig::getByName($thumbnailName);
-            if (false === $thumbnailConfig instanceof ThumbnailConfig) {
+            if (!$thumbnailConfig instanceof ThumbnailConfig) {
                 throw new \Exception(sprintf("Thumbnail config '%s' not found.", $thumbnailName));
             }
         }
-        if (false === $thumbnailConfig instanceof ThumbnailConfig) {
+        if (!$thumbnailConfig instanceof ThumbnailConfig) {
             throw new \Exception('No thumbnail config for generating preview image');
         }
         $thumbnailConfig->setRasterizeSVG(true);
 
         return $thumbnailConfig;
+    }
+
+    /**
+     * Returns true if $path contains 'filetype-not-supported.svg'.
+     *
+     * @param string $path
+     *
+     * @return bool
+     */
+    public function isNotSupportedImage(string $path): bool
+    {
+        return str_contains($path, 'filetype-not-supported.svg');
+    }
+
+    /**
+     * As InDesign can't use SVG images we use 'filetype-not-supported.eps' error image.
+     *
+     * @param string $path
+     *
+     * @return string
+     */
+    public function replaceNotSupported(string $path): string
+    {
+        if (!$this->isNotSupportedImage($path)) {
+            return $path;
+        }
+
+        return self::IMAGE_NOT_SUPPORTED;
+    }
+
+    /**
+     * Prepends host url to $url if $url is no url.
+     *
+     * @param string $url
+     *
+     * @return string
+     * @throws \Exception
+     */
+    public function prependHostUrl(string $url): string
+    {
+        return preg_match('/^http(s)?:\\/\\/.+/', $url) ? $url : $this->project->getHostUrl() . $url;
     }
 
     /**
@@ -196,7 +239,7 @@ class ThumbnailHelper
      */
     private function disableWebpSupport(RequestHelper $requestHelper): void
     {
-        if (false === $requestHelper->hasMainRequest()) {
+        if (!$requestHelper->hasMainRequest()) {
             return;
         }
         //not nice but this way we disable the "InDesign browser" detection
@@ -209,33 +252,5 @@ class ThumbnailHelper
             'Accept',
             str_replace(['image/webp,', 'image/webp;'], '', $accept)
         );
-    }
-
-    /**
-     * Returns true if $path contains 'filetype-not-supported.svg'.
-     *
-     * @param string $path
-     *
-     * @return bool
-     */
-    public function isNotSupportedImage(string $path): bool
-    {
-        return str_contains($path, 'filetype-not-supported.svg');
-    }
-
-    /**
-     * As InDesign can't use SVG images we use 'filetype-not-supported.eps' error image.
-     *
-     * @param string $path
-     *
-     * @return string
-     */
-    public function replaceNotSupported(string $path): string
-    {
-        if (false === $this->isNotSupportedImage($path)) {
-            return $path;
-        }
-
-        return self::IMAGE_NOT_SUPPORTED;
     }
 }

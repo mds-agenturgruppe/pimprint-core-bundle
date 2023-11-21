@@ -16,7 +16,11 @@
 namespace Mds\PimPrint\CoreBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
+use Symfony\Component\Config\Definition\Builder\NodeBuilder;
+use Symfony\Component\Config\Definition\Builder\NodeDefinition;
+use Symfony\Component\Config\Definition\Builder\NodeParentInterface;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
+use Symfony\Component\Config\Definition\Builder\VariableNodeDefinition;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 /**
@@ -34,21 +38,21 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('mds_pim_print_core');
-        $this->addProjectConfig($treeBuilder->getRootNode());
+        $this->addConfig($treeBuilder->getRootNode());
 
         return $treeBuilder;
     }
 
     /**
-     * Add PimPrint projects configuration.
+     * Add PimPrint configuration.
      *
      * @param ArrayNodeDefinition $rootNode
      *
      * @return void
      */
-    private function addProjectConfig(ArrayNodeDefinition $rootNode): void
+    private function addConfig(ArrayNodeDefinition $rootNode): void
     {
-        $rootNode->children()
+        $node = $rootNode->children()
                     ->arrayNode('lc_numeric')
                         ->info("Optional locales to set in render mode to have float values converted to '.-strings'")
                         ->example(['en_US.UTF-8', 'de_DE.UTF-8'])
@@ -69,77 +73,134 @@ class Configuration implements ConfigurationInterface
                         ->info('Enables SVG support in ImageBox command. SVG support was dropped with CS4, but resumed with version CC 2020 (15.0)')
                         ->defaultValue(true)
                     ->end()
-                    ->arrayNode('projects')
-                    ->arrayPrototype()
-                        ->children()
-                            ->scalarNode('ident')
-                                ->info('Internal project identifier.')->end()
-                            ->scalarNode('name')->isRequired()
-                                ->info('Name of project displayed in InDesign-Plugin.')->end()
-                            ->scalarNode('service')->isRequired()
-                                ->info('Service to use to render the project. Must inherit AbstractProject.')->end()
-                            ->booleanNode('create_update_layers')->defaultValue(true)
-                                ->info('Toggles creation of update info articles.')->end()
-                            ->arrayNode('template')->isRequired()
-                                ->info('InDesign Template settings.')
-                                ->children()
-                                    ->scalarNode('default')
-                                        ->info('Default InDesign template filename used for rendering.')->end()
-                                    ->scalarNode('relative_path')
-                                        ->info('Optional relative path inside bundle of project service to the InDesign template.')
-                                        ->defaultValue('/Resources/pimprint/')->end()
-                                    ->booleanNode('download')->defaultValue(true)
-                                        ->info('Download template')->end()
+                    ->booleanNode('file_storage_mtime')
+                        ->info('Uses mtime from file storage. If set to false Asset modificationDate is used.')
+                        ->defaultValue(true)
+                    ->end();
+
+        $this->addProjectsConfig($node);
+        $node->end();
+    }
+
+    /**
+     * Adds projects array prototype
+     *
+     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
+     *
+     * @param ArrayNodeDefinition|VariableNodeDefinition|NodeDefinition|NodeBuilder|NodeParentInterface|null $node
+     *
+     * @return void
+     */
+    private function addProjectsConfig(
+        ArrayNodeDefinition|VariableNodeDefinition|NodeDefinition|NodeBuilder|NodeParentInterface|null $node
+    ): void {
+        $node->arrayNode('projects')
+                ->arrayPrototype()
+                    ->children()
+                        ->scalarNode('ident')
+                            ->info('Internal project identifier.')
+                        ->end()
+                        ->scalarNode('name')
+                            ->isRequired()
+                            ->info('Name of project displayed in InDesign-Plugin.')
+                        ->end()
+                        ->scalarNode('service')
+                            ->isRequired()
+                            ->info('Service to use to render the project. Must inherit AbstractProject.')
+                            ->end()
+                        ->booleanNode('create_update_layers')
+                            ->defaultValue(true)
+                            ->info('Toggles creation of update info articles.')
+                        ->end()
+                        ->arrayNode('template')
+                            ->isRequired()
+                            ->info('InDesign Template settings.')
+                            ->children()
+                                ->scalarNode('default')
+                                    ->info('Default InDesign template filename used for rendering.')
+                                ->end()
+                                ->scalarNode('relative_path')
+                                    ->info('Optional relative path inside bundle of project service to the InDesign template.')
+                                    ->defaultValue('/Resources/pimprint/')
+                                ->end()
+                                ->booleanNode('download')
+                                    ->defaultValue(true)
+                                    ->info('Download template')
                                 ->end()
                             ->end()
-                            ->arrayNode('plugin_elements')->addDefaultsIfNotSet()
-                                ->info('Available plugin elements.')
-                                ->children()
-                                    ->booleanNode('update_mode')->defaultValue(true)
-                                        ->info('Show fields for update modes.')->end()
-                                    ->arrayNode('update_modes')
-                                        ->info('Available update modes for project.')
+                        ->end()
+                        ->arrayNode('plugin_elements')
+                            ->addDefaultsIfNotSet()
+                            ->info('Available plugin elements.')
+                            ->children()
+                                ->booleanNode('update_mode')
+                                    ->defaultValue(true)
+                                    ->info('Show fields for update modes.')
+                                ->end()
+                                ->arrayNode('update_modes')
+                                    ->info('Available update modes for project.')
                                     ->defaultValue([])
-                                        ->prototype('scalar')->end()
-                                    ->end()
-                                    ->booleanNode('start_alignment')->defaultValue(false)
-                                        ->info('Show field for start left/right page.')->end()
-                                    ->booleanNode('page_bounds')->defaultValue(false)
-                                        ->info('Show field for page start/end.')->end()
-                                    ->arrayNode('publications')->addDefaultsIfNotSet()
-                                        ->info('Configuration of default publication select free field.')
-                                        ->children()
-                                            ->booleanNode('show')->defaultValue(true)
-                                                ->info('Show publication select tree field.')->end()
-                                            ->booleanNode('required')->defaultValue(true)
-                                                ->info('A selection is required or not to start InDesign rendering.')
-                                                ->end()
-                                            ->scalarNode('label')->defaultValue(null)
-                                                ->info('Optional label for field.')
-                                                ->end()
-                                        ->end()
-                                    ->end()
+                                    ->prototype('scalar')
                                 ->end()
                             ->end()
-                            ->arrayNode('assets')->addDefaultsIfNotSet()
-                                ->info('Asset handling settings.')
+                            ->booleanNode('start_alignment')
+                                ->defaultValue(false)
+                                ->info('Show field for start left/right page.')
+                            ->end()
+                            ->booleanNode('page_bounds')
+                                ->defaultValue(false)
+                                ->info('Show field for page start/end.')
+                            ->end()
+                            ->arrayNode('publications')
+                                ->addDefaultsIfNotSet()
+                                ->info('Configuration of default publication select free field.')
                                 ->children()
-                                    ->booleanNode('download')->defaultValue(true)
-                                        ->info('Toggles asset download.')->end()
-                                    ->booleanNode('pre_download')->defaultValue(true)
-                                        ->info('Toggles asset download before rendering start.')->end()
-                                    ->booleanNode('warnings_on_page')->defaultValue(true)
-                                        ->info('Toggles missing asset onPage warnings messages.')->end()
-                                    ->scalarNode('thumbnail')
-                                        ->info('Optional Pimcore thumbnail configuration for preview images.')->end()
+                                    ->booleanNode('show')
+                                        ->defaultValue(true)
+                                        ->info('Show publication select tree field.')
+                                    ->end()
+                                    ->booleanNode('required')
+                                        ->defaultValue(true)
+                                        ->info('A selection is required or not to start InDesign rendering.')
+                                    ->end()
+                                    ->scalarNode('label')
+                                        ->defaultValue(null)
+                                        ->info('Optional label for field.')
+                                    ->end()
                                 ->end()
                             ->end()
-                            ->scalarNode('php_time_limit')->defaultValue('0')
-                                ->info('Optional PHP setting time_limit for project generation.')->end()
-                            ->scalarNode('php_memory_limit')->defaultValue('2G')
-                                    ->info('Optional PHP setting memory_limit for project generation.')->end()
                         ->end()
                     ->end()
-                 ->end();
+                    ->arrayNode('assets')
+                        ->addDefaultsIfNotSet()
+                        ->info('Asset handling settings.')
+                        ->children()
+                            ->booleanNode('download')
+                                ->defaultValue(true)
+                                ->info('Toggles asset download.')
+                            ->end()
+                            ->booleanNode('pre_download')
+                                ->defaultValue(true)
+                                ->info('Toggles asset download before rendering start.')
+                            ->end()
+                            ->booleanNode('warnings_on_page')
+                                ->defaultValue(true)
+                                ->info('Toggles missing asset onPage warnings messages.')
+                            ->end()
+                            ->scalarNode('thumbnail')
+                                ->info('Optional Pimcore thumbnail configuration for preview images.')
+                            ->end()
+                        ->end()
+                    ->end()
+                    ->scalarNode('php_time_limit')
+                        ->defaultValue('0')
+                        ->info('Optional PHP setting time_limit for project generation.')
+                    ->end()
+                    ->scalarNode('php_memory_limit')
+                        ->defaultValue('2G')
+                        ->info('Optional PHP setting memory_limit for project generation.')
+                    ->end()
+                 ->end()
+             ->end();
     }
 }

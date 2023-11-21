@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Feature
+
+- Asset remote File Storage support
+    - Configuration `mds_pim_print_core.file_storage_mtime` to use Asset `modificationDate` if Storage returns wrong `lastModified` timestamp.
+
 ### Fixed
 
 - Refactor `\Mds\PimPrint\CoreBundle\Service\ProjectsManager::$project` to non `static` member variable.

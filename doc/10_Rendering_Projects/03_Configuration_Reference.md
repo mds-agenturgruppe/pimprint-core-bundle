@@ -28,8 +28,12 @@ mds_pim_print_core:
 
         # Port
         port: ~
+
     # Enables SVG support in ImageBox command. SVG support was dropped with CS4, but resumed with version CC 2020 (15.0)
-    svg_support:          true
+    svg_support: true
+
+    # Uses mtime from file storage. If set to false Asset modificationDate is used.
+    file_storage_mtime: true
     projects:
 
         # Prototype
@@ -48,10 +52,10 @@ mds_pim_print_core:
             # InDesign Template settings.
             template: # Required
 
-                # Default InDesign template filename.
+                # Default InDesign template filename used for rendering.
                 default: ~
 
-                # Optional relative path inside service bundle to the InDesign template.
+                # Optional relative path inside bundle of project service to the InDesign template.
                 relative_path: /Resources/pimprint/
 
                 # Download template
@@ -60,7 +64,7 @@ mds_pim_print_core:
             # Available plugin elements.
             plugin_elements:
 
-                # Show field for update modes.
+                # Show fields for update modes.
                 update_mode: true
 
                 # Available update modes for project.
@@ -69,7 +73,7 @@ mds_pim_print_core:
                 # Show field for start left/right page.
                 start_alignment: false
 
-                # Show fields for page start/end.
+                # Show field for page start/end.
                 page_bounds: false
 
                 # Configuration of default publication select free field.

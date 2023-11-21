@@ -13,7 +13,6 @@
 
 namespace Mds\PimPrint\CoreBundle\InDesign\Text;
 
-use Mds\PimPrint\CoreBundle\InDesign\Command\AbstractBox;
 use Mds\PimPrint\CoreBundle\InDesign\Command\FileBox;
 use Mds\PimPrint\CoreBundle\InDesign\Command\ImageBox;
 use Mds\PimPrint\CoreBundle\InDesign\Command\ImageCollectorInterface;

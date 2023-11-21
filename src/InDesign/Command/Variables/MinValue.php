@@ -30,12 +30,12 @@ class MinValue extends AbstractMath
     /**
      * MinValue constructor.
      *
-     * @param string $name Name of variable to set
+     * @param string $name      Name of variable to set
      * @param array  $variables Variable names to calculate minimum value from.
      *
      * @throws \Exception
      */
-    public function __construct($name, array $variables = [])
+    public function __construct(string $name, array $variables = [])
     {
         parent::__construct($name, $variables);
     }
