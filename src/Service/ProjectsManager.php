@@ -108,9 +108,9 @@ class ProjectsManager
      * @return bool
      * @throws \Exception
      */
-    public static function isLocalizedProject(): bool
+    public function isLocalizedProject(): bool
     {
-        return self::getProject() instanceof MasterLocaleRenderingProject;
+        return $this->getProject() instanceof MasterLocaleRenderingProject;
     }
 
     /**

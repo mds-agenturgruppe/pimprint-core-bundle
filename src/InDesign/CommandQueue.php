@@ -24,8 +24,8 @@ use Mds\PimPrint\CoreBundle\InDesign\Command\Variable;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Variables\AbstractMath;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Variables\DependentInterface as VariableDependentInterface;
 use Mds\PimPrint\CoreBundle\InDesign\Traits\BoxIdentBuilderTrait;
+use Mds\PimPrint\CoreBundle\Service\AccessorTraits\ProjectsManagerTrait;
 use Mds\PimPrint\CoreBundle\Service\PluginParameters;
-use Mds\PimPrint\CoreBundle\Service\ProjectsManager;
 
 /**
  * Class CommandQueue
@@ -35,6 +35,7 @@ use Mds\PimPrint\CoreBundle\Service\ProjectsManager;
 class CommandQueue
 {
     use BoxIdentBuilderTrait;
+    use ProjectsManagerTrait;
 
     /**
      * Prefix for BoxIdent.
@@ -222,7 +223,8 @@ class CommandQueue
         if (empty($selectedElements)) {
             return [];
         }
-        if (ProjectsManager::isLocalizedProject()) {
+        if ($this->getProjectsManager()
+                 ->isLocalizedProject()) {
             $this->removeLocaleFromSelectedElements($selectedElements);
         }
 
