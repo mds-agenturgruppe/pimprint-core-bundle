@@ -419,7 +419,8 @@ abstract class AbstractParser
                          ->addParagraph(
                              $this->createParagraph(
                                  $this->paragraphComponents,
-                                 $this->getNodeStyle($node, Style::TYPE_PARAGRAPH, $pseudoStyle)
+                                 $this->getNodeStyle($node, Style::TYPE_PARAGRAPH, $pseudoStyle),
+                                 $this->getNodeStyle($node, Style::TYPE_CHARACTER, $pseudoStyle)
                              )
                          );
                 } catch (\Exception $exception) {
@@ -528,24 +529,31 @@ abstract class AbstractParser
      * If no content is inside $components an exception is thrown.
      *
      * @param array       $components
-     * @param string|null $style
+     * @param string|null $paragraphStyle
+     * @param string|null $characterStyle
      *
      * @return Paragraph
      * @throws \Exception
      */
-    protected function createParagraph(array $components, string $style = null): Paragraph
-    {
+    protected function createParagraph(
+        array $components,
+        string $paragraphStyle = null,
+        string $characterStyle = null
+    ): Paragraph {
         if (empty($components)) {
             throw new \Exception('No components.');
         }
         $paragraph = $this->paragraphFactory();
-        if (null !== $style) {
-            $paragraph->setParagraphStyle($style);
+        if (null !== $paragraphStyle) {
+            $paragraph->setParagraphStyle($paragraphStyle);
         }
 
         $content = '';
         foreach ($components as $element) {
             if ($element instanceof Characters) {
+                if (null !== $characterStyle) {
+                    $element->setStyle($characterStyle);
+                }
                 $content .= $element->getText();
             } elseif ($element instanceof ImageBox) {
                 $content .= 'image';
