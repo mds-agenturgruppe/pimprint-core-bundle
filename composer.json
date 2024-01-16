@@ -23,7 +23,7 @@
     "ext-dom": "*"
   },
   "require-dev": {
-    "mds-agenturgruppe/php-code-checker": "^2.0"
+    "mds-agenturgruppe/php-code-checker": "2.1.1"
   },
   "extra": {
     "pimcore": {
