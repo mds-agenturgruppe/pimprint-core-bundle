@@ -64,6 +64,21 @@ abstract class AbstractBox extends AbstractCommand implements DependentInterface
     const RESIZE_HEIGHT = 3;
 
     /**
+     * Uses Position (left, top) and dimension (width, height) from master locale. No fit is made.
+     *
+     * @var string
+     */
+    const USE_MASTER_LOCALE_ALL = 'all';
+
+    /**
+     * Uses Position (left, top) and dimension (width, height) from command.
+     * Nothing is used from master locale.
+     *
+     * @var string
+     */
+    const USE_MASTER_LOCALE_NONE = 'none';
+
+    /**
      * Uses Position (left, top) from master locale. Dimensions (width, height) and fit from command.
      *
      * @var string
@@ -83,13 +98,6 @@ abstract class AbstractBox extends AbstractCommand implements DependentInterface
      * @var string
      */
     const USE_MASTER_LOCALE_HEIGHT = 'height';
-
-    /**
-     * Uses Position (left, top) and dimension (width, height) from master locale. No fit is made.
-     *
-     * @var string
-     */
-    const USE_MASTER_LOCALE_ALL = 'all';
 
     /**
      * Available command params with default values.
@@ -122,6 +130,7 @@ abstract class AbstractBox extends AbstractCommand implements DependentInterface
      * @var array
      */
     private static array $allowedMasterLocaleModes = [
+        self::USE_MASTER_LOCALE_NONE,
         self::USE_MASTER_LOCALE_ALL,
         self::USE_MASTER_LOCALE_HEIGHT,
         self::USE_MASTER_LOCALE_POSITION,
@@ -234,10 +243,11 @@ abstract class AbstractBox extends AbstractCommand implements DependentInterface
      *
      * @return AbstractBox
      * @throws \Exception
-     * @see \Mds\PimPrint\CoreBundle\InDesign\Command\AbstractBox::USE_MASTER_LOCALE_HEIGHT
      * @see \Mds\PimPrint\CoreBundle\InDesign\Command\AbstractBox::USE_MASTER_LOCALE_ALL
+     * @see \Mds\PimPrint\CoreBundle\InDesign\Command\AbstractBox::USE_MASTER_LOCALE_NONE
      * @see \Mds\PimPrint\CoreBundle\InDesign\Command\AbstractBox::USE_MASTER_LOCALE_POSITION
      * @see \Mds\PimPrint\CoreBundle\InDesign\Command\AbstractBox::USE_MASTER_LOCALE_WIDTH
+     * @see \Mds\PimPrint\CoreBundle\InDesign\Command\AbstractBox::USE_MASTER_LOCALE_HEIGHT
      */
     public function setUseMasterLocaleDimension(string $useMasterLocaleDimension): AbstractBox
     {

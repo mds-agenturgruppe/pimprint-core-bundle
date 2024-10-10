@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Feature
+
+- New placement mode for localized page-elements to omit the master locale box geometry.
+    - `\Mds\PimPrint\CoreBundle\InDesign\Command\AbstractBox::USE_MASTER_LOCALE_NONE`
+
 ## [4.2.2] - 2024-01-16
 
 ### Fixed
