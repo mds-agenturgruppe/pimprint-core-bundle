@@ -53,13 +53,17 @@ class CheckNewPage extends AbstractCommand implements ComponentInterface, Dynami
     public function __construct(
         string $maxYPos = '',
         string $newYPos = '',
-        string $newXPos = null
+        string $newXPos = null,
+        int|float|string $marginOffset = null,
     ) {
         $this->initParams($this->availableParams);
 
         $this->setMaxYPos($maxYPos);
         $this->setNewYPos($newYPos);
         $this->setNewXPos($newXPos);
+        if ($marginOffset) {
+            $this->setMarginOffset($marginOffset);
+        }
     }
 
     /**
@@ -103,6 +107,27 @@ class CheckNewPage extends AbstractCommand implements ComponentInterface, Dynami
     public function setNewXPos(float|int|string|null $newXPos): CheckNewPage
     {
         $this->setParam('newpos_x', $newXPos);
+
+        return $this;
+    }
+
+    /**
+     * Sets MarginOffset.
+     *
+     * Value is used in page end detection to ensure that after the end of the paced element minimum $marginOffset
+     * sized vertical space is available on the page. Otherwise, the page break will be created, even if the last
+     * placed element is still on the page.
+     *
+     * Alloys you to create "white space" at the end of a page and not to break things apart.
+     *
+     * @param float|int|string $marginOffset
+     *
+     * @return CheckNewPage
+     * @throws \Exception
+     */
+    public function setMarginOffset(float|int|string $marginOffset): CheckNewPage
+    {
+        $this->setParam('marginOffset', $marginOffset);
 
         return $this;
     }
