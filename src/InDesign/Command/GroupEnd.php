@@ -42,43 +42,99 @@ class GroupEnd extends AbstractCommand implements DependentInterface
      * @var array
      */
     protected array $availableParams = [
-        'moveTo'       => null,
-        'ungroupafter' => 0,
-        'checknewpage' => null,
+        'moveTo'         => null,
+        'ungroupafter'   => 0,
+        'checknewpage'   => null,
+        'checkNewColumn' => null,
     ];
 
     /**
      * GroupEnd constructor.
      *
-     * @param CheckNewPage|null $cmd
-     * @param bool              $moveTo
-     * @param bool              $ungroupAfter
+     * @param DynamicLayoutBreakInterface|null $layoutBreakCommand
+     * @param bool                             $moveTo
+     * @param bool                             $ungroupAfter
      *
      * @throws \Exception
      */
-    public function __construct(CheckNewPage $cmd = null, bool $moveTo = false, bool $ungroupAfter = false)
-    {
+    public function __construct(
+        DynamicLayoutBreakInterface $layoutBreakCommand = null,
+        bool $moveTo = false,
+        bool $ungroupAfter = false
+    ) {
         $this->initParams($this->availableParams);
-        $this->setNewPageCmd($cmd);
+
+        if ($layoutBreakCommand) {
+            $this->setLayoutBreak($layoutBreakCommand);
+        }
+
         $this->setMoveTo($moveTo);
         $this->setUngroupAfter($ungroupAfter);
     }
 
     /**
-     * Set CheckNewPage Command.
+     * Sets DynamicLayoutBreak $command
+     *
+     * @param DynamicLayoutBreakInterface $command
+     *
+     * @return GroupEnd
+     * @throws \Exception
+     */
+    public function setLayoutBreak(DynamicLayoutBreakInterface $command): GroupEnd
+    {
+        switch (true) {
+            case $command instanceof CheckNewPage:
+                $this->setCheckNewPage($command);
+                break;
+
+            case $command instanceof CheckNewColumn:
+                $this->setCheckNewColumn($command);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Alias for backwards compatibility
      *
      * @param CheckNewPage|null $checkNewPage
      *
      * @return GroupEnd
      * @throws \Exception
+     * @deprecated
      */
     public function setNewPageCmd(CheckNewPage $checkNewPage = null): GroupEnd
     {
-        if (null === $checkNewPage) {
-            $this->removeParam('checknewpage');
-        } else {
-            $this->setParam('checknewpage', $checkNewPage->buildCommand());
-        }
+        return $this->setCheckNewPage($checkNewPage);
+    }
+
+    /**
+     * Sets $checkNewPage directive.
+     *
+     * @param CheckNewPage $checkNewPage
+     *
+     * @return GroupEnd
+     * @throws \Exception
+     *
+     */
+    public function setCheckNewPage(CheckNewPage $checkNewPage): GroupEnd
+    {
+        $this->setParam('checknewpage', $checkNewPage);
+
+        return $this;
+    }
+
+    /**
+     * Sets $checkNewColumn directive.
+     *
+     * @param CheckNewColumn $checkNewColumn
+     *
+     * @return GroupEnd
+     * @throws \Exception
+     */
+    public function setCheckNewColumn(CheckNewColumn $checkNewColumn): GroupEnd
+    {
+        $this->setParam('checkNewColumn', $checkNewColumn);
 
         return $this;
     }
@@ -99,7 +155,7 @@ class GroupEnd extends AbstractCommand implements DependentInterface
     }
 
     /**
-     * Sets ungroup after postion calculate.
+     * Sets $moveTo position of group
      *
      * @param bool $moveTo
      *
@@ -111,5 +167,47 @@ class GroupEnd extends AbstractCommand implements DependentInterface
         $this->setParam('moveTo', $moveTo ? 1 : 0);
 
         return $this;
+    }
+
+    /**
+     * Builds command array that is sent as JSON to InDesign.
+     *
+     * @param bool $addCmd
+     *
+     * @return array
+     * @throws \Exception
+     */
+    public function buildCommand(bool $addCmd = true): array
+    {
+        $this->buildLayoutBreakParams();
+
+        return parent::buildCommand($addCmd);
+    }
+
+    /**
+     * Sets checkNewPage or checkNewColumn commands. One of them must be set
+     *
+     * @return void
+     * @throws \Exception
+     */
+    private function buildLayoutBreakParams(): void
+    {
+        $hasCommand = false;
+
+        $command = $this->getParam('checknewpage');
+        if ($command instanceof CheckNewPage) {
+            $this->addComponent($command);
+            $hasCommand = true;
+        }
+
+        $command = $this->getParam('checkNewColumn');
+        if ($command instanceof CheckNewColumn) {
+            if ($hasCommand) {
+                throw new \Exception(
+                    'CheckNewPage already add to GroupEnd. Only Page or Column can be used'
+                );
+            }
+            $this->addComponent($command);
+        }
     }
 }

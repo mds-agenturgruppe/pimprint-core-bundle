@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - New placement mode for localized page-elements to omit the master locale box geometry.
     - `\Mds\PimPrint\CoreBundle\InDesign\Command\AbstractBox::USE_MASTER_LOCALE_NONE`
+- `\Mds\PimPrint\CoreBundle\InDesign\Command\CheckNewColumn` for dynamic columns breaks to be used in:
+    - `\Mds\PimPrint\CoreBundle\InDesign\Command\SplitTable`
+    - `\Mds\PimPrint\CoreBundle\InDesign\Command\GroupEnd`
 
 ## [3.2.2] - 2024-01-16
 
