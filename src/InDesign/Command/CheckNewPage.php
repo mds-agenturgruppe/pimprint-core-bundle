@@ -14,12 +14,14 @@
 namespace Mds\PimPrint\CoreBundle\InDesign\Command;
 
 /**
- * Component for placement commands. If the placed element ends at a larger position than maxXPos, the element is
- * automatically repositioned on the following page at $newYPos and $newxPos.
+ * Component for placement commands.
+ *
+ * If the placed element bottom is at a larger position than $maxXPos, the element is
+ * automatically repositioned on the following page at $newYPos and $newXPos.
  *
  * @package Mds\PimPrint\CoreBundle\InDesign\Command
  */
-class CheckNewPage extends AbstractCommand implements ComponentInterface
+class CheckNewPage extends AbstractCommand implements ComponentInterface, DynamicLayoutBreakInterface
 {
     /**
      * Command name.

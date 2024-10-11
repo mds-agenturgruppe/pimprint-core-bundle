@@ -48,6 +48,7 @@ class SplitTable extends AbstractCommand implements ImageCollectorInterface
     private array $availableParams = [
         'table'          => null,
         'checknewpage'   => null,
+        'checkNewColumn' => null,
         'precommands'    => [],
         'widowRowCount'  => 1,
         'orphanRowCount' => 1,
@@ -63,17 +64,17 @@ class SplitTable extends AbstractCommand implements ImageCollectorInterface
     /**
      * SplitTable constructor.
      *
-     * @param Table|null        $table          Table command to split.
-     * @param CheckNewPage|null $checkPage      CheckNewPage command for defined page break.
-     * @param array             $preCommands    Optional preCommands to render before split table.
-     * @param int               $widowRowCount  Number of widow rows.
-     * @param int               $orphanRowCount Number of orphan rows.
+     * @param Table|null                       $table              Table command to split.
+     * @param DynamicLayoutBreakInterface|null $layoutBreakCommand CheckNewPage/CheckNewColumn command for layout break.
+     * @param array                            $preCommands        Optional preCommands to render before split table.
+     * @param int                              $widowRowCount      Number of widow rows.
+     * @param int                              $orphanRowCount     Number of orphan rows.
      *
      * @throws \Exception
      */
     public function __construct(
         Table $table = null,
-        CheckNewPage $checkPage = null,
+        DynamicLayoutBreakInterface $layoutBreakCommand = null,
         array $preCommands = [],
         int $widowRowCount = 1,
         int $orphanRowCount = 1
@@ -82,9 +83,11 @@ class SplitTable extends AbstractCommand implements ImageCollectorInterface
         if ($table instanceof Table) {
             $this->setTable($table);
         }
-        if ($checkPage instanceof CheckNewPage) {
-            $this->setCheckNewPage($checkPage);
+
+        if ($layoutBreakCommand) {
+            $this->setLayoutBreak($layoutBreakCommand);
         }
+
         if (true === is_array($preCommands)) {
             $this->setPreCommands($preCommands);
         }
@@ -108,6 +111,28 @@ class SplitTable extends AbstractCommand implements ImageCollectorInterface
     }
 
     /**
+     * Sets DynamicLayoutBreak $command
+     *
+     * @param DynamicLayoutBreakInterface $command
+     *
+     * @return SplitTable
+     * @throws \Exception
+     */
+    public function setLayoutBreak(DynamicLayoutBreakInterface $command): SplitTable
+    {
+        switch (true) {
+            case $command instanceof CheckNewPage:
+                $this->setCheckNewPage($command);
+                break;
+
+            case $command instanceof CheckNewColumn:
+                $this->setCheckNewColumn($command);
+        }
+
+        return $this;
+    }
+
+    /**
      * Sets $checkNewPage directive.
      *
      * @param CheckNewPage $checkNewPage
@@ -118,6 +143,21 @@ class SplitTable extends AbstractCommand implements ImageCollectorInterface
     public function setCheckNewPage(CheckNewPage $checkNewPage): SplitTable
     {
         $this->setParam('checknewpage', $checkNewPage);
+
+        return $this;
+    }
+
+    /**
+     * Sets $checkNewColumn directive.
+     *
+     * @param CheckNewColumn $checkNewColumn
+     *
+     * @return SplitTable
+     * @throws \Exception
+     */
+    public function setCheckNewColumn(CheckNewColumn $checkNewColumn): SplitTable
+    {
+        $this->setParam('checkNewColumn', $checkNewColumn);
 
         return $this;
     }
@@ -184,9 +224,10 @@ class SplitTable extends AbstractCommand implements ImageCollectorInterface
      *
      * @param int $minRows
      *
+     * @return void
      * @throws \Exception
      */
-    protected function validateMinRows(int $minRows)
+    protected function validateMinRows(int $minRows): void
     {
         $this->validateGreaterZero($minRows, 'minRows');
     }
@@ -211,9 +252,10 @@ class SplitTable extends AbstractCommand implements ImageCollectorInterface
      *
      * @param int $value
      *
+     * @return void
      * @throws \Exception
      */
-    protected function validateWidowRowCount(int $value)
+    protected function validateWidowRowCount(int $value): void
     {
         $this->validateGreaterZero($value, 'widowRowCount');
     }
@@ -238,9 +280,10 @@ class SplitTable extends AbstractCommand implements ImageCollectorInterface
      *
      * @param int $value
      *
+     * @return void
      * @throws \Exception
      */
-    protected function validateOrphanRowCount(int $value)
+    protected function validateOrphanRowCount(int $value): void
     {
         $this->validateGreaterZero($value, 'orphanRowCount');
     }
@@ -251,9 +294,10 @@ class SplitTable extends AbstractCommand implements ImageCollectorInterface
      * @param int    $value
      * @param string $param
      *
+     * @return void
      * @throws \Exception
      */
-    private function validateGreaterZero(int $value, string $param)
+    private function validateGreaterZero(int $value, string $param): void
     {
         if ($value < 1) {
             throw new \Exception(
@@ -289,16 +333,55 @@ class SplitTable extends AbstractCommand implements ImageCollectorInterface
         $this->addComponent($table);
         $this->addCollectedImages($table);
 
-        try {
-            $checkPage = $this->getParam('checknewpage');
-            if (false === $checkPage instanceof CheckNewPage) {
-                throw new \Exception();
-            }
-        } catch (\Exception) {
-            throw new \Exception('No check new page directive for splitting defined in ' . static::CMD);
-        }
-        $this->addComponent($checkPage);
+        $this->buildLayoutBreakParams();
+        $this->buildPreCommands();
 
+        return parent::buildCommand($addCmd);
+    }
+
+    /**
+     * Sets checkNewPage or checkNewColumn commands. One of them must be set
+     *
+     * @return void
+     * @throws \Exception
+     */
+    private function buildLayoutBreakParams(): void
+    {
+        $hasCommand = false;
+
+        $command = $this->getParam('checknewpage');
+        if ($command instanceof CheckNewPage) {
+            $this->addComponent($command);
+            $hasCommand = true;
+        }
+
+        $command = $this->getParam('checkNewColumn');
+        if ($command instanceof CheckNewColumn) {
+            if ($hasCommand) {
+                throw new \Exception(
+                    'CheckNewPage already add to SplitTable. Only Page or Column can be used'
+                );
+            }
+            $this->addComponent($command);
+
+            return;
+        }
+
+        if ($hasCommand) {
+            return;
+        }
+
+        throw new \Exception('No LayoutBreak Command (Page/Column) for splitting defined in ' . static::CMD);
+    }
+
+    /**
+     * Builds pre Commands
+     *
+     * @return void
+     * @throws \Exception
+     */
+    private function buildPreCommands(): void
+    {
         $preCommands = [];
         foreach ($this->preCommands as $preCommand) {
             $preCommands[] = $preCommand->buildCommand();
@@ -307,7 +390,5 @@ class SplitTable extends AbstractCommand implements ImageCollectorInterface
             }
         }
         $this->setParam('precommands', $preCommands);
-
-        return parent::buildCommand($addCmd);
     }
 }
