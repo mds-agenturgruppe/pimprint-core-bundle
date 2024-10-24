@@ -1,6 +1,6 @@
 <?php
 /**
- * mds PimPrint
+ * mds Agenturgruppe GmbH
  *
  * This source file is licensed under GNU General Public License version 3 (GPLv3).
  *
@@ -8,7 +8,6 @@
  * LICENSE.md which is distributed with this source code.
  *
  * @copyright  Copyright (c) mds. Agenturgruppe GmbH (https://www.mds.eu)
- * @license    https://pimprint.mds.eu/license GPLv3
  */
 
 namespace Mds\PimPrint\CoreBundle\InDesign\Command;
@@ -16,11 +15,11 @@ namespace Mds\PimPrint\CoreBundle\InDesign\Command;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\FileBoxScaledTrait;
 
 /**
- * Class ImageBoxScaled
+ * Class FileBoxScaled
  *
  * @package Mds\PimPrint\CoreBundle\InDesign\Command
  */
-class ImageBoxScaled extends ImageBox
+class FileBoxScaled extends FileBox
 {
     use FileBoxScaledTrait;
 
