@@ -80,7 +80,7 @@ class ImageBox extends FileBox implements ImageCollectorInterface
      *
      * @var array
      */
-    private array $availableParams = [
+    protected array $availableParams = [
         'fit'          => self::FIT_PROPORTIONALLY,
         'src'          => '',
         'assetId'      => '',

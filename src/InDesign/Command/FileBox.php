@@ -37,6 +37,13 @@ class FileBox extends AbstractBox implements ParagraphComponent
     const CMD = 'pbox';
 
     /**
+     * No fitting of content inside the frame.
+     *
+     * @var string
+     */
+    const FIT_NONE = '';
+
+    /**
      * Centers content in the frame; preserves the frame size as well as content size and proportions.
      * Note: If the content is larger than the frame, content around the edges is obscured.
      *
@@ -104,6 +111,7 @@ class FileBox extends AbstractBox implements ParagraphComponent
      * @var array
      */
     protected array $allowedFits = [
+        self::FIT_NONE,
         self::FIT_PROPORTIONALLY,
         self::FIT_FILL_PROPORTIONALLY,
         self::FIT_CONTENT_TO_FRAME,
@@ -117,7 +125,7 @@ class FileBox extends AbstractBox implements ParagraphComponent
      *
      * @var array
      */
-    private array $availableParams = [
+    protected array $availableParams = [
         'fit'          => self::FIT_PROPORTIONALLY,
         'src'          => '',
         'assetId'      => '',

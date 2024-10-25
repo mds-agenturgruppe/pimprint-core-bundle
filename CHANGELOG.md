@@ -16,6 +16,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - `\Mds\PimPrint\CoreBundle\InDesign\Command\GroupEnd`
 - Add `CheckNewPage` `marginOffset` for white space creation on dynamic layout breaks
     - `\Mds\PimPrint\CoreBundle\InDesign\Command\CheckNewPage::setMarginOffset`
+- Picture element scaling and offset
+    - `\Mds\PimPrint\CoreBundle\InDesign\Command\FileBoxScaled`
+
+#### Fix
+
+- Asset element offset processing in `ImageBoxScaled`
 
 ## [3.2.2] - 2024-01-16
 
