@@ -16,8 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - `\Mds\PimPrint\CoreBundle\InDesign\Command\GroupEnd`
 - Add `CheckNewPage` `marginOffset` for white space creation on dynamic layout breaks
     - `\Mds\PimPrint\CoreBundle\InDesign\Command\CheckNewPage::setMarginOffset`
-- Picture element scaling and offset 
-  - `\Mds\PimPrint\CoreBundle\InDesign\Command\FileBoxScaled`
+- Picture element scaling and offset
+    - `\Mds\PimPrint\CoreBundle\InDesign\Command\FileBoxScaled`
+- Add `CheckNewPage` `newpos_x` for facing pages (left and right)
+    - `\Mds\PimPrint\CoreBundle\InDesign\Command\CheckNewPage::setNewPosXFacingPages`
 
 #### Fix
 

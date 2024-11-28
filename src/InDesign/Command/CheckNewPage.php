@@ -36,13 +36,15 @@ class CheckNewPage extends AbstractCommand implements ComponentInterface, Dynami
      * @var array
      */
     protected array $availableParams = [
-        'pos'      => '',
-        'newpos'   => '',
-        'newpos_x' => null,
+        'pos'                   => '',
+        'newpos'                => '',
+        'newpos_x'              => null,
+        'newpos_x_facing_left'  => null,
+        'newpos_x_facing_right' => null,
     ];
 
     /**
-     * GoToPage constructor.
+     * CheckNewPage constructor.
      *
      * @param string      $maxYPos Maximum allowed y position on page in mm.
      * @param string      $newYPos New y position in mm on next page.
@@ -128,6 +130,25 @@ class CheckNewPage extends AbstractCommand implements ComponentInterface, Dynami
     public function setMarginOffset(float|int|string $marginOffset): CheckNewPage
     {
         $this->setParam('marginOffset', $marginOffset);
+
+        return $this;
+    }
+
+    /**
+     * Sets the optional X-Position where the box is replaced for facing pages left, right.
+     *
+     * @param float|int|string|null $newXPosLeft
+     * @param float|int|string|null $newXPosRight
+     *
+     * @return CheckNewPage
+     * @throws \Exception
+     */
+    public function setNewPosXFacingPages(
+        float|int|string|null $newXPosLeft,
+        float|int|string|null $newXPosRight
+    ): CheckNewPage {
+        $this->setParam('newpos_x_facing_left', $newXPosLeft);
+        $this->setParam('newpos_x_facing_right', $newXPosRight);
 
         return $this;
     }
