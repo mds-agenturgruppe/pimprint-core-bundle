@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.4.0] - 2025-06-18
+
+### Feature
+
+- Couple to Pimcore 11 via conflict in `composer.json`
+
 ## [4.3.0] - 2025-02-25
 
 ### Feature

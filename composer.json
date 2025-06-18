@@ -25,6 +25,9 @@
   "require-dev": {
     "mds-agenturgruppe/php-code-checker": "2.1.1"
   },
+  "conflict": {
+    "pimcore/pimcore": "<11.0 || >12.0"
+  },
   "extra": {
     "pimcore": {
       "bundles": [
