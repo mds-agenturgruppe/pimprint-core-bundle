@@ -246,8 +246,10 @@ class PluginResponseCreator
     {
         try {
             $project = $this->projectsManager->getProject();
-            if (false === $project->config()
-                                  ->isAssetDownloadEnabled()) {
+            if (
+                !$project->config()
+                         ->isAssetDownloadEnabled()
+            ) {
                 return;
             }
             $data['images'] = $project->getCommandQueue()

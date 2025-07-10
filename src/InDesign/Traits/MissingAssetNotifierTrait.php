@@ -75,8 +75,10 @@ trait MissingAssetNotifierTrait
             $missingAssets['elements'],
             $missingAssets['elements'] == 1 ? 'box' : 'boxes'
         );
-        if (true === $project->config()
-                             ->isAssetWarningOnPage()) {
+        if (
+            $project->config()
+                    ->isAssetWarningOnPage()
+        ) {
             $message .= '<br>Messages are rendered directly on the page.';
         }
         $project->addPreMessage($message);

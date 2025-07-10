@@ -37,7 +37,7 @@ trait FileBoxScaledTrait
      *
      * @return ImageBox|Table|TextBox|FileBoxScaledTrait
      */
-    public function setFit(string $fit):ImageBox|Table|TextBox|static
+    public function setFit(string $fit): ImageBox|Table|TextBox|static
     {
         return $this;
     }

@@ -116,8 +116,10 @@ trait TemplateTrait
                                     ->prependHostUrl($template->getFrontendFullPath());
             $settings['fileSize'] = $template->getFileSize();
 
-            if ($this->config()
-                     ->offsetGet('file_storage_mtime')) {
+            if (
+                $this->config()
+                     ->offsetGet('file_storage_mtime')
+            ) {
                 $settings['mtime'] = $storage->lastModified($template->getFullPath());
             } else {
                 $settings['mtime'] = (int)$template->getModificationDate();

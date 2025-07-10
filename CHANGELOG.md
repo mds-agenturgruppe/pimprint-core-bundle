@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Feature
+
+- Update `mds-agenturgruppe/php-code-checker` to `^4.0`
+
 ## [4.4.0] - 2025-06-18
 
 ### Feature

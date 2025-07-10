@@ -158,9 +158,12 @@ class ImageBox extends FileBox implements ImageCollectorInterface
             $asset = $fallback;
             $thumbnailName = null;
         }
-        if (null !== $thumbnailName && false === $this->getProject()
-                                                      ->config()
-                                                      ->isAssetDownloadEnabled()) {
+        if (
+            null !== $thumbnailName
+            && false === $this->getProject()
+                              ->config()
+                              ->isAssetDownloadEnabled()
+        ) {
             throw new \Exception(
                 'Usage of asset thumbnails is only possible when asset download is enabled for project.',
                 $asset->getId()
@@ -168,7 +171,10 @@ class ImageBox extends FileBox implements ImageCollectorInterface
         }
         $this->assureValidAsset($asset, $thumbnailName);
         $this->addDownloadParams($asset, $thumbnailName);
-        if (true === $resize && $asset instanceof ImageAsset) {
+        if (
+            true === $resize
+            && $asset instanceof ImageAsset
+        ) {
             $sizes = $this->getProject()
                           ->imageDimensions()
                           ->getSizes($asset, $defaultDpi);
@@ -190,7 +196,10 @@ class ImageBox extends FileBox implements ImageCollectorInterface
      */
     private function assureValidAsset(Asset $asset, string $thumbnailName = null): void
     {
-        if (false === $asset instanceof ImageAsset && false === $asset instanceof DocumentAsset) {
+        if (
+            false === $asset instanceof ImageAsset
+            && false === $asset instanceof DocumentAsset
+        ) {
             throw new \Exception(
                 sprintf(
                     "Invalid asset type '%s' if asset id %s (%s). Only 'Asset\Image' or 'Asset\Document' are allowed.",
@@ -229,9 +238,11 @@ class ImageBox extends FileBox implements ImageCollectorInterface
      */
     private function addDownloadParams(Asset $asset, string $thumbnailName = null): void
     {
-        if (!$this->getProject()
+        if (
+            !$this->getProject()
                   ->config()
-                  ->isAssetDownloadEnabled()) {
+                  ->isAssetDownloadEnabled()
+        ) {
             return;
         }
 
@@ -246,9 +257,11 @@ class ImageBox extends FileBox implements ImageCollectorInterface
         }
 
         $thumbnail = null;
-        if ($thumbnailName || !$this->getProject()
+        if (
+            $thumbnailName || !$this->getProject()
                                     ->config()
-                                    ->isAssetPreDownloadEnabled()) {
+                                    ->isAssetPreDownloadEnabled()
+        ) {
             $thumbnailConfig = $this->getProject()
                                     ->thumbnailHelper()
                                     ->getThumbnailConfig($thumbnailName);
@@ -303,9 +316,11 @@ class ImageBox extends FileBox implements ImageCollectorInterface
         $this->setParam('srcFileSize', $asset->getFileSize());
         $this->setParam('srcUrl', $thumbnailHelper->prependHostUrl($asset->getFrontendFullPath()));
 
-        if ($this->getProject()
+        if (
+            $this->getProject()
                  ->config()
-                 ->offsetGet('file_storage_mtime')) {
+                 ->offsetGet('file_storage_mtime')
+        ) {
             $this->setParam('mtime', $storage->lastModified($asset->getRealFullPath()));
         } else {
             $this->setParam('mtime', (int)$asset->getModificationDate());
@@ -349,9 +364,11 @@ class ImageBox extends FileBox implements ImageCollectorInterface
             }
             $fileSize = $thumbnail->getFileSize();
 
-            if ($this->getProject()
+            if (
+                $this->getProject()
                      ->config()
-                     ->offsetGet('file_storage_mtime')) {
+                     ->offsetGet('file_storage_mtime')
+            ) {
                 $this->setParam('mtime', @filemtime($thumbnail->getLocalFile()));
             } else {
                 $this->setParam('mtime', (int)$asset->getModificationDate());

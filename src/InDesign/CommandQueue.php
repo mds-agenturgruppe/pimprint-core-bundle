@@ -193,9 +193,11 @@ class CommandQueue
      */
     public function getCommands(): array
     {
-        if (true === $this->getProject()
+        if (
+            true === $this->getProject()
                           ->pluginParams()
-                          ->isUpdateModeSelected()) {
+                          ->isUpdateModeSelected()
+        ) {
             return $this->filterSelectedCommands($this->getCommandsRaw());
         }
 
@@ -223,8 +225,10 @@ class CommandQueue
         if (empty($selectedElements)) {
             return [];
         }
-        if ($this->getProjectsManager()
-                 ->isLocalizedProject()) {
+        if (
+            $this->getProjectsManager()
+                 ->isLocalizedProject()
+        ) {
             $this->removeLocaleFromSelectedElements($selectedElements);
         }
 
