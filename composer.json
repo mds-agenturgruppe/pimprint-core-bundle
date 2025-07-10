@@ -2,7 +2,7 @@
   "name": "mds-agenturgruppe/pimprint-core-bundle",
   "type": "pimcore-bundle",
   "description": "mds PimPrint CoreBundle - The InDesign Printing Solution for Pimcore.",
-  "license": "GPL-3.0-or-later",
+  "license": "proprietary",
   "homepage": "https://pimprint.mds.eu/",
   "support": {
     "source": "https://github.com/mds-agenturgruppe/pimprint-core-bundle"

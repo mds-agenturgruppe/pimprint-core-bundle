@@ -1,5 +1,18 @@
 #!/usr/bin/env bash
 
+#
+# mds. Agenturgruppe GmbH
+#
+# This source file is available under the terms of the
+# mds. Commercial License (MCL)
+#
+# Full copyright and license information is available in
+# LICENSE.md, which is distributed with this source code.
+#
+# @copyright Copyright (c) mds. Agenturgruppe GmbH (https://www.mds.eu)
+# @license   mds. Commercial License (MCL)
+#
+
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 DIR=${DIR##*/}
 PATH="/usr/local/bin/:$PATH"

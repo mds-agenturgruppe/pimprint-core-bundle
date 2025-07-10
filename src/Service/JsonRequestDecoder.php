@@ -1,14 +1,15 @@
 <?php
 /**
- * mds PimPrint
+ * mds. Agenturgruppe GmbH
  *
- * This source file is licensed under GNU General Public License version 3 (GPLv3).
+ * This source file is available under the terms of the
+ * mds. Commercial License (MCL)
  *
  * Full copyright and license information is available in
- * LICENSE.md which is distributed with this source code.
+ * LICENSE.md, which is distributed with this source code.
  *
- * @copyright  Copyright (c) mds. Agenturgruppe GmbH (https://www.mds.eu)
- * @license    https://pimprint.mds.eu/license GPLv3
+ * @copyright Copyright (c) mds. Agenturgruppe GmbH (https://www.mds.eu)
+ * @license   mds. Commercial License (MCL)
  */
 
 namespace Mds\PimPrint\CoreBundle\Service;

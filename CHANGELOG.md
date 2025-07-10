@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Feature
 
 - Update `mds-agenturgruppe/php-code-checker` to `^4.0`
+- Relicense to *mds. Commercial License (MCL)*
 
 ## [4.4.0] - 2025-06-18
 
