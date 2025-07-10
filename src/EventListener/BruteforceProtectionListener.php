@@ -15,17 +15,15 @@
 namespace Mds\PimPrint\CoreBundle\EventListener;
 
 use Mds\PimPrint\CoreBundle\Security\Traits\InDesignRequestDetector;
-use Pimcore\Bundle\AdminBundle\Security\Exception\BruteforceProtectionException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\Security\Core\Exception\TooManyLoginAttemptsAuthenticationException;
 
 /**
  * Sends brute force errors in PimPrint InDesign-Plugin response.
- *
- * @see     \Pimcore\Bundle\AdminBundle\EventListener\BruteforceProtectionListener
  *
  * @package Mds\PimPrint\CoreBundle\EventListener
  */
@@ -58,7 +56,7 @@ class BruteforceProtectionListener implements EventSubscriberInterface
             return;
         }
         $exception = $event->getThrowable();
-        if ($exception instanceof BruteforceProtectionException) {
+        if ($exception instanceof TooManyLoginAttemptsAuthenticationException) {
             $response = new JsonResponse(
                 [
                     'success'   => false,

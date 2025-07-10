@@ -4,7 +4,6 @@ services:
     mds.pimprint.core.master_locale_rendering_project: '@Mds\PimPrint\CoreBundle\Project\MasterLocaleRenderingProject'
 
     # aliases enabling auto wiring for type hints to our own implementations
-    Mds\PimPrint\CoreBundle\Service\UserHelper: '@mds.pimprint.core.user_helper'
     Mds\PimPrint\CoreBundle\Service\PluginParameters: '@mds.pimprint.core.plugin_parameters'
     Mds\PimPrint\CoreBundle\Service\SpecialChars: '@mds.pimprint.core.special_chars'
     Mds\PimPrint\CoreBundle\Service\ImageDimensions: '@mds.pimprint.core.image_dimensions'
