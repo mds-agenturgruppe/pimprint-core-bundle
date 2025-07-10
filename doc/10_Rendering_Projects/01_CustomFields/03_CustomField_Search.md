@@ -102,7 +102,7 @@ Adding the field to the project service:
 class GettingStarted extends AbstractProject
 {
     /**
-     * Initializes project specific InDesign plugin form fields
+     * Initializes project-specific InDesign plugin form fields
      *
      * @return void
      */
@@ -115,7 +115,7 @@ class GettingStarted extends AbstractProject
 }
 ```
 
-Accessing the input in rendering process:
+Accessing the input in a rendering process:
 
 ```php
 class GettingStarted extends AbstractProject

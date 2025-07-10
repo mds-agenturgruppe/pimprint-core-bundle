@@ -6,7 +6,7 @@ Endpoint route:
 /pimprint-api/projects
 ```
 
-Projects endpoint is call by the plugin to get the list of registered projects from the server and returns this JSON structure:
+Projects' endpoint is call by the plugin to get the list of registered projects from the server and returns this JSON structure:
 
 ```json
 {

@@ -31,7 +31,7 @@ $this->addCommand($command);
 
 ## Generated InDesign document
 
-The above example creates a document containing the red square from the template. The output in InDesign looks as followed:
+The above example creates a document containing the red square from the template. The output in InDesign looks as follows:
 
 ![Basic Concept - Document generation](../img/basic-concept-generation.png)
 

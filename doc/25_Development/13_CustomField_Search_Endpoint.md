@@ -13,7 +13,7 @@ and `customField` param is passed as parameter in the URL. The phrase `search` i
 |-----------|------------------------------------------------------|
 | `search`  | Search phrase `search`entered in the InDesign plugin |
 
-When accessing the endpoint with a browser you can pass the `search` parameters with GET:
+When accessing the endpoint with a browser, you can pass the `search` parameters with GET:
 
 ```
 /pimprint-api/project/gettingStarted/mySearch?search=searchPhrase

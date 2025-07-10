@@ -14,10 +14,10 @@ execute endpoint needs more required parameters to control the generated publica
 | `publicationIdent` | Publication `identifyer` returned by [Project Endpoint](./11_Project_Endpoint.md). |
 | `renderLanguage`   | Publication language returned by [Project Endpoint](./11_Project_Endpoint.md).     |
 
-For a documentation of all parameters the Plugin sends to the server refer to the Service `\Mds\PimPrint\CoreBundle\Service\PluginParameters` in the API documentation or directly
+For documentation of all parameters the Plugin sends to the server refer to the Service `\Mds\PimPrint\CoreBundle\Service\PluginParameters` in the API documentation or directly
 to the source.
 
-When accessing the endpoint with a browser you can pass the required parameters with GET:
+When accessing the endpoint with a browser, you can pass the required parameters with GET:
 
 ```
 /pimprint-api/project/dataPrintCarBrochure/run?publicationIdent=556&renderLanguage=de

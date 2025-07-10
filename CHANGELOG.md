@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Feature
 
+- Pimcore 12 compatibility
 - Update `mds-agenturgruppe/php-code-checker` to `^4.0`
 - Relicense to *mds. Commercial License (MCL)*
 
@@ -176,7 +177,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Features
 
 - InDesign template file download with PimPrint-Plugin.
-- Simplified API for content aware updates.
+- Simplified API for content-aware updates.
 - `PublicationTreeBuilder` service for direct usage.
 - `Template` commands for single page and facing page documents.
 - `SplitTable` command for automatic table splitting across multiple pages.

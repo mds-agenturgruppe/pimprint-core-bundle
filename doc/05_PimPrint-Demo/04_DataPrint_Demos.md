@@ -1,6 +1,6 @@
 # DataPrint Demos
 
-DataPrint demos are real world example print products generated with content from the Pimcore demo. They show the integration into Pimcore and usage of an arbitrary data model.
+DataPrint demos are real-world example print products generated with content from the Pimcore demo. They show the integration into Pimcore and usage of an arbitrary data model.
 
 * [Project Content](#page_Project_Content)
 * [PimPrint Features](#page_PimPrint_Features)
@@ -36,7 +36,7 @@ contains information regarding the generated publication, language, generation t
 ![PimPrint - Update Info](../img/indesign-update_info.png)
 
 PimPrint uses this textbox to identity the publication generated into the document. When a document with this textbox is opened,
-or [plugin is reloaded](./01_Overview.md#page_Reload_Plugin), the rendering settings for the current document document is automatically preselected. This allows fast content update
+or [plugin is reloaded](./01_Overview.md#page_Reload_Plugin), the rendering settings for the current document are automatically preselected. This allows fast content update
 of a previously generated document.
 
 Open your Pimcore Demo backend and edit some data rendered in your document:
@@ -80,4 +80,4 @@ The DataPrint demo projects have a custom example implementation for setting the
 
 ![PimPrint Demo - Template Property](../img/demo-pimcore_assign_template.png)
 In this example the green demo template is assigned to the Manufacturer BMW. When documents for BMW are generated layout elements will be generated in green.  
-As the project implementation with PimPrint is absolutely customizable data model fields or any other logic can be used to determine the used template file.    
+As the project implementation with PimPrint is absolutely customizable, data model fields or any other logic can be used to determine the used template file.    

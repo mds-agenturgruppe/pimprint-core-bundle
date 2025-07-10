@@ -1,24 +1,28 @@
 # mds PimPrint CoreBundle
 
-mds PimPrint CoreBundle - The InDesign Printing Solution for Pimcore.
+mds PimPrint CoreBundle — The flexible InDesign Printing Solution for Pimcore.
 
 ## Supported Pimcore Versions
 
-- Pimcore 11: `mds-agenturgruppe/pimprint-core-bundle:^4.0`
-- Pimcore 10: `mds-agenturgruppe/pimprint-core-bundle:^3.0`
-- Pimcore 5/6: `mds-agenturgruppe/pimprint-core-bundle:^1.0`
+| PimPrint Release | PimPrint InDesign Plugin | Supported Pimcore Version | Maintained |
+|------------------|--------------------------|---------------------------|:----------:|
+| `5.x`            | `2.x`                    | `12.x`                    |     ✅      |
+| `4.x`            | `2.x`                    | `11.x`                    |     ✅      |
+| `3.x`            | `2.x`                    | `10.6`                    |     ✅      |
+| `2.x`            | `1.x`                    | `10.0 - 10.5`             |     ❌      |
+| `1.x`            | `1.x`                    | `5.x`, `6.x`              |     ❌      |
 
 ## Prerequisites
 
-- [PHP 8.1](https://secure.php.net/) or higher
-- [Pimcore](https://github.com/pimcore/pimcore) Version 11.x
+- [PHP 8.3](https://secure.php.net/) or higher
+- [Pimcore](https://github.com/pimcore/pimcore) Version 12.x
 
-## Installation for Pimcore 11
+## Installation for Pimcore 12
 
 Install `MdsPimPrintCoreBundle` into your Pimcore by issuing:
 
 ```bash
-composer require mds-agenturgruppe/pimprint-core-bundle:^4.0
+composer require mds-agenturgruppe/pimprint-core-bundle:^5.0
 ```
 
 Enable `MdsPimPrintCoreBundle` in `config/bundles.php`:
@@ -33,7 +37,7 @@ Install `MdsPimPrintCoreBundle` with:
 bin/console pimcore:bundle:install MdsPimPrintCoreBundle
 ```
 
-For further details please refer the [installation guide](https://pimprint.mds.eu/docs/Getting_Started/Installation.html) in the documentation.
+For further details please refer to the [installation guide](https://pimprint.mds.eu/docs/Getting_Started/Installation.html) in the documentation.
 
 ## InDesign Plugin
 

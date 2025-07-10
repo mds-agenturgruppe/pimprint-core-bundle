@@ -9,7 +9,7 @@ Endpoint route:
 Project endpoint is call by the plugin when a project is selected to load project settings and publications the projects can generate. The `identifyer` of the selected project is
 passed as parameter.
 
-The response below shows a shorted example with some publications from the [PimPrint-Demo](../05_PimPrint-Demo/README.md) when accessing project identified
+The response below shows a shorted example with some publications from the [PimPrint-Demo](../05_PimPrint-Demo/README.md) when accessing a project identified
 by `dataPrintCarBrochure` requesting the route `/pimprint-api/project/dataPrintCarBrochure`:
 
 ```json

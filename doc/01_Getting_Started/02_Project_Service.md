@@ -65,7 +65,7 @@ mds_pim_print_core:
 ```
 The example above shows the minimum required configuration. A reference of all configuration parameters can be found on [Configuration Reference](../10_Rendering_Projects/00_Configuration_Reference.md).
 
-After these steps the project _Getting Started_ is displayed in the plugin project field:
+After these steps, the project _Getting Started_ is displayed in the plugin project field:
 ![Plugin - Getting Started Project](../img/plugin-getting_started_project.png)
 
 ## Defining publications to generate
@@ -128,7 +128,7 @@ The publication _Basic Concept_ is displayed in Plugin when the _Getting Started
 ![Plugin - Getting Started Project selected](../img/plugin-getting_started_project_selected.png)
 
 ## Generate a publication
-The generation process of a publication is done in `buildPublication()`, which is called when the Plugin starts the generation of a publication. The Plugin passes the `identifier` of the selected publication as a parameter. By using DataObject or Document Ids as identifiers the creation of Rendering Commands can reference to data stored in Pimcore. To generate the server response with rendering instructions for the Plugin, [Command classes](../15_Rendering_Commands.md) are used to place elements in InDesign and fill them with content. This generation process is completely customer specific and can interpret any data model integrated into Pimcore.
+The generation process of a publication is done in `buildPublication()`, which is called when the Plugin starts the generation of a publication. The Plugin passes the `identifier` of the selected publication as a parameter. By using DataObject or Document Ids as identifiers, the creation of Rendering Commands can reference to data stored in Pimcore. To generate the server response with rendering instructions for the Plugin, [Command classes](../15_Rendering_Commands.md) are used to place elements in InDesign and fill them with content. This generation process is completely customer-specific and can interpret any data model integrated into Pimcore.
 
 The following example creates the document generated describing the [Basic Concept](./00_Basic_Concept.md).
 
@@ -149,7 +149,7 @@ public function buildPublication(): void
 }
 ```
 
-After implementing the rendering and Command creation the generated process in InDesign can be started by selecting the desired publication and clicking on the _Start Generation_ button.
+After implementing the rendering and Command creation, the generated process in InDesign can be started by selecting the desired publication and clicking on the _Start Generation_ button.
 
 ![Plugin - Getting Started Publication selected](../img/plugin-getting_started_publication_seleted.png)
 

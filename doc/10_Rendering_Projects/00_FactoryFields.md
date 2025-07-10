@@ -46,7 +46,7 @@ The configuration of the factory fields is underneath the `plugin_elements` sect
                     label: null
 ```
 
-For the complete PimPrint configuration please refer to the [Configuration Reference page](./03_Configuration_Reference.md).
+For the complete PimPrint configuration, please refer to the [Configuration Reference page](./03_Configuration_Reference.md).
 
 ### Publication field
 
@@ -67,7 +67,7 @@ mds_pim_print_core:
                     label: 'Custom field label'
 ```
 
-While rendering the project the selected value from the InDesign Plugin is accessed in your project service with:
+While rendering the project, the selected value from the InDesign Plugin is accessed in your project service with:
 
 ```php
 $elementId = $this->pluginParameters->get(\Mds\PimPrint\CoreBundle\Service\PluginParameters::PARAM_PUBLICATION);
@@ -84,7 +84,7 @@ All other InDesign plugin factory fields are displayed inside the `Settings` pan
 
 #### Update modes field
 
-The field update mode is a predefined select field which controls the update mode inside InDesign when rendering of a document takes place. The default configuration is suitable
+The field update mode is a predefined select field that controls the update mode inside InDesign when rendering of a document takes place. The default configuration is suitable
 for most projects.
 
 ![Plugin FactoryField Update mode](../img/plugin-factoryField_update_mode.png)
@@ -117,7 +117,7 @@ $updateMode = $this->pluginParameters->get(\Mds\PimPrint\CoreBundle\Service\Plug
 #### Start alignment field
 
 The field start alignment is a predefined select field to select if the rendering starts on a left or a right page. In some projects the rendered layout might differ on this page
-the rendering starts. For these situations the field can be enabled and the selected value can be used while creating the rendering instructions.
+the rendering starts. For these situations the field can be enabled, and the selected value can be used while creating the rendering instructions.
 
 ![Plugin FactoryField Start alignment](../img/plugin-factoryField_start_alignment.png)
 
@@ -131,7 +131,7 @@ mds_pim_print_core:
                 start_alignment: true
 ```
 
-While rendering the project the selected value from the InDesign Plugin is accessed in your project service with:
+While rendering the project, the selected value from the InDesign Plugin is accessed in your project service with:
 
 ```php
 $alignment = $this->pluginParameters->get(\Mds\PimPrint\CoreBundle\Service\PluginParameters::PARAM_START_ALIGNMENT);
@@ -142,8 +142,8 @@ $right = \Mds\PimPrint\CoreBundle\Service\PluginParameters::START_ALIGNMENT_RIGH
 
 #### Page bounds fields
 
-The page bounds field display two input fields for manual input of the starting and ending page number. In some projects this input can be used to dynamically react in the
-rendering process to this input. PimPrint CoreBundle or InDesign plugin does not use this values by default for anything. The usage must be implemented into your concrete project
+The page bounds field displays two input fields for manual input of the starting and ending page number. In some projects this input can be used to dynamically react in the
+rendering process to this input. PimPrint CoreBundle or InDesign plugin does not use these values by default for anything. The usage must be implemented into your concrete project
 service.
 
 ![Plugin FactoryField Start alignment](../img/plugin-factoryField_page_bounds.png)
@@ -158,7 +158,7 @@ mds_pim_print_core:
                 page_bounds: true
 ```
 
-While rendering the project the entered values from the InDesign Plugin can be accessed in your project service with:
+While rendering the project, the entered values from the InDesign Plugin can be accessed in your project service with:
 
 ```php
 $start = $this->pluginParameters->get(\Mds\PimPrint\CoreBundle\Service\PluginParameters::PARAM_PAGE_START);

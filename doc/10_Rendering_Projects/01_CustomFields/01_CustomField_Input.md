@@ -61,7 +61,7 @@ class GettingStarted extends AbstractProject
 }
 ```
 
-Accessing the input in rendering process:
+Accessing the input in a rendering process:
 
 ```php
 class GettingStarted extends AbstractProject

@@ -2,7 +2,7 @@
 
 PimPrint offers the possibility to define custom fields for each project. These fields can be used for projects where additional user input is needed.
 
-This additional user input can be used while rendering, or as a selection of the content of the InDesign document to generate (replacement to
+This additional user input can be used while rendering or as a selection of the content of the InDesign document to generate (replacement to
 the [PimPrint factory field Publication](../00_FactoryFields.md#page_Publication_field)).
 
 * [Custom field types](#page_Custom_field_types)
@@ -43,7 +43,7 @@ use Mds\PimPrint\CoreBundle\InDesign\CustomField\Input;
 class GettingStarted extends AbstractProject
 {
     /**
-     * Initializes project specific InDesign plugin form fields
+     * Initializes project-specific InDesign plugin form fields
      *
      * @return void
      */
@@ -81,7 +81,7 @@ class GettingStarted extends AbstractProject
 
 ## Possible usages
 
-- Product search fields to give the user a search based selection of the rendered content. Suitable for projects with many hundreds of products, where the default publication
+- Product search fields to give the user a search-based selection of the rendered content. Suitable for projects with many hundreds of products, where the default publication
   factor field is not handy to use.
 - Selection to display prices or currencies, etc.
 - Definition of price date ranges.

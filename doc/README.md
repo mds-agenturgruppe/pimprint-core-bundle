@@ -17,19 +17,12 @@ PimPrint is the flexible InDesign Printing Solution for Pimcore.
 
 ## Supported Pimcore Versions
 
-PimPrint supports Pimcore 5.x, 6.x, 10.x and 11.x. Use the apropiate PimPrint Version matching your Pimcore Version.
+PimPrint supports all Symfony-based Pimcore Versions. Use the appropriate Version matching your Pimcore.
 
-### Pimcore 11.x:
-
-* [PimPrint v4.x on GitHub](https://github.com/mds-agenturgruppe/pimprint-core-bundle/tree/4.x)
-* [PimPrint v4.x Documentation](https://pimprint.mds.eu/docs)
-
-### Pimcore 10.x:
-
-* [PimPrint v3.x on GitHub](https://github.com/mds-agenturgruppe/pimprint-core-bundle/tree/3.x)
-* [PimPrint v3.x Documentation](https://pimprint.mds.eu/docs/3.x)
-
-### Pimcore 5.x/6.x:
-
-* [PimPrint v1.x on GitHub](https://github.com/mds-agenturgruppe/pimprint-core-bundle/tree/1.x)
-* [PimPrint v1.x Documentation](https://pimprint.mds.eu/docs/1.x)
+| PimPrint Release | PimPrint InDesign Plugin | Supported Pimcore Version | Maintained | Resources                                                                                                                           |
+|------------------|--------------------------|---------------------------|:----------:|-------------------------------------------------------------------------------------------------------------------------------------|
+| `5.x`            | `2.x`                    | `12.x`                    |     ✅      | [GitHub](https://github.com/mds-agenturgruppe/pimprint-core-bundle/tree/5.x) <br> [Documentation](https://pimprint.mds.eu/docs)     |
+| `4.x`            | `2.x`                    | `11.x`                    |     ✅      | [GitHub](https://github.com/mds-agenturgruppe/pimprint-core-bundle/tree/4.x) <br> [Documentation](https://pimprint.mds.eu/docs/4.x) |
+| `3.x`            | `2.x`                    | `10.6`                    |     ✅      | [GitHub](https://github.com/mds-agenturgruppe/pimprint-core-bundle/tree/3.x) <br> [Documentation](https://pimprint.mds.eu/docs/3.x) |
+| `2.x`            | `1.x`                    | `10.0 - 10.5`             |     ❌      | [GitHub](https://github.com/mds-agenturgruppe/pimprint-core-bundle/tree/2.x) <br> [Documentation](https://pimprint.mds.eu/docs/2.x) |
+| `1.x`            | `1.x`                    | `5.x`, `6.x`              |     ❌      | [GitHub](https://github.com/mds-agenturgruppe/pimprint-core-bundle/tree/1.x) <br> [Documentation](https://pimprint.mds.eu/docs/1.x) |

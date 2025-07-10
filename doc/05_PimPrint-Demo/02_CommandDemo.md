@@ -2,8 +2,8 @@
 
 Demonstrates each [Rendering Command](../15_Rendering_Commands.md) in a separate publication:
 
-| Publication                                                                                                                                   | Description                                                                                                              |
-|-----------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------|
+| Publication                                                                                                                                | Description                                                                                                              |
+|--------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------|
 | [CopyBox](https://github.com/mds-agenturgruppe/pimprint-demo-bundle/tree/4.x/src/Project/CommandDemo/CopyBox.php)                          | Copies and resizes elements from template file into generated documents.                                                 |
 | [ImageBox](https://github.com/mds-agenturgruppe/pimprint-demo-bundle/tree/4.x/src/Project/CommandDemo/ImageBox.php)                        | Placing of Pimcore Assets.                                                                                               |
 | [TextBox](https://github.com/mds-agenturgruppe/pimprint-demo-bundle/tree/4.x/src/Project/CommandDemo/TextBox.php)                          | Placing and styling of text. Includes transforming of HTML to styled InDesign text.                                      |
@@ -15,7 +15,7 @@ Demonstrates each [Rendering Command](../15_Rendering_Commands.md) in a separate
 | [Relative Positioning](https://github.com/mds-agenturgruppe/pimprint-demo-bundle/tree/4.x/src/Project/CommandDemo/RelativePositioning.php) | Position elements relative to each other. This allows the creation of dynamic rule based layouts.                        |
 | [Messages](https://github.com/mds-agenturgruppe/pimprint-demo-bundle/tree/4.x/src/Project/CommandDemo/Messages.php)                        | Showing descriptive messages in InDesign plugin.                                                                         |
 
-Every demo publication creates its output into separate layer of the document. This allows to generate all demos into one document and switch the visibility of layers.
+Every demo publication creates its output into a separate layer of the document. This allows you to generate all demos into one document and switching the visibility of layers.
 
 ![CommandDemo Layers](../img/demo_plugin-command_demo_layers.png)
 

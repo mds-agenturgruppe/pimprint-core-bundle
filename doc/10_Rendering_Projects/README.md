@@ -5,7 +5,7 @@ Project services create all information displayed in InDesign plugin to select a
 For a basic reference how you create your own project service and use its default features, please refer to
 the [PimPrint rendering project page](../01_Getting_Started/02_Project_Service.md) in the [GettingStarted Section](../01_Getting_Started/README.md).
 
-This chapter describes following aspects of project rendering services from a more technical point of view:
+This chapter describes the following aspects of project rendering services from a more technical point of view:
 
 1. [Configuring the InDesign plugin FactoryFields](./00_FactoryFields.md)
 2. [Creating CustomField in the InDesign plugin](./01_CustomFields/README.md)

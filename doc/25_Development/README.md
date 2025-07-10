@@ -17,7 +17,7 @@ To start developing with PimPrint good entry points are the fully documented exa
 Start with the [demo rendering Services](https://github.com/mds-agenturgruppe/pimprint-demo-bundle/tree/4.x/src/Service) and
 perhaps [step through them with a debugger](#page_Debugging).
 
-For a full documented demo of all [Rendering Commands](../15_Rendering_Commands.md) refer to
+For a full-documented demo of all [Rendering Commands](../15_Rendering_Commands.md) refer to
 the [Command demos classes](https://github.com/mds-agenturgruppe/pimprint-demo-bundle/tree/4.x/src/Project/CommandDemo) also included
 in [PimPrint-Demo](../05_PimPrint-Demo/README.md).
 
@@ -25,13 +25,13 @@ in [PimPrint-Demo](../05_PimPrint-Demo/README.md).
 
 PimPrint InDesign plugin communicates with the server over a REST API.
 
-All endpoints are implemented in `\Mds\PimPrint\CoreBundle\Controller\InDesignController` which exposes this endpoint routes:
+All endpoints are implemented in `\Mds\PimPrint\CoreBundle\Controller\InDesignController` which exposes the following endpoint routes:
 
 ```
 mds_pimprint_core_indesign_projects 		/pimprint-api/projects
 mds_pimprint_core_indesign_project     		/pimprint-api/project/{identifier}
 mds_pimprint_core_indesign_executeproject 	/pimprint-api/project/{identifier}/run
-mds_pimprint_custom_search                      /pimprint-api/project/{identifier}/custom-search/{customField}
+mds_pimprint_custom_search                  /pimprint-api/project/{identifier}/custom-search/{customField}
 ```
 
 * [Projects Endpoint](./10_Projects_Endpoint.md)
@@ -39,14 +39,14 @@ mds_pimprint_custom_search                      /pimprint-api/project/{identifie
 * [Execute Endpoint](./12_Execute_Endpoint.md)
 * [CustomField Search Endpoint](./13_CustomField_Search_Endpoint.md)
 
-As PimPrint uses Pimcore User logins for securing access and uses the Pimcore Users and Roles for data access permissions an active Pimcore backend login session is required when
+As PimPrint uses Pimcore User logins for securing access and uses the Pimcore Users and Roles for data access permissions, an active Pimcore backend login session is required when
 accessing the REST API. Therefore, you have to authenticate with the Pimcore backend first when accessing the REST API with a browser.
 
 ![REST API - Pimcore authentication](../img/browser-api_login.png)
 
 ## Debugging
 
-To debug, and step analyse the demos and your own projects, you can set your Xdebug extension to autostart on every request by editing your php.ini enabling direct debugging from
+To debug and step analyse the demos and your own projects, you can set your Xdebug extension to autostart on every request by editing your php.ini enabling direct debugging from
 InDesign.
 
  ```ini
@@ -80,7 +80,7 @@ mds_pim_print_core:
         port: ''
 ```
 
-This configuration leads to download urls like for the error shown above:
+This configuration leads to downloading urls like the error shown above:
 
 ```
 https://pimprint-demo.dev/.../PimPrint-DataPrintDemo_blue.indd
