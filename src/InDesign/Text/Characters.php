@@ -80,6 +80,16 @@ class Characters implements ParagraphComponent
     }
 
     /**
+     * Returns character style.
+     *
+     * @return string
+     */
+    public function getStyle(): string
+    {
+        return $this->style;
+    }
+
+    /**
      * Sets text.
      *
      * @param string $text

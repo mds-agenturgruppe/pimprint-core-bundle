@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.4.2] - 2026-01-12
+
+### Feature
+
+- `Html\AbstractParser` `Html\Style` paragraph & character support.
+
 ## [4.4.0] - 2025-06-18
 
 ### Feature

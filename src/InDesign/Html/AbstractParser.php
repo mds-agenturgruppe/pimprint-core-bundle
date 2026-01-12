@@ -175,7 +175,7 @@ abstract class AbstractParser
     protected array $paragraphComponents = [];
 
     /**
-     * Indicates of inline class attributes should be used to as InDesign paragraph styles.
+     * Indicates of inline class attributes should be used to as InDesign styles.
      *
      * @var bool
      */
@@ -237,9 +237,9 @@ abstract class AbstractParser
     }
 
     /**
-     * Sets useInlineStyleParagraph.
-     * If $useInlineStyleParagraph is true class attributes of tags are uses as InDesign paragraph styles.
-     * If no class attribute is found or $useInlineStyleParagraph is false, the definition in Style class is used.
+     * Sets useInlineStyle.
+     * If $useInlineStyle is true class attributes of tags are uses as InDesign paragraph styles.
+     * If no class attribute is found or $useInlineStyle is false, the definition in Style class is used.
      *
      * @param bool $useInlineStyle
      *
@@ -420,6 +420,7 @@ abstract class AbstractParser
                              $this->createParagraph(
                                  $this->paragraphComponents,
                                  $this->getNodeStyle($node, Style::TYPE_PARAGRAPH, $pseudoStyle),
+                                 $this->getNodeStyle($node, Style::TYPE_CHARACTER, $pseudoStyle)
                              )
                          );
                 } catch (\Exception $exception) {
@@ -458,11 +459,9 @@ abstract class AbstractParser
      */
     protected function getNodeStyle(\DomNode $node, string $type, string $pseudo = ''): string
     {
-        if ($this->useInlineStyle) {
-            $class = $node->getAttribute('class');
-            if (!empty($class)) {
-                return $class;
-            }
+        $class = $node->getAttribute('class');
+        if ($this->useInlineStyle && false === empty($class)) {
+            return $class;
         }
 
         $style = $this->getStyle()
@@ -531,12 +530,16 @@ abstract class AbstractParser
      *
      * @param array       $components
      * @param string|null $paragraphStyle
+     * @param string|null $characterStyle
      *
      * @return Paragraph
      * @throws \Exception
      */
-    protected function createParagraph(array $components, string $paragraphStyle = null): Paragraph
-    {
+    protected function createParagraph(
+        array $components,
+        string $paragraphStyle = null,
+        string $characterStyle = null
+    ): Paragraph {
         if (empty($components)) {
             throw new \Exception('No components.');
         }
@@ -550,12 +553,19 @@ abstract class AbstractParser
             switch (true) {
                 case $element instanceof Characters:
                     $content .= $element->getText();
+
+                    if (!$this->useInlineStyle && empty($element->getStyle())) {
+                        if (null !== $characterStyle) {
+                            $element->setStyle($characterStyle);
+                        }
+                    }
                     break;
 
                 case $element instanceof ImageBox:
                     $content .= 'image';
                     break;
             }
+
             $paragraph->addComponent($element);
         }
         if (0 == strlen($content)) {
