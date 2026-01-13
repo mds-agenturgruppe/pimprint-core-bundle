@@ -37,13 +37,23 @@ class MdsPimPrintCoreBundle extends AbstractPimcoreBundle
     }
 
     /**
-     * Bundle description as shown in extension manager
+     * Bundle description
      *
      * @return string
      */
     public function getDescription(): string
     {
         return 'mds PimPrint CoreBundle - The InDesign Printing Solution for Pimcore.';
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return string
+     */
+    public function getPath(): string
+    {
+        return \dirname(__DIR__);
     }
 
     /**

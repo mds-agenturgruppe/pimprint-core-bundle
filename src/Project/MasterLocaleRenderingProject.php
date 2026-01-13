@@ -22,7 +22,7 @@ use Mds\PimPrint\CoreBundle\Service\PluginParameters;
  * Rendering allows generation of document in a master locale. When rendering additional languages positions and
  * dimensions for elements can be used from the rendered master locale.
  *
- * Class is registered as abstract service in 'src/Resources/config/services.yml' and aliased as
+ * Class is registered as abstract service in 'config/services.yaml' and aliased as
  * 'mds.pimprint.core.master_locale_rendering_project' to be used in concrete service definitions as parent.
  *
  * Example:

@@ -41,9 +41,9 @@ class MdsPimPrintCoreExtension extends Extension implements PrependExtensionInte
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
-        $loader->load('services.yml');
-        $loader->load('aliases.yml');
+        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../../config'));
+        $loader->load('services.yaml');
+        $loader->load('aliases.yaml');
 
         $this->registerProjects($container, $config);
         $this->configurePluginParams($container, $config);
