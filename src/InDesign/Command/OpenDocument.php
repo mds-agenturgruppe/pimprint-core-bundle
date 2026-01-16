@@ -121,7 +121,7 @@ class OpenDocument extends AbstractCommand
     }
 
     /**
-     * Validates $value for param $type is allowed.
+     * Validates $value for the param $type is allowed.
      *
      * @param string $value
      *

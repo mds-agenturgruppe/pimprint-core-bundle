@@ -11,7 +11,7 @@
  * @license    https://pimprint.mds.eu/license GPLv3
  */
 
-namespace Mds\PimPrint\CoreBundle\EventListener;
+namespace Mds\PimPrint\CoreBundle\Security\EventListener;
 
 use Mds\PimPrint\CoreBundle\Security\Traits\InDesignRequestDetector;
 use Pimcore\Bundle\AdminBundle\Security\Exception\BruteforceProtectionException;
@@ -22,11 +22,11 @@ use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
- * Sends brute force errors in PimPrint InDesign-Plugin response.
+ * Class BruteforceProtectionListener
  *
  * @see     \Pimcore\Bundle\AdminBundle\EventListener\BruteforceProtectionListener
  *
- * @package Mds\PimPrint\CoreBundle\EventListener
+ * @package Mds\PimPrint\CoreBundle\Security\EventListener
  */
 class BruteforceProtectionListener implements EventSubscriberInterface
 {
@@ -53,7 +53,7 @@ class BruteforceProtectionListener implements EventSubscriberInterface
      */
     public function onKernelException(ExceptionEvent $event): void
     {
-        if (false === $this->isInDesignRequest($event->getRequest())) {
+        if (!$this->isInDesignRequest($event->getRequest())) {
             return;
         }
         $exception = $event->getThrowable();

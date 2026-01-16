@@ -83,5 +83,5 @@ mds_pim_print_core:
 This configuration leads to download urls like for the error shown above:
 
 ```
-https://pimprint-demo.dev/.../PimPrint-DataPrintDemo_blue.indd
+https://pimprint-demo.dev/.../PimPrint_CommandDemo.indd
 ```

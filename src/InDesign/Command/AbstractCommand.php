@@ -45,7 +45,7 @@ abstract class AbstractCommand
 
     /**
      * Inits $this->params with $params.
-     * Used to initialize availible concrete command params with default values.
+     * Used to initialize available concrete command params with default values.
      *
      * @param array $params
      *

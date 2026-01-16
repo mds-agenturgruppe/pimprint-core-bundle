@@ -23,14 +23,14 @@ use Mds\PimPrint\CoreBundle\InDesign\Text;
 class TextParser extends AbstractParser
 {
     /**
-     * Returns target Text instance.
+     * Returns a target Text instance.
      *
      * @return Text
      * @throws \Exception
      */
     public function getText(): Text
     {
-        if (false === $this->text instanceof Text) {
+        if (!$this->text instanceof Text) {
             throw new \Exception('No target Text instance set.');
         }
 

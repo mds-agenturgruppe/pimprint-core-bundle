@@ -49,8 +49,8 @@ class CheckNewColumn extends AbstractCommand implements ComponentInterface, Dyna
      *
      * @param CheckNewPage          $checkNewPage
      * @param float|int|string|null $columnWidth  Width of each column
-     * @param int|float|string|null $columnMargin Margin to be used for detecting pace left on page
-     * @param int|float|string|null $maxXPos      Optional x Position on page used for white space on the right side
+     * @param int|float|string|null $columnMargin Margin to be used for detecting pace left on the page
+     * @param int|float|string|null $maxXPos      Optional x Position on the page used for white space on the right side
      *
      * @throws \Exception
      */

@@ -65,9 +65,11 @@ trait ImageCollectorTrait
     protected function collectImage(ImageBox $imageBox): void
     {
         try {
-            if (false === $this->getProject()
-                               ->config()
-                               ->isAssetDownloadEnabled()) {
+            if (
+                !$this->getProject()
+                      ->config()
+                      ->isAssetDownloadEnabled()
+            ) {
                 return;
             }
             $assetId = (int)$imageBox->getParam('assetId');

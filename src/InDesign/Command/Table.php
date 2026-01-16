@@ -60,7 +60,7 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
     const ROW_TYPE_FOOTER = 'FOOTER_ROW';
 
     /**
-     * Don't adjust box size.
+     * Don't adjust the box size.
      *
      * @var int
      */
@@ -100,7 +100,7 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
     protected array $columns = [];
 
     /**
-     * Content rows of table.
+     * Rows of the table.
      *
      * @var array
      */
@@ -114,7 +114,7 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
     protected array $footer = [];
 
     /**
-     * Temporary array for current row then adding cells sequentially.
+     * Temporary array for the current row then adding cells sequentially.
      *
      * @var array
      */
@@ -141,7 +141,7 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
 
     /**
      * Indicates HTML parsing mode. When parsingMode is on.
-     * Columns are automatically added when adding cells for not existent columns.
+     * Columns are automatically added when adding cells for non-existent columns.
      *
      * @var bool
      */
@@ -150,14 +150,14 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
     /**
      * Table constructor.
      *
-     * @param string      $elementName Name of template element.
+     * @param string      $elementName Name of the template element.
      * @param float|null  $left        Left position in mm.
      * @param float|null  $top         Top position in mm.
-     * @param float|null  $width       Width of element in mm.
-     * @param float|null  $height      Height of element in mm.
+     * @param float|null  $width       Width of the element in mm.
+     * @param float|null  $height      Height of the element in mm.
      * @param string|null $tableStyle  InDesign table style.
      * @param float|null  $lineHeight  Default line height in mm.
-     * @param int         $fit         Fit mode of table box.
+     * @param int         $fit         Fit mode of the table box.
      *
      * @throws \Exception
      */
@@ -211,7 +211,7 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
     }
 
     /**
-     * Returns table style. If no style is set an exception is thrown.
+     * Returns table style. If no style is set, an exception is thrown.
      *
      * @return string
      * @throws \Exception
@@ -242,8 +242,8 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
     }
 
     /**
-     * Sets the default row height in table.
-     * This height is used, when a row is added without a explicit height.
+     * Sets the default row height in the table.
+     * This height is used when a row is added without an explicit height.
      *
      * @param float|int $height Default row height in mm.
      *
@@ -273,7 +273,7 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
 
     /**
      * Returns Text instance.
-     * If none is set a new instance is created via textFaactory
+     * If none is set, a new instance is created via textFactory
      *
      * @return Text
      */
@@ -303,7 +303,7 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
 
     /**
      * Factory template method.
-     * Factory can be overwritten to have project specific Text instances created automatically.
+     * Factory can be overwritten to have project-specific Text instances created automatically.
      *
      * @return Text
      */
@@ -313,7 +313,7 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
     }
 
     /**
-     * Clears all content (columns, rows and footer) from table.
+     * Clears all content (columns, rows and footer) from the table.
      *
      * @return Table
      */
@@ -327,7 +327,7 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
     }
 
     /**
-     * Removes all columns and rows from table.
+     * Removes all columns and rows from the table.
      *
      * @return Table
      */
@@ -340,7 +340,7 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
     }
 
     /**
-     * Clears all rows in table.
+     * Clears all rows in the table.
      *
      * @return Table
      */
@@ -352,7 +352,7 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
     }
 
     /**
-     * Clears footer in table.
+     * Clears footer in the table.
      *
      * @return Table
      */
@@ -478,7 +478,7 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
     }
 
     /**
-     * Closes current row without adding it to the table.
+     * Closes the current row without adding it to the table.
      *
      * @return Table
      */
@@ -602,7 +602,7 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
     }
 
     /**
-     * Returns ident of command when used as compound.
+     * Returns ident of command when used as a compound.
      *
      * @return string
      */
@@ -612,7 +612,7 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
     }
 
     /**
-     * Returns true if component can be used multiple times in the same command.
+     * Returns true if a component can be used multiple times in the same command.
      *
      * @return bool
      */
@@ -622,7 +622,7 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
     }
 
     /**
-     * Builds command array that is sent as JSON to InDesign.
+     * Builds a command array that is sent as JSON to InDesign.
      *
      * @param bool $addCmd
      *
@@ -683,7 +683,7 @@ class Table extends AbstractBox implements ImageCollectorInterface, ComponentInt
     }
 
     /**
-     * Asserts that table has rows.
+     * Asserts the table has rows.
      *
      * @return void
      * @throws \Exception

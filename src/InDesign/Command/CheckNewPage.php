@@ -47,8 +47,8 @@ class CheckNewPage extends AbstractCommand implements ComponentInterface, Dynami
      * CheckNewPage constructor.
      *
      * @param string      $maxYPos Maximum allowed y position on page in mm.
-     * @param string      $newYPos New y position in mm on next page.
-     * @param string|null $newXPos Optional new x position in mm on next page.
+     * @param string      $newYPos New y position in mm on the next page.
+     * @param string|null $newXPos Optional new x position in mm on the next page.
      *
      * @throws \Exception
      */
@@ -69,7 +69,7 @@ class CheckNewPage extends AbstractCommand implements ComponentInterface, Dynami
     }
 
     /**
-     * Sets maximum Y-Position where the placed box should end.
+     * Sets the maximum Y-Position where the placed box should end.
      *
      * @param float|int|string $maxYPos
      *
@@ -154,7 +154,7 @@ class CheckNewPage extends AbstractCommand implements ComponentInterface, Dynami
     }
 
     /**
-     * Returns ident of command when used as compound.
+     * Returns ident of command when used as a compound.
      *
      * @return string
      */
@@ -164,7 +164,7 @@ class CheckNewPage extends AbstractCommand implements ComponentInterface, Dynami
     }
 
     /**
-     * Returns true if component can be used multiple times in the same command.
+     * Returns true if a component can be used multiple times in the same command.
      *
      * @return bool
      */

@@ -23,7 +23,7 @@ use Mds\PimPrint\CoreBundle\Project\AbstractProject;
 abstract class AbstractField
 {
     /**
-     * PimPrint project service the cutsom field is used in.
+     * PimPrint project service the custom field is used in.
      *
      * @var AbstractProject
      */
@@ -138,7 +138,7 @@ abstract class AbstractField
     }
 
     /**
-     * Returns of input in InDesign plugin is required to start generation
+     * Returns of input in InDesign plugin are required to start generation
      *
      * @return bool
      */
@@ -148,7 +148,7 @@ abstract class AbstractField
     }
 
     /**
-     * Sets $required of input in InDesign plugin to start generation process
+     * Sets $required of input in InDesign plugin to start a generation process
      *
      * @param bool $required
      *

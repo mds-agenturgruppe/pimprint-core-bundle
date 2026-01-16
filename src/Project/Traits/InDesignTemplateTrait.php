@@ -16,19 +16,21 @@ namespace Mds\PimPrint\CoreBundle\Project\Traits;
 use League\Flysystem\FilesystemException;
 use Pimcore\Model\Asset;
 use Pimcore\Tool\Storage;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 /**
- * Trait TemplateTrait
+ * Trait InDesignTemplateTrait
  *
  * @package Mds\PimPrint\CoreBundle\Project\Traits
  */
-trait TemplateTrait
+trait InDesignTemplateTrait
 {
     /**
      * Returns InDesign template filename or Pimcore Asset object.
-     * By default, the template filename defined in project configuration is used.
+     * By default, the template filename defined in the project configuration is used.
      *
-     * Can be overwritten in concrete projects to use values from Pimcore data model like fields or properties.
+     * Can be overwritten in concrete projects to use values from a Pimcore data model like fields or properties.
      *
      * @return string|Asset
      * @throws \Exception
@@ -37,7 +39,7 @@ trait TemplateTrait
     {
         $config = $this->config()
                        ->offsetGet('template');
-        if (false === is_array($config) || false === isset($config['default'])) {
+        if (!is_array($config) || !isset($config['default'])) {
             throw new \Exception(
                 sprintf(
                     "No default template defined for project '%s' in configuration.",
@@ -50,7 +52,7 @@ trait TemplateTrait
     }
 
     /**
-     * Returns file path of template $filename for current project.
+     * Returns the file path of template $filename for the current project.
      *
      * @param string $filename
      *
@@ -74,7 +76,9 @@ trait TemplateTrait
      * Builds settings array for InDesign template file.
      *
      * @return array
+     * @throws ContainerExceptionInterface
      * @throws FilesystemException
+     * @throws NotFoundExceptionInterface
      * @throws \Exception
      */
     final protected function buildTemplateSettings(): array
@@ -83,7 +87,7 @@ trait TemplateTrait
             'download' => $this->config()
                                ->offsetGet('template')['download'],
         ];
-        if (false === $settings['download'] || false === $this->isGenerationActive()) {
+        if (!$settings['download'] || !$this->isGenerationActive()) {
             return $settings;
         }
         $this->addTemplateDownloadData($settings);
@@ -97,8 +101,10 @@ trait TemplateTrait
      * @param array $settings
      *
      * @return void
-     * @throws \Exception
      * @throws FilesystemException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws \Exception
      */
     private function addTemplateDownloadData(array &$settings): void
     {
@@ -106,7 +112,7 @@ trait TemplateTrait
 
         if ($template instanceof Asset) {
             $storage = Storage::get('asset');
-            if (false === $storage->fileExists($template->getFullPath())) {
+            if (!$storage->fileExists($template->getFullPath())) {
                 throw new \Exception(
                     sprintf('InDesign template file not found: %s', $template->getFullPath())
                 );
@@ -116,8 +122,10 @@ trait TemplateTrait
                                     ->prependHostUrl($template->getFrontendFullPath());
             $settings['fileSize'] = $template->getFileSize();
 
-            if ($this->config()
-                     ->offsetGet('file_storage_mtime')) {
+            if (
+                $this->config()
+                     ->offsetGet('file_storage_mtime')
+            ) {
                 $settings['mtime'] = $storage->lastModified($template->getFullPath());
             } else {
                 $settings['mtime'] = (int)$template->getModificationDate();
@@ -127,11 +135,11 @@ trait TemplateTrait
         }
 
         $filePath = $this->getTemplateFilePath($template);
-        if (false === file_exists($filePath)) {
+        if (!file_exists($filePath)) {
             throw new \Exception(sprintf('InDesign template file not found on server: %s', $template));
         }
 
-        $url = $this->getUrlGenerator()
+        $url = $this->urlGenerator()
                     ->generate(
                         'mds_pimprint_downlaod_template',
                         [

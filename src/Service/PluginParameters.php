@@ -23,14 +23,14 @@ use Pimcore\Http\RequestHelper;
 class PluginParameters
 {
     /**
-     * Parameter value to start on left page of a print bow.
+     * Parameter value to start on the left page of a print bow.
      *
      * @var int
      */
     const START_ALIGNMENT_LEFT = 400;
 
     /**
-     * Parameter value to start on right page of a print bow.
+     * Parameter value to start on the right page of a print bow.
      *
      * @var int
      */
@@ -38,7 +38,7 @@ class PluginParameters
 
     /**
      * Render mode "Generate"
-     * Generates or updates elements to position send from server and sets content sent from server.
+     * Generates or updates elements to position sending from server and sets content sent from server.
      *
      * Available in projects:
      * - RenderingProject
@@ -51,8 +51,8 @@ class PluginParameters
 
     /**
      * Render mode "Update"
-     * Sets content sent from server in all elements. Leaves element positioning untouched.
-     * AbstractBox command fits are executed as sent from server.
+     * Sets content sent from the server in all elements. Leaves element positioning untouched.
+     * AbstractBox command fits are executed as sent from the server.
      *
      * Available in projects:
      * - RenderingProject
@@ -64,8 +64,8 @@ class PluginParameters
 
     /**
      * Render mode "Update selected"
-     * Sets content sent from server into selected elements. Leaves element positioning and dimensions untouched.
-     * AbstractBox command fits are executed as sent from server.
+     * Sets content sent from the server into selected elements. Leaves element positioning and dimensions untouched.
+     * AbstractBox command fits are executed as sent from the server.
      *
      * Available in projects:
      * - RenderingProject
@@ -77,7 +77,7 @@ class PluginParameters
 
     /**
      * Render mode "Generate selected"
-     * Generates or updates selected elements to position send from server and sets content sent from server.
+     * Generates or updates selected elements to position sending from server and sets content sent from server.
      *
      * Available in projects:
      * - RenderingProject
@@ -104,9 +104,9 @@ class PluginParameters
 
     /**
      * Render mode "Update language variants"
-     * Sets content sent from server for language variants in all elements. Leaves element positioning and dimensions
-     * untouched.
-     * AbstractBox command fits are executed as sent from server.
+     * Sets content sent from the server for language variants in all elements. Leaves element
+     * positioning and dimensions untouched.
+     * AbstractBox command fits are executed as sent from the server.
      *
      * Available in projects:
      * - LocalizedRenderingProject (Refers to language variants)
@@ -128,9 +128,9 @@ class PluginParameters
 
     /**
      * Render mode "Update selected language variants"
-     * Sets content sent from server for language variants in selected elements. Leaves element positioning and
+     * Sets content sent from the server for language variants in selected elements. Leaves element positioning and
      * dimensions untouched.
-     * AbstractBox command fits are executed as sent from server.
+     * AbstractBox command fits are executed as sent from the server.
      *
      * Available in projects:
      * - LocalizedRenderingProject (Refers to language variants)

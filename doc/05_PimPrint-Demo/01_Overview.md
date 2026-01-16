@@ -62,7 +62,7 @@ This might be because Pimcore is running in a Proxy environment. Please refer to
 The config file you probably will have to edit is:
 
 ```
-vendor/mds-agenturgruppe/pimprint-demo-bundle/src/Resources/config/pimcore/pimprint.yml
+vendor/mds-agenturgruppe/pimprint-demo-bundle/config/pimcore/pimprint.yaml
 ```  
 
 ## Reload Plugin

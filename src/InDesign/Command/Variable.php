@@ -164,7 +164,7 @@ class Variable extends AbstractCommand implements ComponentInterface
     }
 
     /**
-     * Returns ident of command when used as compound.
+     * Returns ident of command when used as a compound.
      *
      * @return string
      */
@@ -174,7 +174,7 @@ class Variable extends AbstractCommand implements ComponentInterface
     }
 
     /**
-     * Returns true if component can be used multiple times in the same command.
+     * Returns true if a component can be used multiple times in the same command.
      *
      * @return bool
      */

@@ -40,7 +40,7 @@ abstract class AbstractPublicationTreeBuilder
     }
 
     /**
-     * Builds recursive object tree.
+     * Builds a recursive object tree.
      *
      * @param AbstractObject $object
      *
@@ -78,7 +78,7 @@ abstract class AbstractPublicationTreeBuilder
      * Template method.
      * Returns true if $object is a renderable Publication and should be displayed in PimPrint Plugin a publication.
      *
-     * This abstract implementation only checks for visibility to current user. Overwrite for project domain use.
+     * This abstract implementation only checks for visibility to the current user. Overwrite for project domain use.
      *
      * @param AbstractObject $object
      *
@@ -91,7 +91,7 @@ abstract class AbstractPublicationTreeBuilder
 
     /**
      * Template method.
-     * Returns identifier used in publication tree and publicationIdent generation parameter.
+     * Returns identifier used in the publication tree and publicationIdent generation parameter.
      * As default the object id is used.
      *
      * @param AbstractObject $object
@@ -105,7 +105,7 @@ abstract class AbstractPublicationTreeBuilder
 
     /**
      * Template method.
-     * Returns label displayed in publication tree. As Default in this implementation key is used.
+     * Return label displayed in publication tree. As Default in this implementation key is used.
      *
      * @param AbstractObject $object
      *

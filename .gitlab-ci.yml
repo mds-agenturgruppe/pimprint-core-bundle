@@ -1,12 +1,12 @@
 stages:
     - test
 
-code check:
+code-check:
     stage: test
-    image: gitlab.mds.eu:2244/mds/php8-code-checker
+    image: gitlab.mds.eu:2244/mds/docker-images/image-pimcore11-php82-webserver
     script:
         - echo "Executing mds-code-checker..."
-        - ln -s $(pwd)/src /data/src
-        - ln -s $(pwd)/.mds-code-checker.conf /data/.mds-code-checker.conf
+        - cp -r $(pwd)/. /data
         - cd /data
+        - composer install
         - vendor/bin/mds-code-check

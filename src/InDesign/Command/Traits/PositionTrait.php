@@ -18,10 +18,10 @@ use Mds\PimPrint\CoreBundle\InDesign\Command\Variable;
 
 /**
  * Trait to add params for positioning to a command.
- * The params left and top are used to position a element absolutely in the document. When this params are used
+ * The params left and top are used to position an element absolutely in the document. When these params are used,
  * the upper-left corner of the element is positioned left/top position.
  *
- * With the method setRelativePosition a element can be placed relative to prior defined variables in InDesign via
+ * With the method setRelativePosition an element can be placed relative to prior defined variables in InDesign via
  * the Variable command or VariableTrait.
  *
  * @package Mds\PimPrint\CoreBundle\InDesign\Command\Traits
@@ -29,7 +29,7 @@ use Mds\PimPrint\CoreBundle\InDesign\Command\Variable;
 trait PositionTrait
 {
     /**
-     * Name of the variables which the element is relative positioned.
+     * Name of the variables which the element is relatively positioned.
      *
      * @var array
      */
@@ -118,7 +118,7 @@ trait PositionTrait
     }
 
     /**
-     * Convenience method to set relative left position to $variable and $margin.
+     * Convenience method to set the relative left position to $variable and $margin.
      *
      * @param string $variable Variable name in InDesign for relative positioning.
      * @param float  $margin   Margin in mm to the InDesign variable.
@@ -132,7 +132,7 @@ trait PositionTrait
     }
 
     /**
-     * Convenience method to set relative top position to $variable and $margin.
+     * Convenience method to set the relative top position to $variable and $margin.
      *
      * @param string $variable Variable name in InDesign for relative positioning.
      * @param float  $margin   Margin in mm to the InDesign variable.
@@ -146,7 +146,7 @@ trait PositionTrait
     }
 
     /**
-     * Checks if $value contains a position variable. If not the registered variable is removed.
+     * Checks if $value contains a position variable. If not, the registered variable is removed.
      *
      * @param string      $position
      * @param string|null $value
@@ -205,7 +205,7 @@ trait PositionTrait
     }
 
     /**
-     * Returns true if element is relative positioned to $variable.
+     * Returns true if the element is relatively positioned to $variable.
      *
      * @param string $variable
      *

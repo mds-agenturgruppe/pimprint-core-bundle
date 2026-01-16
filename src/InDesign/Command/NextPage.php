@@ -13,7 +13,7 @@
 
 namespace Mds\PimPrint\CoreBundle\InDesign\Command;
 
-use Mds\PimPrint\CoreBundle\Project\Traits\ProjectAwareTrait;
+use Mds\PimPrint\CoreBundle\InDesign\Traits\ProjectAwareTrait;
 
 /**
  * Jumps to the next page in the InDesign document.
@@ -114,7 +114,7 @@ class NextPage extends AbstractCommand
     public function buildCommand(bool $addCmd = true): array
     {
         $return = parent::buildCommand($addCmd);
-        $this->getCommandQueue()
+        $this->commandQueue()
              ->incrementPageNumber();
 
         return $return;

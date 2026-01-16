@@ -27,7 +27,11 @@ use Mds\PimPrint\CoreBundle\InDesign\Command\Variables\DependentInterface;
  */
 class GroupEnd extends AbstractCommand implements DependentInterface
 {
-    use ElementNameTrait, LayerTrait, PositionTrait, SizeTrait, VariableTrait;
+    use ElementNameTrait;
+    use LayerTrait;
+    use PositionTrait;
+    use SizeTrait;
+    use VariableTrait;
 
     /**
      * Command name.

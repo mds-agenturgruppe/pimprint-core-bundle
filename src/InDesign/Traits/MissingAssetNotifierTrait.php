@@ -14,6 +14,8 @@
 namespace Mds\PimPrint\CoreBundle\InDesign\Traits;
 
 use Mds\PimPrint\CoreBundle\Service\AccessorTraits\ProjectsManagerTrait;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 /**
  * Trait MissingAssetNotifierTrait
@@ -26,20 +28,22 @@ trait MissingAssetNotifierTrait
 
     /**
      * Adds $message as notification for missing asset for $assetId.
-     * If config variable imageWarningsOnPage is true a onPage message will be generated.
-     * Otherwise, a offPage message will be generated.
+     * If config variable imageWarningsOnPage is true, an onPage message will be generated.
+     * Otherwise, an offPage message will be generated.
      *
      * @param string $message
      * @param int    $assetId
      *
      * @return void
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      * @throws \Exception
      */
     protected function notifyMissingAsset(string $message, int $assetId): void
     {
         $project = $this->getProjectsManager()
                         ->getProject();
-        $project->getCommandQueue()
+        $project->commandQueue()
                 ->incrementMissingAssetCounter($assetId);
         $project->addPageMessage(
             $message,
@@ -49,9 +53,11 @@ trait MissingAssetNotifierTrait
     }
 
     /**
-     * Adds preMessage if notification for first missing asset is added.
+     * Adds preMessage if notification for the first missing asset is added.
      *
      * @return void
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      * @throws \Exception
      */
     protected function addMissingAssetPreMessage(): void
@@ -59,10 +65,10 @@ trait MissingAssetNotifierTrait
         try {
             $project = $this->getProjectsManager()
                             ->getProject();
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return;
         }
-        $missingAssets = $project->getCommandQueue()
+        $missingAssets = $project->commandQueue()
                                  ->getMissingAssets();
         if (0 == $missingAssets['elements']) {
             return;
@@ -75,8 +81,10 @@ trait MissingAssetNotifierTrait
             $missingAssets['elements'],
             $missingAssets['elements'] == 1 ? 'box' : 'boxes'
         );
-        if (true === $project->config()
-                             ->isAssetWarningOnPage()) {
+        if (
+            $project->config()
+                    ->isAssetWarningOnPage()
+        ) {
             $message .= '<br>Messages are rendered directly on the page.';
         }
         $project->addPreMessage($message);

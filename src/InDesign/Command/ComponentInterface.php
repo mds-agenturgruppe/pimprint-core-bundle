@@ -21,14 +21,14 @@ namespace Mds\PimPrint\CoreBundle\InDesign\Command;
 interface ComponentInterface
 {
     /**
-     * Returns ident of command when used as compound.
+     * Returns ident of command when used as a compound.
      *
      * @return string
      */
     public function getComponentIdent(): string;
 
     /**
-     * Returns true if component can be used multiple times in the same command.
+     * Returns true if a component can be used multiple times in the same command.
      *
      * @return bool
      */

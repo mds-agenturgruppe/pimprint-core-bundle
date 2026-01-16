@@ -16,40 +16,53 @@ namespace Mds\PimPrint\CoreBundle\Service;
 use Mds\PimPrint\CoreBundle\Project\AbstractProject;
 use Mds\PimPrint\CoreBundle\Project\Config;
 use Mds\PimPrint\CoreBundle\Project\MasterLocaleRenderingProject;
+use Symfony\Component\DependencyInjection\Attribute\TaggedLocator;
+use Symfony\Component\DependencyInjection\ServiceLocator;
 
 /**
- * ProjectsManager registers all configured PimPrint rendering project services defined in
- * mds_pim_print_core configuration and acts as a factory for accessing the concrete rendering services.
+ * Class ProjectsManager
+ *
+ * Registers all configured PimPrint rendering project services defined in
+ * `mds_pim_print_core` configuration and acts as a factory for accessing the concrete rendering services.
+ *
  *
  * @package Mds\PimPrint\CoreBundle\Service
  */
 class ProjectsManager
 {
     /**
-     * Configuration of registered PimPrint Projects.
+     * Service tag for auto-registered rendering projects services.
+     *
+     * @var string
+     */
+    const SERVICE_TAG = 'mds.pimprint.rendering.project';
+
+    /**
+     * Configured PimPrint Projects.
      *
      * @var array
      */
-    private array $projects = [];
+    private array $config = [];
 
     /**
-     * Instance of current selected project for generation.
+     * ProjectsManager
+     *
+     * @param ServiceLocator $locator
+     * @param array          $config
+     */
+    public function __construct(
+        #[TaggedLocator(self::SERVICE_TAG)] protected ServiceLocator $locator,
+        array $config
+    ) {
+        $this->setConfig($config);
+    }
+
+    /**
+     * Instance of the current selected project for generation.
      *
      * @var AbstractProject
      */
     private AbstractProject $project;
-
-    /**
-     * Projects constructor.
-     *
-     * @param array $config
-     *
-     * @throws \Exception
-     */
-    public function __construct(array $config)
-    {
-        $this->registerProjects($config);
-    }
 
     /**
      * Registers all PimPrint projects from $config.
@@ -58,7 +71,7 @@ class ProjectsManager
      *
      * @return void
      */
-    private function registerProjects(array $config): void
+    private function setConfig(array $config): void
     {
         foreach ($config as $ident => $project) {
             if (empty($project['ident'])) {
@@ -66,7 +79,7 @@ class ProjectsManager
             } else {
                 $ident = $project['ident'];
             }
-            $this->projects[$ident] = $project;
+            $this->config[$ident] = $project;
         }
     }
 
@@ -79,7 +92,7 @@ class ProjectsManager
     public function getProjectsInfo(): array
     {
         $return = [];
-        foreach ($this->projects as $ident => $project) {
+        foreach ($this->config as $ident => $project) {
             $return[] = $this->projectServiceFactory($ident, false)
                              ->getInfo();
         }
@@ -88,7 +101,7 @@ class ProjectsManager
     }
 
     /**
-     * Returns current selected project.
+     * Returns the current selected project.
      *
      * @return AbstractProject
      * @throws \Exception
@@ -103,7 +116,7 @@ class ProjectsManager
     }
 
     /**
-     * Returns true if current rendered project is a LocalizedRenderingProject
+     * Returns true if the current rendered project is a LocalizedRenderingProject
      *
      * @return bool
      * @throws \Exception
@@ -124,36 +137,24 @@ class ProjectsManager
      */
     public function projectServiceFactory(string $ident, bool $registerSelected = true): AbstractProject
     {
-        if (false === isset($this->projects[$ident])) {
-            throw new \Exception(
-                sprintf("No PimPrint project with ident '%s' registered.", $ident)
-            );
+        if (!isset($this->config[$ident])) {
+            throw new \Exception("PimPrint project not registered: $ident");
         }
-        $config = $this->projects[$ident];
-        try {
-            $service = \Pimcore::getKernel()
-                               ->getContainer()
-                               ->get($config['service']);
-        } catch (\Exception) {
-            throw new \Exception(
-                sprintf("No public PimPrint project service '%s' found.", $config['service'])
-            );
+        $config = $this->config[$ident];
+
+        $project = $this->locator->get($config['service']);
+        if (null === $project) {
+            throw new \Exception("PimPrint rendering service not found: {$config['service']}");
         }
-        if (false === $service instanceof AbstractProject) {
-            throw new \Exception(
-                sprintf(
-                    "PimPrint project service '%s' is no instance of '%s'.",
-                    $ident,
-                    AbstractProject::class
-                )
-            );
-        }
-        $service->setConfig(new Config($config));
-        $service->assertServiceInitialized();
-        if (true === $registerSelected) {
-            $this->project = $service;
+        if (!$project instanceof AbstractProject) {
+            throw new \Exception("PimPrint rendering service must extend:  " . AbstractProject::class);
         }
 
-        return $service;
+        $project->setConfig(new Config($config));
+        if ($registerSelected) {
+            $this->project = $project;
+        }
+
+        return $project;
     }
 }

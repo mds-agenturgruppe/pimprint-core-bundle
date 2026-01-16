@@ -20,6 +20,7 @@ use Pimcore\Model\Element\AbstractElement;
  * Trait ElementCollectionRendering
  *
  * @package Mds\PimPrint\DemoBundle\Project\Traits
+ * @deprecated
  */
 trait ElementCollectionRenderingTrait
 {
@@ -36,6 +37,7 @@ trait ElementCollectionRenderingTrait
      * @param AbstractElement|AbstractObject $element
      *
      * @return void
+     * @deprecated
      */
     abstract protected function collectElements(AbstractElement|AbstractObject $element): void;
 
@@ -45,6 +47,7 @@ trait ElementCollectionRenderingTrait
      * @param AbstractElement $element
      *
      * @return void
+     * @deprecated
      */
     abstract protected function renderElement(AbstractElement $element): void;
 
@@ -52,6 +55,7 @@ trait ElementCollectionRenderingTrait
      * Returns next element to render.
      *
      * @return mixed
+     * @deprecated
      */
     protected function getNextElement(): mixed
     {
@@ -66,6 +70,7 @@ trait ElementCollectionRenderingTrait
      *
      * @return void
      * @throws \Exception
+     * @deprecated
      */
     protected function renderPages(AbstractElement $element): void
     {

@@ -49,7 +49,7 @@ class Style
     const TYPE_CELL = 'cell';
 
     /**
-     * Message to show when element is not defined.
+     * Message to show when the element is not defined.
      *
      * @var string
      */
@@ -333,7 +333,7 @@ class Style
 
     /**
      * Checks if $type is a valid style type.
-     * If $type is invalid an exception is thrown.
+     * If the $type is invalid, an exception is thrown.
      *
      * @param string $type
      *

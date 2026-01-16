@@ -17,6 +17,8 @@ use League\Flysystem\FilesystemException;
 use Mds\PimPrint\CoreBundle\InDesign\Traits\MissingAssetNotifierTrait;
 use Mds\PimPrint\CoreBundle\Session\PimPrintSessionBagConfigurator;
 use Pimcore\Http\RequestHelper;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBag;
@@ -38,29 +40,15 @@ class PluginResponseCreator
     private static ?bool $isDebugMode = null;
 
     /**
-     * Pimcore RequestHelper.
-     *
-     * @var RequestHelper
-     */
-    private RequestHelper $requestHelper;
-
-    /**
-     * PimPrint ProjectsManager
-     *
-     * @var ProjectsManager
-     */
-    private ProjectsManager $projectsManager;
-
-    /**
      * PluginResponseCreator constructor.
      *
      * @param RequestHelper   $requestHelper
      * @param ProjectsManager $projectsManager
      */
-    public function __construct(RequestHelper $requestHelper, ProjectsManager $projectsManager)
-    {
-        $this->requestHelper = $requestHelper;
-        $this->projectsManager = $projectsManager;
+    public function __construct(
+        private readonly RequestHelper $requestHelper,
+        private readonly ProjectsManager $projectsManager
+    ) {
     }
 
     /**
@@ -69,7 +57,9 @@ class PluginResponseCreator
      * @param array $data
      *
      * @return JsonResponse
+     * @throws ContainerExceptionInterface
      * @throws FilesystemException
+     * @throws NotFoundExceptionInterface
      */
     public function success(array $data): JsonResponse
     {
@@ -84,6 +74,9 @@ class PluginResponseCreator
      * @param \Exception $exception
      *
      * @return JsonResponse
+     * @throws ContainerExceptionInterface
+     * @throws FilesystemException
+     * @throws NotFoundExceptionInterface
      */
     public function error(\Exception $exception): JsonResponse
     {
@@ -91,7 +84,7 @@ class PluginResponseCreator
             'success'  => false,
             'messages' => [$exception->getMessage()]
         ];
-        if (true === $this->isDebugMode()) {
+        if ($this->isDebugMode()) {
             $data['messages'][] = $exception->getTraceAsString();
         }
 
@@ -105,19 +98,21 @@ class PluginResponseCreator
      * @param int   $status
      *
      * @return JsonResponse
-     * @throws \Exception
+     * @throws ContainerExceptionInterface
      * @throws FilesystemException
+     * @throws NotFoundExceptionInterface
+     * @throws \Exception
      */
     protected function buildResponse(array $data, int $status = Response::HTTP_OK): JsonResponse
     {
         $headers['content-type'] = 'application/json;charset=utf-8';
-        if (false === isset($data['messages'])) {
+        if (!isset($data['messages'])) {
             $data['messages'] = [];
         }
         $data['debugMode'] = $this->isDebugMode();
         $this->addMissingAssetPreMessage();
         $this->addMessages($data);
-        if (true === $data['success']) {
+        if ($data['success']) {
             $this->addImages($data);
             $this->addSettings($data);
         }
@@ -143,15 +138,15 @@ class PluginResponseCreator
             $config['debug'] = $debugMode['active'] ?? false;
             $config['debug_ip'] = $debugMode['ip'] ?? '';
 
-            if (true === $config['debug']) {
+            if ($config['debug']) {
                 $debugIps = $config['debug_ip'] ?? '';
-                if (true === empty($debugIps)) {
+                if (empty($debugIps)) {
                     self::$isDebugMode = true;
                 } else {
                     $debugIps = explode(',', $debugIps);
                     $clientIp = $this->requestHelper->getRequest()
                                                     ->getClientIp();
-                    if (true === in_array($clientIp, $debugIps)) {
+                    if (in_array($clientIp, $debugIps)) {
                         self::$isDebugMode = true;
                     }
                 }
@@ -241,16 +236,20 @@ class PluginResponseCreator
      * @param array $data
      *
      * @return void
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     private function addImages(array &$data): void
     {
         try {
             $project = $this->projectsManager->getProject();
-            if (false === $project->config()
-                                  ->isAssetDownloadEnabled()) {
+            if (
+                !$project->config()
+                         ->isAssetDownloadEnabled()
+            ) {
                 return;
             }
-            $data['images'] = $project->getCommandQueue()
+            $data['images'] = $project->commandQueue()
                                       ->getRegisteredAssets();
         } catch (\Exception) {
             return;

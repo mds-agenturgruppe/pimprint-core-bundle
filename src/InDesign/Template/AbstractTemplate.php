@@ -51,14 +51,14 @@ abstract class AbstractTemplate
     const PAGE_MARGIN_RIGHT = self::PAGE_MARGIN_TOP;
 
     /**
-     * Indicates that document used pacing pages.
+     * Indicates that the document used pacing pages.
      *
      * @var bool
      */
     const FACING_PAGES = false;
 
     /**
-     * Facing page documents start with left or right page
+     * Facing page documents start with the left or right page
      *
      * @var bool
      */

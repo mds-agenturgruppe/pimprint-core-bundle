@@ -52,7 +52,7 @@ trait ParserFactoryTrait
 
     /**
      * Factory template method to create Style instance.
-     * Project specific instances can be integrated by overwriting method or using factoryClosure
+     * Project-specific instances can be integrated by overwriting method or using factoryClosure
      *
      * @return Style
      */
@@ -68,7 +68,7 @@ trait ParserFactoryTrait
 
     /**
      * Factory template method for Characters.
-     * Project specific instances can be integrated by overwriting method or using factoryClosure
+     * Project-specific instances can be integrated by overwriting method or using factoryClosure
      *
      * @return Characters
      */
@@ -84,7 +84,7 @@ trait ParserFactoryTrait
 
     /**
      * Factory template method for Paragraph.
-     * Project specific instances can be integrated by overwriting method or using factoryClosure
+     * Project-specific instances can be integrated by overwriting method or using factoryClosure
      *
      * @return Paragraph
      */
@@ -100,7 +100,7 @@ trait ParserFactoryTrait
 
     /**
      * Factory template method for ImageBox.
-     * Project specific instances can be integrated by overwriting method or using factoryClosure
+     * Project-specific instances can be integrated by overwriting method or using factoryClosure
      *
      * @param \DOMElement $node
      * @param Asset       $asset

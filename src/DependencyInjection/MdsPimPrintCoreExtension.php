@@ -13,12 +13,13 @@
 
 namespace Mds\PimPrint\CoreBundle\DependencyInjection;
 
+use Mds\PimPrint\CoreBundle\Service\PluginParameters;
 use Mds\PimPrint\CoreBundle\Service\ProjectsManager;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
-use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
+use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 /**
  * Class MdsPimPrintCoreExtension
@@ -43,7 +44,6 @@ class MdsPimPrintCoreExtension extends Extension implements PrependExtensionInte
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../../config'));
         $loader->load('services.yaml');
-        $loader->load('aliases.yaml');
 
         $this->registerProjects($container, $config);
         $this->configurePluginParams($container, $config);
@@ -84,7 +84,7 @@ class MdsPimPrintCoreExtension extends Extension implements PrependExtensionInte
      */
     public function registerProjects(ContainerBuilder $container, array $config): void
     {
-        if (false === isset($config['projects'])) {
+        if (!isset($config['projects'])) {
             return;
         }
         $arguments = $config['projects'];
@@ -98,7 +98,7 @@ class MdsPimPrintCoreExtension extends Extension implements PrependExtensionInte
     }
 
     /**
-     * Returns bundle path for configured project service in $projectConfig.
+     * Returns the bundle path for the configured project service in $projectConfig.
      *
      * @param ContainerBuilder $container
      * @param array            $projectConfig
@@ -109,7 +109,7 @@ class MdsPimPrintCoreExtension extends Extension implements PrependExtensionInte
     private function getBundlePathForService(ContainerBuilder $container, array $projectConfig): string
     {
         if (empty($projectConfig['service'])) {
-            throw new \Exception(sprintf('No PimPrint project service defined for rendering project.'));
+            throw new \Exception('No PimPrint project service defined for rendering project.');
         }
         foreach (array_reverse($container->getParameter('kernel.bundles_metadata')) as $bundle) {
             if (str_starts_with($projectConfig['service'], $bundle['namespace'])) {
@@ -129,7 +129,7 @@ class MdsPimPrintCoreExtension extends Extension implements PrependExtensionInte
      */
     private function configurePluginParams(ContainerBuilder $container, array $config): void
     {
-        $definition = $container->getDefinition('mds.pimprint.core.plugin_parameters');
+        $definition = $container->getDefinition(PluginParameters::class);
         $definition->setArgument('$config', $config);
     }
 }

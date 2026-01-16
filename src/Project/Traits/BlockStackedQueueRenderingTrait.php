@@ -20,6 +20,7 @@ use Pimcore\Model\Element\AbstractElement;
  * Trait StackedElementsRendering
  *
  * @package Mds\PimPrint\DemoBundle\Project\Traits
+ * @deprecated
  */
 trait BlockStackedQueueRenderingTrait
 {
@@ -29,6 +30,7 @@ trait BlockStackedQueueRenderingTrait
      * Command stack for current block.
      *
      * @var AbstractCommand[]
+     * @deprecated
      */
     protected array $blockCommands = [];
 
@@ -36,6 +38,7 @@ trait BlockStackedQueueRenderingTrait
      * Block stack.
      *
      * @var array
+     * @deprecated
      */
     protected array $blockStack = [];
 
@@ -45,6 +48,7 @@ trait BlockStackedQueueRenderingTrait
      * @param AbstractElement $element
      *
      * @return void
+     * @deprecated
      */
     protected function renderPages(AbstractElement $element): void
     {
@@ -64,6 +68,7 @@ trait BlockStackedQueueRenderingTrait
      * Returns true if project has current block commands.
      *
      * @return bool
+     * @deprecated
      */
     protected function hasBlockCommands(): bool
     {
@@ -77,6 +82,7 @@ trait BlockStackedQueueRenderingTrait
      * @param bool   $reset
      *
      * @return void
+     * @deprecated
      */
     protected function saveBlockCommands(string $name, bool $reset = true): void
     {
@@ -90,6 +96,7 @@ trait BlockStackedQueueRenderingTrait
      * Clears current blockCommands.
      *
      * @return void
+     * @deprecated
      */
     protected function resetBlockCommands(): void
     {
@@ -102,6 +109,7 @@ trait BlockStackedQueueRenderingTrait
      * @param array $commands
      *
      * @return AbstractCommand[]
+     * @deprecated
      */
     protected function addBlockCommands(array $commands): array
     {
@@ -118,6 +126,7 @@ trait BlockStackedQueueRenderingTrait
      * @param AbstractCommand $command
      *
      * @return void
+     * @deprecated
      */
     protected function addToBlock(AbstractCommand $command): void
     {
@@ -130,6 +139,7 @@ trait BlockStackedQueueRenderingTrait
      * @param string $name
      *
      * @return AbstractCommand[]
+     * @deprecatedl
      */
     protected function restoreBlockCommands(string $name): array
     {
@@ -143,6 +153,7 @@ trait BlockStackedQueueRenderingTrait
      * Returns commands in current block.
      *
      * @return AbstractCommand[]
+     * @deprecated
      */
     protected function getBlockCommands(): array
     {

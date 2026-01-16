@@ -19,8 +19,12 @@ use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\ImageCollectorTrait;
 use Mds\PimPrint\CoreBundle\InDesign\Traits\MissingAssetNotifierTrait;
 use Pimcore\Model\Asset;
 use Pimcore\Model\Asset\Document as DocumentAsset;
+use Pimcore\Model\Asset\Document\ImageThumbnail;
 use Pimcore\Model\Asset\Image as ImageAsset;
+use Pimcore\Model\Asset\Image\Thumbnail;
 use Pimcore\Tool\Storage;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 /**
  * Class ImageBox
@@ -92,15 +96,17 @@ class ImageBox extends FileBox implements ImageCollectorInterface
     /**
      * CopyBox constructor.
      *
-     * @param string     $elementName Name of template element.
+     * @param string     $elementName Name of the template element.
      * @param float|null $left        Left position in mm.
      * @param float|null $top         Top position in mm.
-     * @param float|null $width       Width of element in mm.
-     * @param float|null $height      Height of element in mm.
+     * @param float|null $width       Width of the element in mm.
+     * @param float|null $height      Height of the element in mm.
      * @param Asset|null $asset       Asset to be placed.
      * @param string     $fit         Fit mode of image in image-box. Use FIT class constants.
      *
+     * @throws ContainerExceptionInterface
      * @throws FilesystemException
+     * @throws NotFoundExceptionInterface
      * @throws \Exception
      */
     public function __construct(
@@ -136,7 +142,7 @@ class ImageBox extends FileBox implements ImageCollectorInterface
 
     /**
      * Sets $asset as placed Image in InDesign.
-     * if $thumbnailName is set, the generated thumbnail will be used as image in InDesign.
+     * if $thumbnailName is set, the generated thumbnail will be used as an image in InDesign.
      * If $resize is true, the box is automatically resized to the actual size of the image.
      *
      * @param Asset       $asset
@@ -145,7 +151,10 @@ class ImageBox extends FileBox implements ImageCollectorInterface
      * @param array       $defaultDpi
      *
      * @return ImageBox
-     * @throws \Exception|FilesystemException
+     * @throws ContainerExceptionInterface
+     * @throws FilesystemException
+     * @throws NotFoundExceptionInterface
+     * @throws \Exception
      */
     public function setAsset(
         Asset $asset,
@@ -158,9 +167,12 @@ class ImageBox extends FileBox implements ImageCollectorInterface
             $asset = $fallback;
             $thumbnailName = null;
         }
-        if (null !== $thumbnailName && false === $this->getProject()
-                                                      ->config()
-                                                      ->isAssetDownloadEnabled()) {
+        if (
+            null !== $thumbnailName
+            && !$this->getProject()
+                              ->config()
+                              ->isAssetDownloadEnabled()
+        ) {
             throw new \Exception(
                 'Usage of asset thumbnails is only possible when asset download is enabled for project.',
                 $asset->getId()
@@ -168,7 +180,7 @@ class ImageBox extends FileBox implements ImageCollectorInterface
         }
         $this->assureValidAsset($asset, $thumbnailName);
         $this->addDownloadParams($asset, $thumbnailName);
-        if (true === $resize && $asset instanceof ImageAsset) {
+        if ($resize && $asset instanceof ImageAsset) {
             $sizes = $this->getProject()
                           ->imageDimensions()
                           ->getSizes($asset, $defaultDpi);
@@ -190,7 +202,7 @@ class ImageBox extends FileBox implements ImageCollectorInterface
      */
     private function assureValidAsset(Asset $asset, string $thumbnailName = null): void
     {
-        if (false === $asset instanceof ImageAsset && false === $asset instanceof DocumentAsset) {
+        if (!$asset instanceof ImageAsset && !$asset instanceof DocumentAsset) {
             throw new \Exception(
                 sprintf(
                     "Invalid asset type '%s' if asset id %s (%s). Only 'Asset\Image' or 'Asset\Document' are allowed.",
@@ -204,7 +216,7 @@ class ImageBox extends FileBox implements ImageCollectorInterface
         if (null !== $thumbnailName) {
             return;
         }
-        if (false === in_array($asset->getMimetype(), $this->getAllowedMimeTypes())) {
+        if (!in_array($asset->getMimetype(), $this->getAllowedMimeTypes())) {
             throw new \Exception(
                 sprintf(
                     "Invalid MIME-type '%s' of asset id %s (%s).",
@@ -224,19 +236,23 @@ class ImageBox extends FileBox implements ImageCollectorInterface
      * @param string|null $thumbnailName
      *
      * @return void
+     * @throws ContainerExceptionInterface
      * @throws FilesystemException
+     * @throws NotFoundExceptionInterface
      * @throws \Exception
      */
     private function addDownloadParams(Asset $asset, string $thumbnailName = null): void
     {
-        if (!$this->getProject()
+        if (
+            !$this->getProject()
                   ->config()
-                  ->isAssetDownloadEnabled()) {
+                  ->isAssetDownloadEnabled()
+        ) {
             return;
         }
 
         $storage = Storage::get('asset');
-        if (false === $storage->fileExists($asset->getRealFullPath())) {
+        if (!$storage->fileExists($asset->getRealFullPath())) {
             $this->notifyMissingAsset(
                 sprintf("Asset file '%s' not found.", $asset->getFullPath()),
                 $asset->getId()
@@ -246,9 +262,11 @@ class ImageBox extends FileBox implements ImageCollectorInterface
         }
 
         $thumbnail = null;
-        if ($thumbnailName || !$this->getProject()
+        if (
+            $thumbnailName || !$this->getProject()
                                     ->config()
-                                    ->isAssetPreDownloadEnabled()) {
+                                    ->isAssetPreDownloadEnabled()
+        ) {
             $thumbnailConfig = $this->getProject()
                                     ->thumbnailHelper()
                                     ->getThumbnailConfig($thumbnailName);
@@ -283,12 +301,14 @@ class ImageBox extends FileBox implements ImageCollectorInterface
     /**
      * Adds download params for $asset
      *
-     * @param Asset                                                  $asset
-     * @param FilesystemOperator                                     $storage
-     * @param ImageAsset\Thumbnail|DocumentAsset\ImageThumbnail|null $thumbnail
+     * @param Asset                         $asset
+     * @param FilesystemOperator            $storage
+     * @param Thumbnail|ImageThumbnail|null $thumbnail
      *
      * @return void
      * @throws FilesystemException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      * @throws \Exception
      */
     public function addThumbnailParams(
@@ -303,9 +323,11 @@ class ImageBox extends FileBox implements ImageCollectorInterface
         $this->setParam('srcFileSize', $asset->getFileSize());
         $this->setParam('srcUrl', $thumbnailHelper->prependHostUrl($asset->getFrontendFullPath()));
 
-        if ($this->getProject()
+        if (
+            $this->getProject()
                  ->config()
-                 ->offsetGet('file_storage_mtime')) {
+                 ->offsetGet('file_storage_mtime')
+        ) {
             $this->setParam('mtime', $storage->lastModified($asset->getRealFullPath()));
         } else {
             $this->setParam('mtime', (int)$asset->getModificationDate());
@@ -323,10 +345,12 @@ class ImageBox extends FileBox implements ImageCollectorInterface
     /**
      * Adds download params for forced thumbnail.
      *
-     * @param ImageAsset\Thumbnail $thumbnail
-     * @param Asset                $asset
+     * @param Thumbnail $thumbnail
+     * @param Asset     $asset
      *
      * @return void
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      * @throws \Exception
      */
     private function addForcedThumbnailParams(ImageAsset\Thumbnail $thumbnail, Asset $asset): void
@@ -349,9 +373,11 @@ class ImageBox extends FileBox implements ImageCollectorInterface
             }
             $fileSize = $thumbnail->getFileSize();
 
-            if ($this->getProject()
+            if (
+                $this->getProject()
                      ->config()
-                     ->offsetGet('file_storage_mtime')) {
+                     ->offsetGet('file_storage_mtime')
+            ) {
                 $this->setParam('mtime', @filemtime($thumbnail->getLocalFile()));
             } else {
                 $this->setParam('mtime', (int)$asset->getModificationDate());
@@ -368,7 +394,7 @@ class ImageBox extends FileBox implements ImageCollectorInterface
     }
 
     /**
-     * Builds command array that is sent as JSON to InDesign.
+     * Builds a command array that is sent as JSON to InDesign.
      *
      * @param bool $addCmd
      *

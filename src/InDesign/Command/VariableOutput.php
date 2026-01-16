@@ -16,8 +16,8 @@ namespace Mds\PimPrint\CoreBundle\InDesign\Command;
 use Pimcore\Config;
 
 /**
- * Outputs a InDesign variable in Plugin.
- * By default, output is only created in 'dev' environment. Use force option to output in all environments.
+ * Outputs an InDesign variable in Plugin.
+ * By default, output is only created in the 'dev' environment. Use the force option to output in all environments.
  *
  * @package Mds\PimPrint\CoreBundle\InDesign\Command
  */
@@ -71,7 +71,7 @@ class VariableOutput extends ExecuteScript
     }
 
     /**
-     * Sets optional $label to output in Plugin. If not set $variableName is used
+     * Sets an optional $label to output in Plugin. If not set $variableName is used
      *
      * @param string $label
      *
@@ -85,8 +85,8 @@ class VariableOutput extends ExecuteScript
     }
 
     /**
-     * Sets $force to output variable in all environments.
-     * By default, output is only created in 'dev' environment.
+     * Sets $force to the output variable in all environments.
+     * By default, output is only created in the 'dev' environment.
      *
      * @param bool $force
      *

@@ -122,7 +122,7 @@ class Config implements \ArrayAccess
     }
 
     /**
-     * Returns host url from project configuration or dynamically from $request.
+     * Returns host url from the project configuration or dynamically from $request.
      *
      * @param Request $request
      *
@@ -171,7 +171,7 @@ class Config implements \ArrayAccess
     }
 
     /**
-     * Returns true if download for assets is enabled for current project.
+     * Returns true if download for assets is enabled for the current project.
      *
      * @return bool
      * @throws \Exception
@@ -182,7 +182,7 @@ class Config implements \ArrayAccess
     }
 
     /**
-     * Returns true if preDownload for assets is enabled for current project.
+     * Returns true if preDownload for assets is enabled for the current project.
      *
      * @return bool
      * @throws \Exception
@@ -197,7 +197,7 @@ class Config implements \ArrayAccess
     }
 
     /**
-     * Returns true if warnings for assets in onPage for current project.
+     * Returns true if warnings for assets in onPage for the current project.
      *
      * @return bool
      * @throws \Exception

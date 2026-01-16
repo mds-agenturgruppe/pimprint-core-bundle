@@ -14,7 +14,7 @@
 namespace Mds\PimPrint\CoreBundle\InDesign\Command;
 
 /**
- * Command to sort layers in generated document
+ * Command to sort layers in the generated document
  *
  * @package Mds\PimPrint\CoreBundle\InDesign\Command
  */
