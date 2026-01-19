@@ -38,7 +38,7 @@ class MdsPimPrintCoreBundle extends AbstractPimcoreBundle
     }
 
     /**
-     * Bundle description as shown in extension manager
+     * Bundle description
      *
      * @return string
      */

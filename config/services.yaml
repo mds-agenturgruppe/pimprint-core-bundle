@@ -5,7 +5,7 @@ services:
         public: false
 
     Mds\PimPrint\CoreBundle\Controller\:
-        resource: '../../Controller'
+        resource: '../src/Controller'
         public: true
         tags: [ 'controller.service_arguments' ]
 
