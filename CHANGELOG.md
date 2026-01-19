@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Feature
+
+- `Html\AbstractParser` `Html\Style` paragraph & character support.
+
 ### Documentation
 
 - PimPrint CarsDemo documentation

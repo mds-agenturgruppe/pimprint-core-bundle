@@ -176,7 +176,7 @@ abstract class AbstractParser
     protected array $paragraphComponents = [];
 
     /**
-     * Indicates of inline class attributes should be used to as InDesign paragraph and character styles.
+     * Indicates of inline class attributes should be used as InDesign styles.
      *
      * @var bool
      */
@@ -239,7 +239,7 @@ abstract class AbstractParser
 
     /**
      * Sets useInlineStyle.
-     * If $useInlineStyle is true class attributes of tags are uses as InDesign paragraph and character styles.
+     * If $useInlineStyle is true, class attributes of tags are used as InDesign paragraph styles.
      * If no class attribute is found or $useInlineStyle is false, the definition in Style class is used.
      *
      * @param bool $useInlineStyle
@@ -551,14 +551,22 @@ abstract class AbstractParser
 
         $content = '';
         foreach ($components as $element) {
-            if ($element instanceof Characters) {
-                if (null !== $characterStyle) {
-                    $element->setStyle($characterStyle);
-                }
-                $content .= $element->getText();
-            } elseif ($element instanceof ImageBox) {
-                $content .= 'image';
+            switch (true) {
+                case $element instanceof Characters:
+                    $content .= $element->getText();
+
+                    if (!$this->useInlineStyle && empty($element->getStyle())) {
+                        if (null !== $characterStyle) {
+                            $element->setStyle($characterStyle);
+                        }
+                    }
+                    break;
+
+                case $element instanceof ImageBox:
+                    $content .= 'image';
+                    break;
             }
+
             $paragraph->addComponent($element);
         }
         if (0 == strlen($content)) {
