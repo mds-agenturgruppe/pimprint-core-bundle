@@ -6,7 +6,7 @@ Endpoint route:
 /pimprint-api/project/{identifier}/run
 ```
 
-Execute endpoint is call by the plugin when a publication is generated. The selected project `identifyer` is passed as parameter in the URL. In addition to the selected project
+The plugin calls execute endpoint when a publication is generated. The selected project `identifyer` is passed as parameter in the URL. In addition to the selected project,
 execute endpoint needs more required parameters to control the generated publication:
 
 | Parameter          | Documentation                                                                      |
@@ -20,7 +20,7 @@ to the source.
 When accessing the endpoint with a browser, you can pass the required parameters with GET:
 
 ```
-/pimprint-api/project/dataPrintCarBrochure/run?publicationIdent=556&renderLanguage=de
+/pimprint-api/project/commandDemo/run?publicationIdent=copyBox&renderLanguage=de
 ```
 
 The response below shows a shorted example of generation instructions for the Plugin from the [PimPrint-Demo](../05_PimPrint-Demo/README.md):
@@ -37,7 +37,7 @@ The response below shows a shorted example of generation instructions for the Pl
             "cmd": "opendoc",
             "type": "template",
             "language": "0",
-            "name": "PimPrint-DataPrintDemo_blue.indd"
+            "name": "PimPrint-CommandDemo.indd"
         }
     ],
     "preProcess": [],

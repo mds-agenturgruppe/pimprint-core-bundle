@@ -52,9 +52,9 @@ For the complete PimPrint configuration, please refer to the [Configuration Refe
 
 The default so called `Publication` field is the field where the user selects the publication (element) to render in InDesign document.
 
-![Plugin FactoryField Pulication](../img/plugin-factoryField_publication.png)
+![Plugin FactoryField Publication](../img/plugin-factoryField_publication.png)
 
-The behaviour of this field can be configured in the `plugin_elements.publications` section of the config:
+The behavior of this field can be configured in the `plugin_elements.publications` section of the config:
 
 ```yaml
 mds_pim_print_core:
@@ -73,7 +73,7 @@ While rendering the project, the selected value from the InDesign Plugin is acce
 $elementId = $this->pluginParameters->get(\Mds\PimPrint\CoreBundle\Service\PluginParameters::PARAM_PUBLICATION);
 ```
 
-You can disable this field, because you can add [custom form fields](./01_CustomFields/README.md) to the InDesign Plugin to adapt the generation selection process in InDesign to
+You can disable this field because you can add [custom form fields](./01_CustomFields/README.md) to the InDesign Plugin to adapt the generation selection process in InDesign to
 your project needs.
 
 ### Setting fields
@@ -89,7 +89,7 @@ for most projects.
 
 ![Plugin FactoryField Update mode](../img/plugin-factoryField_update_mode.png)
 
-The behaviour of this field can be configured in the `plugin_elements` section of the config:
+The behavior of this field can be configured in the `plugin_elements` section of the config:
 
 ```yaml
 mds_pim_print_core:
@@ -103,7 +103,7 @@ mds_pim_print_core:
                     - 512
 ```
 
-As mentioned above the update mode is mainly handled inside the InDesign plugin itself.
+As mentioned above, the update mode is mainly handled inside the InDesign plugin itself.
 
 > If you disable the field generation will be done with the default mode: `501`\
 > `\Mds\PimPrint\CoreBundle\Service\PluginParameters::UPDATE_ALL_POSITION_CONTENT`

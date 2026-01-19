@@ -35,7 +35,7 @@ To automatically add the firewall configuration by the installer issue:
 ```
 
 > <strong>Attention</strong>:<br>
-> Do not be surprised that your `security.yaml` looks ugly after automatic installation!<br>
+> Do not be surprised that your `security.yaml` looks ugly after automatic installation! <br>
 > `\Symfony\Component\Yaml\Yaml::dump()` sometimes creates ugly files.
 >
 > We recommend adding the firewall configuration manually to your `security.yaml`.
@@ -53,7 +53,7 @@ Install the extension manager, launch it and choose the `mds.pimprint.v2.indesig
 Start InDesign and open the mds.PimPrint Plugin from the InDesign main menu.
 ![InDesign - Open PimPrint Plugin](../img/indesign-open_pimprint.png)
 
-The first time the plugin is started a server connection must be configured.
+The first time the plugin is started, a server connection must be configured.
 ![Plugin - No connection configured](../img/plugin-first_start.png)
 
 Click on the _Settings_ button to open the plugin settings pane. Please refer to the [Server connection page](../20_InDesign_Plugin/00_Server_connection.md) to learn how to

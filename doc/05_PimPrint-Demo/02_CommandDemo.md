@@ -1,8 +1,8 @@
 # CommandDemo
 
-Demonstrates each [Rendering Command](../15_Rendering_Commands.md) in a separate publication:
+Demonstrates each [Rendering Command](../15_Rendering_Commands.md) in a separate layer:
 
-| Publication                                                                                                                                | Description                                                                                                              |
+| Layer                                                                                                                                      | Description                                                                                                              |
 |--------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------|
 | [CopyBox](https://github.com/mds-agenturgruppe/pimprint-demo-bundle/tree/4.x/src/Project/CommandDemo/CopyBox.php)                          | Copies and resizes elements from template file into generated documents.                                                 |
 | [ImageBox](https://github.com/mds-agenturgruppe/pimprint-demo-bundle/tree/4.x/src/Project/CommandDemo/ImageBox.php)                        | Placing of Pimcore Assets.                                                                                               |
@@ -15,7 +15,7 @@ Demonstrates each [Rendering Command](../15_Rendering_Commands.md) in a separate
 | [Relative Positioning](https://github.com/mds-agenturgruppe/pimprint-demo-bundle/tree/4.x/src/Project/CommandDemo/RelativePositioning.php) | Position elements relative to each other. This allows the creation of dynamic rule based layouts.                        |
 | [Messages](https://github.com/mds-agenturgruppe/pimprint-demo-bundle/tree/4.x/src/Project/CommandDemo/Messages.php)                        | Showing descriptive messages in InDesign plugin.                                                                         |
 
-Every demo publication creates its output into a separate layer of the document. This allows you to generate all demos into one document and switching the visibility of layers.
+Every demo rendering creates its output into a separate layer of the document. This allows you to generate all demos into the same document and switch the visibility of layers.
 
 ![CommandDemo Layers](../img/demo_plugin-command_demo_layers.png)
 

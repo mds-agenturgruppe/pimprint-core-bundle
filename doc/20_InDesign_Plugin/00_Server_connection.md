@@ -74,7 +74,8 @@ This scenario is for productions that use very large image files, where download
 Multiple server connections can be configured as described in the chapter above. The current active server used for generating documents can be activated in the connection settings
 with whe toggle element _Select server_.
 
-At the moment a server is selected, the Plugin checks the Pimcore server URL and login credentials for validity. If the connection fails, a popup window appears. If the connection is successful, the server will be selected as shown in the following screenshot.
+At the moment a server is selected, the Plugin checks the Pimcore server URL and login credentials for validity. If the connection fails, a popup window appears. If the connection
+is successful, the server will be selected as shown in the following screenshot.
 
 ![Plugin - Activate connection](../img/plugin-activate_connection.png)
 

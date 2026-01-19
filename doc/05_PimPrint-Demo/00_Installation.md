@@ -8,7 +8,7 @@ section.
 
 ## Installing Pimcore Demo
 
-Install the [Pimcore 11 Demo](https://github.com/pimcore/demo/tree/11.x) as described in the [Readme](https://github.com/pimcore/demo/blob/11.x/README.md).
+Install the [latest Pimcore Demo](https://github.com/pimcore/demo/tree/2025.x) as described in the [Readme](https://github.com/pimcore/demo/blob/2025.x/README.md).
 
 ## Installing PimPrint Demo
 
@@ -30,11 +30,11 @@ bin/console pimcore:bundle:install MdsPimPrintCoreBundle
 ```
 
 > For `MdsPimPrintCoreBundle` installation details please refer
-> the [installation instruction page](../01_Getting_Started/01_Installation.md#page_Installing_PimPrint_into_Pimcore_11).
+> the [installation instruction page](../01_Getting_Started/01_Installation.md#page_Installing_PimPrint_into_Pimcore_12).
 >
 
-For [template change in demo projects](./04_DataPrint_Demos.md#page_Changing_the_Template) `MdsPimPrintDemoBundle` creates predefined properties and imports InDesign template files
-into the Pimcore asset management. If you want to test this, execute the migrations by issuing:
+For [template change in demo projects](./05_CarsDemo.md#page_Changing_the_Template) `MdsPimPrintDemoBundle` creates predefined properties and imports InDesign template files into
+the Pimcore asset management. If you want to test this, execute the migrations by issuing:
 
 ```bash
 bin/console doctrine:migrations:migrate --prefix=Mds\\PimPrint\\DemoBundle\\Migrations

@@ -13,7 +13,7 @@ This chapter gives a quick introduction to implement InDesign document generatio
 
 ## Start developing
 
-To start developing with PimPrint good entry points are the fully documented example projects provided with the [PimPrint-Demo](../05_PimPrint-Demo/README.md).
+To start developing with PimPrint, good entry points are the fully documented example projects provided with the [PimPrint-Demo](../05_PimPrint-Demo/README.md).
 Start with the [demo rendering Services](https://github.com/mds-agenturgruppe/pimprint-demo-bundle/tree/4.x/src/Service) and
 perhaps [step through them with a debugger](#page_Debugging).
 
@@ -46,13 +46,10 @@ accessing the REST API. Therefore, you have to authenticate with the Pimcore bac
 
 ## Debugging
 
-To debug and step analyse the demos and your own projects, you can set your Xdebug extension to autostart on every request by editing your php.ini enabling direct debugging from
+To debug and step analyze the demos and your own projects, you can set your Xdebug extension to autostart on every request by editing your php.ini enabling direct debugging from
 InDesign.
 
  ```ini
-;XDebug v2.x
-xdebug.remote_autostart = 1
-
 ;XDebug v3.x
 xdebug.start_with_request = yes
 ```
@@ -63,11 +60,11 @@ above.
 
 ## PimPrint with HTTP Proxy
 
-By default, PimPrint downloads template and asset files directly from the Pimcore server over HTTP(S) and builds the protocol, hostname and port automatically. In some
+By default, PimPrint downloads template and asset files directly from the Pimcore server over HTTPS and builds the protocol, hostname and port automatically. In some
 circumstances this can fail when Pimcore is running behind an HTTP Proxy and leads to download errors like:
 > AssetDownloader Template Error:   
 > connect ETIMEDOUT 127.0.0.1:8017   
-> http://pimprint-demo.dev:8017/.../PimPrint-DataPrintDemo_blue.indd
+> http://pimprint-demo.dev:8017/.../PimPrint-CommandDemo.indd
 
 For such environments `mds_pimprint_core_bundle` [configuration node](../10_Rendering_Projects/00_Configuration_Reference.md) has the `host` element to configure the used protocol,
 hostname and port. Add the configuration matching your infrastructure:
@@ -83,5 +80,5 @@ mds_pim_print_core:
 This configuration leads to downloading urls like the error shown above:
 
 ```
-https://pimprint-demo.dev/.../PimPrint-DataPrintDemo_blue.indd
+https://pimprint-demo.dev/.../PimPrint_CommandDemo.indd
 ```

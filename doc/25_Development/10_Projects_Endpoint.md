@@ -18,18 +18,6 @@ Projects' endpoint is call by the plugin to get the list of registered projects 
         {
             "name": "Command Demo",
             "identifier": "commandDemo"
-        },
-        {
-            "name": "Car Brochure",
-            "identifier": "dataPrintCarBrochure"
-        },
-        {
-            "name": "Car List",
-            "identifier": "dataPrintCarList"
-        },
-        {
-            "name": "AccessoryPart List",
-            "identifier": "dataPrintAccessoryPartList"
         }
     ],
     "success": true,

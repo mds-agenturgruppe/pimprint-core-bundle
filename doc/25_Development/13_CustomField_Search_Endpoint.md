@@ -6,7 +6,7 @@ Endpoint route:
  /pimprint-api/project/{identifier}/custom-search/{customField}
 ```
 
-This endpoint is called by the plugin when a [custom field search](../10_Rendering_Projects/01_CustomFields/03_CustomField_Search.md) is executed. The selected project `identifier`
+The plugin calls this endpoint when a [custom field search](../10_Rendering_Projects/01_CustomFields/03_CustomField_Search.md) is executed. The selected project `identifier`
 and `customField` param is passed as parameter in the URL. The phrase `search` is sent as POST parameter from the InDesign plugin.
 
 | Parameter | Documentation                                        |

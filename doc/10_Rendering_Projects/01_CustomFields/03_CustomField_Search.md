@@ -1,7 +1,7 @@
 # Search
 
-The custom field `\Mds\PimPrint\CoreBundle\InDesign\CustomField\Search`, creates a input field with a search button. The search is sent to an endpoint to the Pimcore server, where
-custom PHP source can create a result list to be selectable in a [select field](./02_CustomField_Select.md) in the InDesign plugin.
+The custom field `\Mds\PimPrint\CoreBundle\InDesign\CustomField\Search`, creates an input field with a search button. The search is sent to an endpoint to the Pimcore server, where
+a custom PHP source can create a result list to be selectable in a [select field](./02_CustomField_Select.md) in the InDesign plugin.
 
 * [Options](#page_options)
 * [Usage in PHP API](#page_Usage_in_PHP_API)
@@ -139,5 +139,5 @@ class GettingStarted extends AbstractProject
 Empty search field: \
 ![Plugin CustomField Search](../../img/plugin-customField_search.png)
 
-Search result list in multiple mode with selected elements:
+Search result list in the mode multiple with selected elements:
 ![Plugin CustomField Search result list](../../img/plugin-customField_search_results.png)

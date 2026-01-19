@@ -6,11 +6,11 @@ Endpoint route:
 /pimprint-api/project/{identifier}
 ```
 
-Project endpoint is call by the plugin when a project is selected to load project settings and publications the projects can generate. The `identifyer` of the selected project is
+The plugin calls the project endpoint when a project is selected to load project settings and publications the projects can generate. The `identifyer` of the selected project is
 passed as parameter.
 
 The response below shows a shorted example with some publications from the [PimPrint-Demo](../05_PimPrint-Demo/README.md) when accessing a project identified
-by `dataPrintCarBrochure` requesting the route `/pimprint-api/project/dataPrintCarBrochure`:
+by `commandDemo` requesting the route `/pimprint-api/project/commandDemo`:
 
 ```json
 {
@@ -23,26 +23,14 @@ by `dataPrintCarBrochure` requesting the route `/pimprint-api/project/dataPrintC
     ],
     "publications": [
         {
-            "identifier": "390",
-            "label": "Cars",
-            "children": [
-                {
-                    "identifier": "556",
-                    "label": "Commercial Cars",
-                    "children": []
-                }
-            ]
+            "children": [],
+            "identifier": "CopyBox",
+            "label": "CopyBox"
         },
         {
-            "identifier": "3",
-            "label": "Manufacturer",
-            "children": [
-                {
-                    "identifier": "80",
-                    "label": "AC Cars",
-                    "children": []
-                }
-            ]
+            "children": [],
+            "identifier": "ImageBox",
+            "label": "ImageBox"
         }
     ],
     "success": true,
