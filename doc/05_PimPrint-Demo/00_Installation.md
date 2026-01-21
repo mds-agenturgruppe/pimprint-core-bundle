@@ -1,28 +1,29 @@
 # PimPrint-Demo Pimcore Installation
 
-PimPrint-Demo is a Pimcore bundle that is build for the public available [Pimcore Demo](https://github.com/pimcore/demo). If you already have Pimcore Demo installed directly jump
-to the [Installing PimPrint Demo](#page_Installing_PimPrint_Demo).
+PimPrint-Demo is a Pimcore bundle that is build for the public available [Pimcore Demo](https://github.com/pimcore/demo).
 
-The following guide assumes you use the Pimcore 11 demo. For other Pimcore versions, please refer to the [Supported Pimcore Versions](../README.md#page_Supported_Pimcore_Versions)
-section.
+## Supported Pimcore Demos Versions
 
-## Installing Pimcore Demo
+| Pimcore Demo | PimPrint Demo | PimPrint Maintained |
+|--------------|---------------|:-------------------:|
+| `2025.x`     | `5.x`         |          ✅          |
+| `2024.4`     | `4.x`         |          ✅          |
 
-Install the [latest Pimcore Demo](https://github.com/pimcore/demo/tree/2025.x) as described in the [Readme](https://github.com/pimcore/demo/blob/2025.x/README.md).
+The following guide assumes you have a running Pimcore demo in matching version.
 
 ## Installing PimPrint Demo
 
-Install `MdsPimPrintDemoBundle` into your Pimcore Demo by issuing:
+Install `MdsPimPrintDemoBundle` matching your Pimcore Demo version by issuing:
 
 ```bash
-composer require mds-agenturgruppe/pimprint-demo-bundle:^4.0
+composer require mds-agenturgruppe/pimprint-demo-bundle:^5.0
 ```
 
 Enable `MdsPimPrintCoreBundle` and `MdsPimPrintDemoBundle` in `config/bundles.php`:
 
 ```php
-MdsPimPrintCoreBundle::class => ['all' => true],
-MdsPimPrintDemoBundle::class => ['all' => true],
+\Mds\PimPrint\CoreBundle\MdsPimPrintCoreBundle::class => ['all' => true],
+\Mds\PimPrint\DemoBundle\MdsPimPrintDemoBundle::class => ['all' => true],
 ```
 
 ```bash
