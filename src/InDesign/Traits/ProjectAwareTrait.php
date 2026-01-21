@@ -12,23 +12,25 @@
  * @license   mds. Commercial License (MCL)
  */
 
-namespace Mds\PimPrint\CoreBundle\Project\Traits;
+namespace Mds\PimPrint\CoreBundle\InDesign\Traits;
 
-use Mds\PimPrint\CoreBundle\InDesign\CommandQueue;
 use Mds\PimPrint\CoreBundle\Project\AbstractProject;
 use Mds\PimPrint\CoreBundle\Service\AccessorTraits\ProjectsManagerTrait;
+use Mds\PimPrint\CoreBundle\Service\CommandQueue;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 /**
  * Trait ProjectAwareTrait
  *
- * @package Mds\PimPrint\CoreBundle\Project\Traits
+ * @package Mds\PimPrint\CoreBundle\InDesign\Traits
  */
 trait ProjectAwareTrait
 {
     use ProjectsManagerTrait;
 
     /**
-     * Returns currently generated project.
+     * Returns a currently generated project.
      *
      * @return AbstractProject
      * @throws \Exception
@@ -43,11 +45,13 @@ trait ProjectAwareTrait
      * Returns CommandQueue.
      *
      * @return CommandQueue
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      * @throws \Exception
      */
-    protected function getCommandQueue(): CommandQueue
+    protected function commandQueue(): CommandQueue
     {
         return $this->getProject()
-                    ->getCommandQueue();
+                    ->commandQueue();
     }
 }

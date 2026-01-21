@@ -68,7 +68,7 @@ class DocumentTemplateSetup extends AbstractCommand
     }
 
     /**
-     * Sets $transfer to transfer width and height from template document.
+     * Sets $transfer to transfer width and height from the template document.
      *
      * @param bool $transfer
      *
@@ -84,7 +84,7 @@ class DocumentTemplateSetup extends AbstractCommand
     }
 
     /**
-     * Sets $transfer to transfer document width from template document.
+     * Sets $transfer to transfer document width from the template document.
      *
      * @param bool $transfer
      *
@@ -99,7 +99,7 @@ class DocumentTemplateSetup extends AbstractCommand
     }
 
     /**
-     * Sets $transfer to transfer document height from template document.
+     * Sets $transfer to transfer document height from the template document.
      *
      * @param bool $transfer
      *
@@ -114,7 +114,7 @@ class DocumentTemplateSetup extends AbstractCommand
     }
 
     /**
-     * Sets $transfer to transfer document margins from template document.
+     * Sets $transfer to transfer document margins from the template document.
      *
      * @param bool $transfer
      *
@@ -129,7 +129,7 @@ class DocumentTemplateSetup extends AbstractCommand
     }
 
     /**
-     * Sets $transfer to transfer document bleed from template document.
+     * Sets $transfer to transfer document bleed from the template document.
      *
      * @param bool $transfer
      *
@@ -144,7 +144,7 @@ class DocumentTemplateSetup extends AbstractCommand
     }
 
     /**
-     * Sets $transfer to transfer document facingPages from template document.
+     * Sets $transfer to transfer document facingPages from the template document.
      *
      * @param bool $transfer
      *
@@ -159,7 +159,7 @@ class DocumentTemplateSetup extends AbstractCommand
     }
 
     /**
-     * Sets $transfer to transfer document startPageNumber from template document.
+     * Sets $transfer to transfer document startPageNumber from the template document.
      *
      * @param bool $transfer
      *
@@ -174,7 +174,7 @@ class DocumentTemplateSetup extends AbstractCommand
     }
 
     /**
-     * Sets $transfer to transfer document pagesCount from template document.
+     * Sets $transfer to transfer document pagesCount from the template document.
      *
      * @param bool $transfer
      *

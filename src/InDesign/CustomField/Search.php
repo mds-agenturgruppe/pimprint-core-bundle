@@ -145,7 +145,7 @@ abstract class Search extends AbstractField
     /**
      * Returns search url called when the search is executed in InDesign plugin.
      *
-     * Method can be overwritten in concrete custom field if a custom routing should be used.
+     * Method can be overwritten in a concrete custom field if a custom routing should be used.
      * By default, the search request is delegated to the executeSearch() method.
      *
      * @return string

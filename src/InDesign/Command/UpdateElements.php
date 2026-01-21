@@ -57,7 +57,7 @@ class UpdateElements extends AbstractCommand
      *
      * @throws \Exception
      */
-    public function setElements(array $elements)
+    public function setElements(array $elements): void
     {
         $this->setParam('list', $elements);
     }

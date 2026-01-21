@@ -26,7 +26,7 @@ use Mds\PimPrint\CoreBundle\InDesign\Command\TextBox;
 trait FitTrait
 {
     /**
-     * Sets the InDesign fit mode of box.
+     * Sets the InDesign fit mode of the box.
      *
      * @param string $fit Fit mode of image in image-box. Use FIT class constants.
      *

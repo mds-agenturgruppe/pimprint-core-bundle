@@ -20,21 +20,12 @@ use Mds\PimPrint\CoreBundle\Service\PluginParameters;
 /**
  * Class RenderingProject.
  *
- * Class is registered as abstract service in 'config/services.yaml'
- * and aliased as 'mds.pimprint.core.rendering_project' to be used in concrete service definitions as parent.
- *
- * Example:
- * {code}
- * Mds\PimPrint\DemoBundle\Service\GettingStarted:
- *   parent: mds.pimprint.core.rendering_project
- * {code}
- *
  * @package Mds\PimPrint\CoreBundle\Project
  */
 abstract class RenderingProject extends AbstractProject
 {
     /**
-     * Default update modes, when no project specific config is defined.
+     * Default update modes, when no project-specific config is defined.
      *
      * @var array
      */

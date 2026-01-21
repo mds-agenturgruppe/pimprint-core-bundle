@@ -33,14 +33,14 @@ class Select extends AbstractField
     const TYPE = 'select';
 
     /**
-     * Values in select field
+     * Values in a select field
      *
      * @var array
      */
     private array $values = [];
 
     /**
-     * Sets values to show in InDesign select field.
+     * Sets values to show in the InDesign select field.
      *
      * @param array $values
      *

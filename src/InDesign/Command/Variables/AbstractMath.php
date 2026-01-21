@@ -159,7 +159,7 @@ abstract class AbstractMath extends ExecuteScript implements DependentInterface
     }
 
     /**
-     * Builds command array that is sent as JSON to InDesign.
+     * Builds a command array that is sent as JSON to InDesign.
      *
      * @param bool $addCmd
      *

@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Refactor
+
+- Symfony bundle structure
+- PimPrint Symfony service architecture
+    - `\Mds\PimPrint\CoreBundle\Service\CommandQueue` is a service now!
+    - Breaking changes to rendering Service definitions. (easier configuration)
+
 ### Feature
 
 - `Html\AbstractParser` `Html\Style` paragraph & character support.

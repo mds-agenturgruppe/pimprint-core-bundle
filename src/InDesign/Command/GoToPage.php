@@ -14,7 +14,10 @@
 
 namespace Mds\PimPrint\CoreBundle\InDesign\Command;
 
-use Mds\PimPrint\CoreBundle\Project\Traits\ProjectAwareTrait;
+
+use Mds\PimPrint\CoreBundle\InDesign\Traits\ProjectAwareTrait;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 /**
  * Sets the target page in the InDesign document.
@@ -144,17 +147,19 @@ class GoToPage extends AbstractCommand
     }
 
     /**
-     * Builds command array that is sent as JSON to InDesign.
+     * Builds a command array that is sent as JSON to InDesign.
      *
      * @param bool $addCmd
      *
      * @return array
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      * @throws \Exception
      */
     public function buildCommand(bool $addCmd = true): array
     {
         $return = parent::buildCommand($addCmd);
-        $this->getCommandQueue()
+        $this->commandQueue()
              ->setPageNumber($this->getParam('pagenumber'));
 
         return $return;

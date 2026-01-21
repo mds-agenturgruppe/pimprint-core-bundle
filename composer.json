@@ -20,10 +20,12 @@
     }
   },
   "require": {
-    "ext-dom": "*"
+    "ext-dom": "*",
+    "pimcore/admin-ui-classic-bundle": "*"
   },
   "require-dev": {
-    "mds-agenturgruppe/php-code-checker": "^4.0"
+    "mds-agenturgruppe/php-code-checker": "^4.0",
+    "pimcore/pimcore": "^12.0"
   },
   "conflict": {
     "pimcore/pimcore": "<12.0"

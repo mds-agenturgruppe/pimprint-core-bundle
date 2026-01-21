@@ -105,8 +105,8 @@ trait FormFieldsTrait
     }
 
     /**
-     * Adds custom form $field to project.
-     * If already a fields with the same param name is registered an exception is thrown
+     * Adds custom form $field to the project.
+     * If already fields with the same param name are registered, an exception is thrown
      *
      * @param AbstractField $field
      *
@@ -129,7 +129,7 @@ trait FormFieldsTrait
     }
 
     /**
-     * Returns project specific custom form fields configuration array.
+     * Returns project-specific custom form fields configuration array.
      *
      * @return array
      * @throws \Exception
@@ -160,8 +160,8 @@ trait FormFieldsTrait
     }
 
     /**
-     * Returns custom InDesign form field identified by $param parameter name.
-     * If no field with $param parameter name is registered an exception is thrown.
+     * Returns a custom InDesign form field identified by $param parameter name.
+     * If no field with $param parameter name is registered, an exception is thrown.
      *
      * @param string $param
      *

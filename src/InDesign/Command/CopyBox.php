@@ -35,11 +35,11 @@ class CopyBox extends AbstractBox
     /**
      * CopyBox constructor.
      *
-     * @param string     $elementName Name of template element.
+     * @param string     $elementName Name of the template element.
      * @param float|null $left        Left position in mm.
      * @param float|null $top         Top position in mm.
-     * @param float|null $width       Width of element in mm.
-     * @param float|null $height      Height of element in mm.
+     * @param float|null $width       Width of the element in mm.
+     * @param float|null $height      Height of the element in mm.
      *
      * @throws \Exception
      */

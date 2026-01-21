@@ -35,7 +35,7 @@ trait ElementNameTrait
     }
 
     /**
-     * Sets $name as name for the element to be copied from template document.
+     * Sets $name as name for the element to be copied from the template document.
      *
      * @param string $elementName
      *
@@ -50,7 +50,7 @@ trait ElementNameTrait
     }
 
     /**
-     * Returns name of element copied from template document.
+     * Returns the name of the element copied from the template document.
      *
      * @return string
      */

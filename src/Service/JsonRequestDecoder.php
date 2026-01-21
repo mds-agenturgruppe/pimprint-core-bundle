@@ -33,10 +33,10 @@ class JsonRequestDecoder
      */
     public function decode(Request $request): void
     {
-        if ('json' !== $request->getContentType() || empty($request->getContent())) {
+        if ('json' !== $request->getContentTypeFormat() || empty($request->getContent())) {
             return;
         }
-        if (true === $request->attributes->has('__json_decoded')) {
+        if ($request->attributes->has('__json_decoded')) {
             return;
         }
         $data = json_decode($request->getContent(), true);

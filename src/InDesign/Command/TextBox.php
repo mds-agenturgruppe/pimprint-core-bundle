@@ -88,8 +88,8 @@ class TextBox extends AbstractBox implements ImageCollectorInterface
      * @param string     $elementName
      * @param float|null $left   Left position in mm.
      * @param float|null $top    Top position in mm.
-     * @param float|null $width  Width of element in mm.
-     * @param float|null $height Height of element in mm.
+     * @param float|null $width  Width of the element in mm.
+     * @param float|null $height Height of the element in mm.
      * @param int        $fit    Fit mode of image in image-box. Use FIT class constants.
      *
      * @throws \Exception
@@ -137,7 +137,7 @@ class TextBox extends AbstractBox implements ImageCollectorInterface
 
     /**
      * Convenience method to add $string to the Textbox.
-     * Internally it creates a Paragraph with no style definitions and adds the paragraph to the textbox.
+     * Internally, it creates a Paragraph with no style definitions and adds the paragraph to the textbox.
      *
      * @param string $string
      *
@@ -187,7 +187,7 @@ class TextBox extends AbstractBox implements ImageCollectorInterface
     }
 
     /**
-     * Clears content in text box.
+     * Clears content in the text box.
      *
      * @return TextBox
      */

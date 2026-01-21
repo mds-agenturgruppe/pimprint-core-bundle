@@ -36,7 +36,7 @@ class Result
     private array $results = [];
 
     /**
-     * Optional additional serach result data
+     * Optional additional search result data
      *
      * @var mixed
      */
@@ -153,7 +153,7 @@ class Result
     }
 
     /**
-     * Returns true is results are in results array
+     * Returns true is results are in the results array
      *
      * @return bool
      */

@@ -23,7 +23,7 @@ trait BoxIdentTrait
 {
     /**
      * Reference string for box ident generation.
-     * Used to generate unique content related box idents to create coupling between Pimcore content
+     * Used to generate unique content-related box idents to create coupling between Pimcore content
      * (Objects, Assets, Documents) and InDesign elements.
      * Typical usage: use Object-Ids here.
      *
@@ -57,7 +57,7 @@ trait BoxIdentTrait
     }
 
     /**
-     * Sets $ident as boxIdentReference for content aware updates.
+     * Sets $ident as boxIdentReference for content-aware updates.
      *
      * @param string $ident
      *
@@ -70,7 +70,7 @@ trait BoxIdentTrait
     }
 
     /**
-     * Appends $ident to boxIdentReference for content aware updates.
+     * Appends $ident to boxIdentReference for content-aware updates.
      *
      * @param string $ident
      * @param string $prefix
@@ -86,7 +86,7 @@ trait BoxIdentTrait
     }
 
     /**
-     * Pushes $ident with optional $prefix to boxIdentReference.
+     * Pushes $ident with an optional $ prefix to boxIdentReference.
      * Pushes the current boxIdentReference to reset it with popIdentReference.
      *
      * @param string $ident

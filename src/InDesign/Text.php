@@ -17,8 +17,8 @@ namespace Mds\PimPrint\CoreBundle\InDesign;
 use League\Flysystem\FilesystemException;
 use Mds\PimPrint\CoreBundle\InDesign\Command\ImageCollectorInterface;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\ImageCollectorTrait;
-use Mds\PimPrint\CoreBundle\InDesign\Html\TextParser;
 use Mds\PimPrint\CoreBundle\InDesign\Html\Style;
+use Mds\PimPrint\CoreBundle\InDesign\Html\TextParser;
 use Mds\PimPrint\CoreBundle\InDesign\Text\Paragraph;
 
 /**
@@ -39,7 +39,7 @@ class Text implements ImageCollectorInterface
 
     /**
      * Default paragraph style when adding text.
-     * Style is applied even to parsed HTML paragraphs if no paragraph style is set by parser itself.
+     * Style is applied even to parsed HTML paragraphs if no paragraph style is set by the parser itself.
      *
      * @var string
      */
@@ -97,7 +97,7 @@ class Text implements ImageCollectorInterface
     }
 
     /**
-     * Sets default character style.
+     * Sets the default character style.
      *
      * @param string $characterStyle
      *
@@ -152,7 +152,7 @@ class Text implements ImageCollectorInterface
 
     /**
      * Convenience method to transform $string to Text.
-     * If $string looks like HTML addHtml() is used. Otherwise $string is handled as plain text.
+     * If $string looks like HTML, addHtml() is used. Otherwise, $string is handled as plain text.
      *
      * @param string      $string
      * @param string|null $paragraphStyle
@@ -246,7 +246,7 @@ class Text implements ImageCollectorInterface
 
     /**
      * Returns html parser instance.
-     * If none is set new parser instance is created by the factory.
+     * If none is set, a new parser instance is created by the factory.
      *
      * @return TextParser
      */
@@ -274,8 +274,8 @@ class Text implements ImageCollectorInterface
     }
 
     /**
-     * Html parser factory.
-     * Factory can be overwritten to have project specific parsers created automatically.
+     * HTML parser factory.
+     * Factory can be overwritten to have project-specific parsers created automatically.
      *
      * @return TextParser
      */
@@ -285,7 +285,7 @@ class Text implements ImageCollectorInterface
     }
 
     /**
-     * Builds array that is sent as content parameter in TextBox commands to InDesign.
+     * Builds array that is sent as a content parameter in TextBox commands to InDesign.
      *
      * @return array
      * @throws \Exception

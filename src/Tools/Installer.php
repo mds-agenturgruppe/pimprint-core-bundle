@@ -133,8 +133,8 @@ class Installer extends AbstractInstaller implements InstallerInterface
     }
 
     /**
-     * Assures that installer is started via cli.
-     * Otherwise, it outputs an error and stops process.
+     * Assures that the installer is started via cli.
+     * Otherwise, it outputs an error and stops a process.
      *
      * @param bool $install
      *
@@ -180,7 +180,7 @@ class Installer extends AbstractInstaller implements InstallerInterface
     }
 
     /**
-     * Returns parsed security.yaml as configuration array
+     * Returns parsed security.yaml as a configuration array
      *
      * @return array
      */

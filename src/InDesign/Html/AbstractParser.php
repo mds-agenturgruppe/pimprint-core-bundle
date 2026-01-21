@@ -23,9 +23,13 @@ use Mds\PimPrint\CoreBundle\InDesign\Text\Paragraph;
 use Mds\PimPrint\CoreBundle\InDesign\Text\ParagraphComponent;
 use Mds\PimPrint\CoreBundle\InDesign\Traits\MissingAssetNotifierTrait;
 use Pimcore\Model\Asset;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 /**
  * Class AbstractParser
+ *
+ * @SuppressWarnings("PHPMD.CouplingBetweenObjects")
  *
  * @package Mds\PimPrint\CoreBundle\InDesign\Html
  */
@@ -35,35 +39,35 @@ abstract class AbstractParser
     use MissingAssetNotifierTrait;
 
     /**
-     * $element parameter name in factory closure to create Style instances.
+     * $element parameter name in the factory closure to create Style instances.
      *
      * @var string
      */
     const FACTORY_ELEMENT_STYLE = 'style';
 
     /**
-     * $element parameter name in factory closure to create Character instances.
+     * $element parameter name in a factory closure to create Character instances.
      *
      * @var string
      */
     const FACTORY_ELEMENT_CHARACTERS = 'characters';
 
     /**
-     * $element parameter name in factory closure to create Paragraph instances.
+     * $element parameter name in the factory closure to create Paragraph instances.
      *
      * @var string
      */
     const FACTORY_ELEMENT_PARAGRAPH = 'paragraph';
 
     /**
-     * $element parameter name in factory closure to create ImageBox instances.
+     * $element parameter name in the factory closure to create ImageBox instances.
      *
      * @var string
      */
     const FACTORY_ELEMENT_IMAGE = 'image';
 
     /**
-     * $element parameter name in factory closure to load assets from img tag nodes.
+     * $element parameter name in the factory closure to load assets from img tag nodes.
      *
      * @var string
      */
@@ -183,7 +187,7 @@ abstract class AbstractParser
     protected bool $useInlineStyle = true;
 
     /**
-     * Returns target Text instance.
+     * Returns the target Text instance.
      *
      * @return Text
      * @throws \Exception
@@ -210,7 +214,7 @@ abstract class AbstractParser
 
     /**
      * Returns HTML style instance.
-     * If none is set new style instance with no styling is created by the factory.
+     * If none is set, a new style instance with no styling is created by the factory.
      *
      * @return Style
      */
@@ -254,7 +258,7 @@ abstract class AbstractParser
     }
 
     /**
-     * Parses $html and adds content as Paragraphs to Text instance.
+     * Parses $html and adds content as Paragraphs to the Text instance.
      *
      * @param string     $html  HTML strings to parse.
      * @param Style|null $style Optional Style to apply to the parsed HTML.
@@ -302,9 +306,8 @@ abstract class AbstractParser
     protected function sanitiseHtml(string $string): string
     {
         $string = str_replace(["\r", "\n", "\t"], '', $string);
-        $string = preg_replace('#\s{2,}#', '', $string);
 
-        return $string;
+        return preg_replace('#\s{2,}#', '', $string);
     }
 
     /**
@@ -372,7 +375,10 @@ abstract class AbstractParser
      * @param \DomElement $node
      *
      * @return void
-     * @throws \Exception|FilesystemException
+     * @throws FilesystemException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws \Exception
      */
     protected function parseElementNode(\DomElement $node): void
     {
@@ -582,12 +588,15 @@ abstract class AbstractParser
      * @param \DomElement $node
      *
      * @return ImageBox
-     * @throws \Exception|FilesystemException
+     * @throws ContainerExceptionInterface
+     * @throws FilesystemException
+     * @throws NotFoundExceptionInterface
+     * @throws \Exception
      */
     protected function createImageCommand(\DomElement $node): ImageBox
     {
         $asset = $this->loadAssetForImgTag($node);
-        if (false === $asset instanceof Asset) {
+        if (!$asset instanceof Asset) {
             throw new \Exception(
                 sprintf(
                     "No asset found for img tag '%s'.",
@@ -619,7 +628,7 @@ abstract class AbstractParser
 
     /**
      * Loads Asset for HTML img tag.
-     * Project specific implementations can be integrated by overwriting method or using factoryClosure
+     * Project-specific implementations can be integrated by overwriting method or using factoryClosure
      *
      * @param \DomElement $node
      *

@@ -25,7 +25,7 @@ use Mds\PimPrint\CoreBundle\InDesign\Command\Variable;
 trait VariableTrait
 {
     /**
-     * Sets $position of placed element as variable $name in InDesign.
+     * Sets $position of the placed element as variable $name in InDesign.
      *
      * @param string $name     Name of variable to set in InDesign.
      * @param string $position Relative box positions. Use Variable command POSITION constants.

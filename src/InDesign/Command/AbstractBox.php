@@ -14,13 +14,13 @@
 
 namespace Mds\PimPrint\CoreBundle\InDesign\Command;
 
-use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\LayerTrait;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\ElementNameTrait;
+use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\LayerTrait;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\PositionTrait;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\SizeTrait;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\VariableTrait;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Variables\DependentInterface;
-use Mds\PimPrint\CoreBundle\Project\Traits\ProjectAwareTrait;
+use Mds\PimPrint\CoreBundle\InDesign\Traits\ProjectAwareTrait;
 
 /**
  * Abstract command with generic functionality for box placement commands.
@@ -65,7 +65,7 @@ abstract class AbstractBox extends AbstractCommand implements DependentInterface
     const RESIZE_HEIGHT = 3;
 
     /**
-     * Uses Position (left, top) and dimension (width, height) from master locale. No fit is made.
+     * Uses Position (left, top) and dimension (width, height) from the master locale. No fit is made.
      *
      * @var string
      */
@@ -73,7 +73,7 @@ abstract class AbstractBox extends AbstractCommand implements DependentInterface
 
     /**
      * Uses Position (left, top) and dimension (width, height) from command.
-     * Nothing is used from master locale.
+     * Nothing is used from the master locale.
      *
      * @var string
      */
@@ -303,8 +303,8 @@ abstract class AbstractBox extends AbstractCommand implements DependentInterface
     }
 
     /**
-     * Sets the ident of the box referenced to RenderingTrait::$boxIdentReference with $ident as postfix.
-     * Used to create content referenced boxes in InDesign for content aware updates.
+     * Sets the ident of the box referenced to RenderingTrait::$boxIdentReference with $ident as a postfix.
+     * Used to create content referenced boxes in InDesign for content-aware updates.
      *
      * @param string $ident
      *
@@ -362,7 +362,7 @@ abstract class AbstractBox extends AbstractCommand implements DependentInterface
      */
     protected static function validateUseMasterLocaleDimension(string $mode): void
     {
-        if (false === in_array($mode, self::$allowedMasterLocaleModes)) {
+        if (!in_array($mode, self::$allowedMasterLocaleModes)) {
             throw new \Exception(
                 sprintf("Invalid useMasterLocaleDimension value '%s' in '%s'.", $mode, static::class)
             );

@@ -48,6 +48,16 @@ class MdsPimPrintCoreBundle extends AbstractPimcoreBundle
     }
 
     /**
+     * {@inheritDoc}
+     *
+     * @return string
+     */
+    public function getPath(): string
+    {
+        return \dirname(__DIR__);
+    }
+
+    /**
      * Returns Bundle installer
      *
      * @return Installer

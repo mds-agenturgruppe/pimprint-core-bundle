@@ -25,6 +25,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\Exception\BadCredentialsException;
+use Symfony\Component\Security\Core\Exception\TooManyLoginAttemptsAuthenticationException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\PreAuthenticatedUserBadge;
@@ -186,9 +188,13 @@ class InDesignAuthenticator extends AbstractAuthenticator
      */
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): JsonResponse
     {
-        $message = match ($exception->getCode()) {
-            self::ERROR_CODE_NO_CREDENTIALS => 'Please provide username and password.',
-            default => 'Invalid username or password.',
+        $message = match (true) {
+            $exception instanceof TooManyLoginAttemptsAuthenticationException
+            => 'Too many failed login attempts, please try again in 5 minutes.',
+            $exception instanceof BadCredentialsException
+            => 'Invalid username or password.',
+            default
+            => 'Please provide username and password.',
         };
 
         return new JsonResponse(

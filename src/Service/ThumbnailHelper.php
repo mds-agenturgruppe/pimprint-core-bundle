@@ -18,6 +18,8 @@ use Mds\PimPrint\CoreBundle\Project\AbstractProject;
 use Mds\PimPrint\CoreBundle\Project\Config;
 use Pimcore\Http\RequestHelper;
 use Pimcore\Model\Asset\Image\Thumbnail\Config as ThumbnailConfig;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 /**
  * Class ThumbnailHelper
@@ -62,6 +64,13 @@ class ThumbnailHelper
     protected AbstractProject $project;
 
     /**
+     * Validated thumbnail config.
+     *
+     * @var true
+     */
+    private bool $valid = false;
+
+    /**
      * ThumbnailHelper constructor.
      *
      * @param RequestHelper $requestHelper
@@ -90,14 +99,20 @@ class ThumbnailHelper
      *
      * @return void
      * @throws \Exception
+     * @deprecated
      */
     public function validateAssetThumbnail(): void
     {
-        $config = $this->getProjectConfig()
-                       ->offsetGet('assets');
-        if (false === isset($config['thumbnail'])) {
+        if ($this->valid) {
             return;
         }
+
+        $config = $this->getProjectConfig()
+                       ->offsetGet('assets');
+        if (!isset($config['thumbnail'])) {
+            return;
+        }
+
         $config = $config['thumbnail'];
         $thumbnail = ThumbnailConfig::getByName($config);
         if (!$thumbnail instanceof ThumbnailConfig) {
@@ -119,15 +134,16 @@ class ThumbnailHelper
                 )
             );
         }
+
+        $this->valid = true;
     }
 
     /**
-     * Returns configured project or PimPrint thumbnail config.
+     * Returns a configured project or PimPrint thumbnail config.
      * As InDesign can't handle SVG assets, SVGs are always rasterized.
      *
      * @param string|null $thumbnailName
      *
-     * @return ThumbnailConfig
      * @throws \Exception
      */
     public function getThumbnailConfig(string $thumbnailName = null): ThumbnailConfig
@@ -169,7 +185,7 @@ class ThumbnailHelper
     }
 
     /**
-     * As InDesign can't use SVG images we use 'filetype-not-supported.eps' error image.
+     * As InDesign can't use SVG images, we use 'filetype-not-supported.eps' error image.
      *
      * @param string $path
      *
@@ -190,7 +206,8 @@ class ThumbnailHelper
      * @param string $url
      *
      * @return string
-     * @throws \Exception
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function prependHostUrl(string $url): string
     {
@@ -222,7 +239,7 @@ class ThumbnailHelper
     }
 
     /**
-     * Returns Config of current project.
+     * Returns Config of the current project.
      *
      * @return Config
      */
@@ -243,9 +260,9 @@ class ThumbnailHelper
         if (!$requestHelper->hasMainRequest()) {
             return;
         }
-        //not nice but this way we disable the "InDesign browser" detection
+        //not nice, but this way we disable the "InDesign browser" detection
         //@see \Pimcore\Tool\Frontend::determineClientWebpSupport
-        // not nice to do a browser detection but for now the easiest way to get around the topic described in #4345
+        // not nice to do browser detection but for now the easiest way to get around the topic described in #4345
         $requestHelper->getMainRequest()->headers->set('User-Agent', '');
 
         $accept = $requestHelper->getMainRequest()->headers->get('Accept');

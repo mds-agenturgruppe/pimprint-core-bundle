@@ -122,7 +122,7 @@ class Configuration implements ConfigurationInterface
                                 ->end()
                                 ->scalarNode('relative_path')
                                     ->info('Optional relative path inside bundle of project service to the InDesign template.')
-                                    ->defaultValue('/Resources/pimprint/')
+                                    ->defaultValue('/public/pimprint/')
                                 ->end()
                                 ->booleanNode('download')
                                     ->defaultValue(true)

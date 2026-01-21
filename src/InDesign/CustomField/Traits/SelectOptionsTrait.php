@@ -74,7 +74,7 @@ trait SelectOptionsTrait
     }
 
     /**
-     * Convenience method to set select field to not collapse.
+     * Convenience method to set a select field to not collapse.
      *
      * @return SelectOptionsTrait
      */

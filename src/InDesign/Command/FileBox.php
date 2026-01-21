@@ -17,7 +17,7 @@ namespace Mds\PimPrint\CoreBundle\InDesign\Command;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\DefaultLocalizedParamsTrait;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\FitTrait;
 use Mds\PimPrint\CoreBundle\InDesign\Text\ParagraphComponent;
-use Mds\PimPrint\CoreBundle\Project\Traits\ProjectAwareTrait;
+use Mds\PimPrint\CoreBundle\InDesign\Traits\ProjectAwareTrait;
 
 /**
  * Class FileBoxCommand
@@ -54,7 +54,7 @@ class FileBox extends AbstractBox implements ParagraphComponent
     const FIT_CENTER_CONTENT = 'CENTER_CONTENT';
 
     /**
-     * Selects best crop region of the content for the frame based on Adobe Sensei.
+     * Selects the best crop region of the content for the frame based on Adobe Sensei.
      * Note: Preserves frame size but might scale the content size.
      *
      * @see https://www.indesignjs.de/extendscriptAPI/indesign-latest/#FitOptions.html
@@ -138,11 +138,11 @@ class FileBox extends AbstractBox implements ParagraphComponent
     /**
      * FileBox constructor.
      *
-     * @param string      $elementName Name of template element.
+     * @param string      $elementName Name of the template element.
      * @param float|null  $left        Left position in mm.
      * @param float|null  $top         Top position in mm.
-     * @param float|null  $width       Width of element in mm.
-     * @param float|null  $height      Height of element in mm.
+     * @param float|null  $width       Width of the element in mm.
+     * @param float|null  $height      Height of the element in mm.
      * @param string|null $src         Relative file path from the plugin image directory to the file to be placed.
      * @param string      $fit         Fit mode of image in image-box. Use FIT class constants.
      *
@@ -180,7 +180,7 @@ class FileBox extends AbstractBox implements ParagraphComponent
     }
 
     /**
-     * Sets relative file path from the plugin image directory to the file to be placed.
+     * Sets the relative file path from the plugin image directory to the file to be placed.
      *
      * @param string $src
      *

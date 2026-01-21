@@ -1,7 +1,7 @@
 stages:
     - test
 
-code check:
+code-check:
     stage: test
     image: gitlab.mds.eu:2244/mds/docker-images/image-pimcore12-php83-webserver
     script:

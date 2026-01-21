@@ -35,7 +35,7 @@ trait LayerTrait
     }
 
     /**
-     * Sets $layer as target layer for a placed element.
+     * Sets $layer as the target layer for a placed element.
      *
      * @param string $layer
      *

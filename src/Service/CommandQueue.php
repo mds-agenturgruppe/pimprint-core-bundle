@@ -12,7 +12,7 @@
  * @license   mds. Commercial License (MCL)
  */
 
-namespace Mds\PimPrint\CoreBundle\InDesign;
+namespace Mds\PimPrint\CoreBundle\Service;
 
 use Mds\PimPrint\CoreBundle\InDesign\Command\AbstractCommand;
 use Mds\PimPrint\CoreBundle\InDesign\Command\ExecuteScript;
@@ -25,18 +25,19 @@ use Mds\PimPrint\CoreBundle\InDesign\Command\Variable;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Variables\AbstractMath;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Variables\DependentInterface as VariableDependentInterface;
 use Mds\PimPrint\CoreBundle\InDesign\Traits\BoxIdentBuilderTrait;
-use Mds\PimPrint\CoreBundle\Service\AccessorTraits\ProjectsManagerTrait;
-use Mds\PimPrint\CoreBundle\Service\PluginParameters;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 /**
  * Class CommandQueue
  *
- * @package Mds\PimPrint\CoreBundle\Indesign
+ * @SuppressWarnings("PHPMD.CouplingBetweenObjects")
+ *
+ * @package Mds\PimPrint\CoreBundle\Service
  */
 class CommandQueue
 {
     use BoxIdentBuilderTrait;
-    use ProjectsManagerTrait;
 
     /**
      * Prefix for BoxIdent.
@@ -50,49 +51,116 @@ class CommandQueue
      *
      * @var AbstractCommand[]
      */
-    protected array $commands = [];
+    private array $commands = [];
 
     /**
      * Last stored yPos.
      *
      * @var int|float
      */
-    protected $yPos = 0;
+    private int|float $yPos = 0;
 
     /**
      * Current page number. (Handle with care.)
      *
      * @var int
      */
-    protected int $pageNumber = 0;
+    private int $pageNumber = 0;
 
     /**
      * Array with registered variables via Variable or VariableTrait.
-     * Used to verify existence of variables when a variable is used for relative positioning or calculation.
+     * Used to verify the existence of variables when a variable is used for relative positioning or calculation.
      *
      * @var array
      */
-    protected array $registeredVariables = [];
+    private array $registeredVariables = [];
 
     /**
-     * Array with all assets used in generated publication.
+     * Array with all assets used in the generated publication.
      *
      * @var array
      */
-    protected array $registeredAssets = [];
+    private array $registeredAssets = [];
 
     /**
      * Array with missing assets used in generated publication.
      *
      * @var array
      */
-    protected array $missingAssets = [
+    private array $missingAssets = [
         'assetIds' => [],
         'elements' => 0,
     ];
 
     /**
-     * Returns current pageNumber. (Handle with care.)
+     * CommandQueue
+     *
+     * @param ProjectsManager $projectsManager
+     */
+    public function __construct(private readonly ProjectsManager $projectsManager)
+    {
+    }
+
+    /**
+     * Adds Command(s) to CommandQueue.
+     *
+     * @param AbstractCommand|AbstractCommand[] $param
+     *
+     * @return void
+     * @throws \Exception
+     */
+    public function add(AbstractCommand|array $param): void
+    {
+        if (is_array($param)) {
+            $this->addCommands($param);
+        } else {
+            $this->addCommand($param);
+        }
+    }
+
+    /**
+     * Adds $command to CommandQueue.
+     *
+     * @param AbstractCommand $command
+     *
+     * @return CommandQueue
+     * @throws \Exception
+     */
+    public function addCommand(AbstractCommand $command): CommandQueue
+    {
+        $this->processVariables($command);
+        $this->ensureBoxIdent($command);
+
+        $array = $command->buildCommand();
+        if (!empty($array)) {
+            $this->commands[] = $array;
+        }
+        $this->registerAsset($command);
+
+        return $this;
+    }
+
+    /**
+     * Adds $commands to CommandQueue.
+     *
+     * @param AbstractCommand[] $commands
+     *
+     * @return CommandQueue
+     * @throws \Exception
+     */
+    public function addCommands(array $commands): CommandQueue
+    {
+        foreach ($commands as $command) {
+            if ($command instanceof AbstractCommand) {
+                $this->addCommand($command);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Returns current pageNumber. (Handle with care!)
      *
      * @return int
      */
@@ -141,7 +209,7 @@ class CommandQueue
 
     /**
      * Sets $value as current yPosition.
-     * If $sendCommand is true, value is set in InDesign via Variable command.
+     * If $sendCommand is true, the value is set in InDesign via Variable command.
      *
      * @param float|int $value
      * @param bool      $sendCommand
@@ -161,7 +229,7 @@ class CommandQueue
 
     /**
      * Increments current yPosition by $value and returns the new value.
-     * If $sendCommand is true, value is set in InDesign via Variable command.
+     * If $sendCommand is true, the value is set in InDesign via Variable command.
      *
      * @param float|int $value
      * @param bool      $sendCommand
@@ -177,19 +245,55 @@ class CommandQueue
     }
 
     /**
-     * Returns all generated commands.
+     * Convenience method to add a PageMessage command.
+     *
+     * @param string $message
+     * @param bool   $onPage
+     *
+     * @return CommandQueue
+     * @throws \Exception
+     */
+    public function addPageMessage(string $message, bool $onPage = false): CommandQueue
+    {
+        $this->addCommand(
+            new PageMessage($message, $onPage)
+        );
+
+        return $this;
+    }
+
+    /**
+     * Returns registered images.
      *
      * @return array
      */
-    public function getCommandsRaw(): array
+    public function getRegisteredAssets(): array
     {
-        return $this->commands;
+        return $this->registeredAssets;
+    }
+
+    /**
+     * Increments missing asset counter for $assetId.
+     *
+     * @param int $assetId
+     *
+     * @return void
+     */
+    public function incrementMissingAssetCounter(int $assetId): void
+    {
+        if (!isset($this->missingAssets['assetIds'][$assetId])) {
+            $this->missingAssets['assetIds'][$assetId] = 0;
+        }
+        $this->missingAssets['assetIds'][$assetId]++;
+        $this->missingAssets['elements']++;
     }
 
     /**
      * Returns commands to send to InDesign Plugin filtered for selected elements.
      *
      * @return array
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      * @throws \Exception
      */
     public function getCommands(): array
@@ -206,22 +310,45 @@ class CommandQueue
     }
 
     /**
-     * Filters commands for selected elements in InDesign document.
+     * Returns all generated commands.
+     *
+     * @return array
+     */
+    public function getCommandsRaw(): array
+    {
+        return $this->commands;
+    }
+
+    /**
+     * Returns missing assets.
+     *
+     * @return array
+     */
+    public function getMissingAssets(): array
+    {
+        return $this->missingAssets;
+    }
+
+    /**
+     * Filters commands for selected elements in the InDesign document.
      *
      * @param array $commands
      *
      * @return array
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      * @throws \Exception
      */
-    protected function filterSelectedCommands(array $commands): array
+    private function filterSelectedCommands(array $commands): array
     {
         try {
-            $selectedElements = $this->getProject()
-                                     ->pluginParams()
-                                     ->get(PluginParameters::PARAM_ELEMENT_LIST);
+            $selectedElements = $this->projectsManager->getProject()
+                                                      ->pluginParams()
+                                                      ->get(PluginParameters::PARAM_ELEMENT_LIST);
         } catch (\Exception) {
             return $commands;
         }
+
         $selectedElements = (array)$selectedElements;
         if (empty($selectedElements)) {
             return [];
@@ -256,10 +383,10 @@ class CommandQueue
                 } else {
                     $boxName = $command['name'] . '#' . $command['tid'] . '#';
                 }
-                if (true === in_array($boxName, $selectedElements)) {
+                if (in_array($boxName, $selectedElements)) {
                     $return[] = $command;
                 }
-            } elseif (true === in_array($command['cmd'], $commandWhitelist)) {
+            } elseif (in_array($command['cmd'], $commandWhitelist)) {
                 $return[] = $command;
             }
         }
@@ -268,24 +395,32 @@ class CommandQueue
     }
 
     /**
-     * Adds $command to CommandQueue.
+     * Removes locale-idents from $selectedElements boxNames
+     *
+     * @param array $selectedElements
+     *
+     * @return void
+     */
+    private function removeLocaleFromSelectedElements(array &$selectedElements): void
+    {
+        foreach ($selectedElements as &$boxName) {
+            $boxName = preg_replace('/#(\w{2,3}|\w{2,3}_\w{2,4}|\w{2,3}_\w{2,4}_\w{2,5})#$/', '#', $boxName);
+        }
+    }
+
+    /**
+     * Registers used asset.
      *
      * @param AbstractCommand $command
      *
-     * @return CommandQueue
-     * @throws \Exception
+     * @return void
      */
-    public function addCommand(AbstractCommand $command): CommandQueue
+    private function registerAsset(AbstractCommand $command): void
     {
-        $this->processVariables($command);
-        $this->ensureBoxIdent($command);
-        $array = $command->buildCommand();
-        if (!empty($array)) {
-            $this->commands[] = $array;
+        if (!$command instanceof ImageCollectorInterface) {
+            return;
         }
-        $this->registerAsset($command);
-
-        return $this;
+        $this->registeredAssets += $command->getCollectedImages();
     }
 
     /**
@@ -298,21 +433,21 @@ class CommandQueue
      * @return void
      * @throws \Exception
      */
-    protected function processVariables(AbstractCommand $command): void
+    private function processVariables(AbstractCommand $command): void
     {
         $this->registerVariables($command);
         $this->validateVariables($command);
     }
 
     /**
-     * Checks if command sets a variable an registers it's name.
+     * Checks if command sets a variable a registers it's name.
      *
      * @param AbstractCommand $command
      *
      * @return void
      * @throws \Exception
      */
-    protected function registerVariables(AbstractCommand $command): void
+    private function registerVariables(AbstractCommand $command): void
     {
         if ($command instanceof Variable) {
             $this->registeredVariables[] = $command->getName();
@@ -329,17 +464,17 @@ class CommandQueue
     }
 
     /**
-     * Checks if command uses only existing variables.
-     * If a variable doesn't exist an exception is thrown.
+     * Checks if the command uses only existing variables.
+     * If a variable doesn't exist, an exception is thrown.
      *
      * @param AbstractCommand $command
      *
      * @return void
      * @throws \Exception
      */
-    protected function validateVariables(AbstractCommand $command): void
+    private function validateVariables(AbstractCommand $command): void
     {
-        if (false === $command instanceof VariableDependentInterface) {
+        if (!$command instanceof VariableDependentInterface) {
             return;
         }
         $check = array_diff($command->getDependentVariables(), $this->registeredVariables);
@@ -347,89 +482,6 @@ class CommandQueue
             throw new \Exception(
                 sprintf('Used relative position variables %s not defined.', implode(', ', $check))
             );
-        }
-    }
-
-    /**
-     * Convenience method to add a PageMessage command.
-     *
-     * @param string $message
-     * @param bool   $onPage
-     *
-     * @return CommandQueue
-     * @throws \Exception
-     */
-    public function addPageMessage(string $message, bool $onPage = false): CommandQueue
-    {
-        $this->addCommand(
-            new PageMessage($message, $onPage)
-        );
-
-        return $this;
-    }
-
-    /**
-     * Registers used asset.
-     *
-     * @param AbstractCommand $command
-     *
-     * @return void
-     */
-    private function registerAsset(AbstractCommand $command): void
-    {
-        if (false === $command instanceof ImageCollectorInterface) {
-            return;
-        }
-        $this->registeredAssets += $command->getCollectedImages();
-    }
-
-    /**
-     * Returns registered images.
-     *
-     * @return array
-     */
-    public function getRegisteredAssets(): array
-    {
-        return $this->registeredAssets;
-    }
-
-    /**
-     * Increments missing asset counter for $assetId.
-     *
-     * @param int $assetId
-     *
-     * @return void
-     */
-    public function incrementMissingAssetCounter(int $assetId): void
-    {
-        if (false === isset($this->missingAssets['assetIds'][$assetId])) {
-            $this->missingAssets['assetIds'][$assetId] = 0;
-        }
-        $this->missingAssets['assetIds'][$assetId]++;
-        $this->missingAssets['elements']++;
-    }
-
-    /**
-     * Returns missing assets.
-     *
-     * @return array
-     */
-    public function getMissingAssets(): array
-    {
-        return $this->missingAssets;
-    }
-
-    /**
-     * Removes locale-idents from $selectedElements boxNames
-     *
-     * @param array $selectedElements
-     *
-     * @return void
-     */
-    private function removeLocaleFromSelectedElements(array &$selectedElements): void
-    {
-        foreach ($selectedElements as &$boxName) {
-            $boxName = preg_replace('/#(\w{2,3}|\w{2,3}_\w{2,4}|\w{2,3}_\w{2,4}_\w{2,5})#$/', '#', $boxName);
         }
     }
 }

@@ -20,6 +20,8 @@ use Mds\PimPrint\CoreBundle\InDesign\Command\AbstractCommand;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Table;
 use Mds\PimPrint\CoreBundle\InDesign\Command\TextBox;
 use Mds\PimPrint\CoreBundle\InDesign\Text;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 /**
  * Class FragmentParser
@@ -29,21 +31,21 @@ use Mds\PimPrint\CoreBundle\InDesign\Text;
 class FragmentParser extends AbstractParser
 {
     /**
-     * $element parameter name in factory closure to create Text instances.
+     * $element parameter name in the factory closure to create Text instances.
      *
      * @var string
      */
     const FACTORY_ELEMENT_TEXT = 'text';
 
     /**
-     * $element parameter name in factory closure to create TextBox instances.
+     * $element parameter name in the factory closure to create TextBox instances.
      *
      * @var string
      */
     const FACTORY_ELEMENT_TEXT_BOX = 'text-box';
 
     /**
-     * $element parameter name in factory closure to create Table instances.
+     * $element parameter name in the factory closure to create Table instances.
      *
      * @var string
      */
@@ -156,7 +158,9 @@ class FragmentParser extends AbstractParser
      * @param \DomElement $node
      *
      * @return void
-     * @throws \Exception|FilesystemException
+     * @throws FilesystemException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function parseElementNode(\DomElement $node): void
     {
@@ -177,7 +181,10 @@ class FragmentParser extends AbstractParser
      * @param \DomElement $node
      *
      * @return void
-     * @throws \Exception|FilesystemException
+     * @throws ContainerExceptionInterface
+     * @throws FilesystemException
+     * @throws NotFoundExceptionInterface
+     * @throws \Exception
      */
     protected function parseTableNodes(\DomElement $node): void
     {
@@ -219,7 +226,8 @@ class FragmentParser extends AbstractParser
      * @param \DomElement $node
      *
      * @return void
-     * @throws \Exception|FilesystemException
+     * @throws FilesystemException
+     * @throws \Exception
      */
     protected function processNodeCol(\DomElement $node): void
     {
@@ -238,7 +246,8 @@ class FragmentParser extends AbstractParser
      * @param \DomElement $node
      *
      * @return void
-     * @throws \Exception|FilesystemException
+     * @throws FilesystemException
+     * @throws \Exception
      */
     protected function processNodeTable(\DomElement $node): void
     {
@@ -254,13 +263,14 @@ class FragmentParser extends AbstractParser
     }
 
     /**
-     * Template method for processing tr nodes.
+     * Template method for processing TR nodes.
      *
      * @param \DomElement $node
      *
-     * @throws \Exception|FilesystemException
+     * @throws FilesystemException
+     * @throws \Exception
      */
-    protected function processNodeTr(\DomElement $node)
+    protected function processNodeTr(\DomElement $node): void
     {
         $rowType = Table::ROW_TYPE_BODY;
         if ('thead' == strtolower($node->parentNode->tagName)) {
@@ -274,7 +284,7 @@ class FragmentParser extends AbstractParser
     }
 
     /**
-     * Template method for processing th nodes.
+     * Template method for processing TH nodes.
      *
      * @param \DomElement $node
      *
@@ -303,7 +313,7 @@ class FragmentParser extends AbstractParser
     }
 
     /**
-     * Returns currentBox. If $className is provided instance of currentBox is validated against $classname.
+     * Returns currentBox. If $className is provided, an instance of the currentBox is validated against $classname.
      *
      * @param string|null $className
      *
@@ -322,7 +332,7 @@ class FragmentParser extends AbstractParser
             if (false === $this->currentBox instanceof $className) {
                 throw new \Exception();
             }
-        } catch (\Exception $exception) {
+        } catch (\Exception) {
             throw new \Exception(
                 sprintf(
                     "XHTML Stack error. Expected class is '%s', current class '%s'.",
@@ -336,7 +346,7 @@ class FragmentParser extends AbstractParser
     }
 
     /**
-     * Adds $component to current box stack.
+     * Adds $component to the current box stack.
      *
      * @param AbstractBox $box
      * @param bool        $reset
@@ -352,7 +362,7 @@ class FragmentParser extends AbstractParser
     }
 
     /**
-     * Adds $box as new currentBox.
+     * Adds $box as the new currentBox.
      *
      * @param AbstractBox $box
      *
@@ -369,7 +379,7 @@ class FragmentParser extends AbstractParser
 
     /**
      * Factory template method for Table command.
-     * Project specific instances can be integrated by overwriting method or using factoryClosure.
+     * Project-specific instances can be integrated by overwriting method or using factoryClosure.
      *
      * @param \DOMElement $node
      *

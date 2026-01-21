@@ -37,7 +37,7 @@ class SplitTable extends AbstractCommand implements ImageCollectorInterface
     /**
      * Ident prefix
      *
-     * @var
+     * @var string
      */
     const IDENT_PREFIX = 'ST';
 
@@ -164,7 +164,7 @@ class SplitTable extends AbstractCommand implements ImageCollectorInterface
     }
 
     /**
-     * Returns registered pre commands.
+     * Returns registered pre-commands.
      *
      * @return AbstractCommand[]
      */
@@ -174,7 +174,7 @@ class SplitTable extends AbstractCommand implements ImageCollectorInterface
     }
 
     /**
-     * Registers pre commands.
+     * Registers pre-commands.
      *
      * @param array $preCommands
      *
@@ -192,7 +192,7 @@ class SplitTable extends AbstractCommand implements ImageCollectorInterface
     }
 
     /**
-     * Adds $command to pre commands.
+     * Adds $command to pre-commands.
      *
      * @param AbstractCommand $commands
      *
@@ -206,7 +206,7 @@ class SplitTable extends AbstractCommand implements ImageCollectorInterface
     }
 
     /**
-     * Sets minimum rows to show in split table.
+     * Sets minimum rows to show in the split table.
      *
      * @param int $minRows
      *
@@ -221,7 +221,7 @@ class SplitTable extends AbstractCommand implements ImageCollectorInterface
     }
 
     /**
-     * Validates if $minRows command is greater than 0.
+     * Validates if $minRows param is greater than 0.
      *
      * @param int $minRows
      *
@@ -313,7 +313,7 @@ class SplitTable extends AbstractCommand implements ImageCollectorInterface
     }
 
     /**
-     * Builds command array that is sent as JSON to InDesign.
+     * Builds a command array that is sent as JSON to InDesign.
      *
      * @param bool $addCmd
      *

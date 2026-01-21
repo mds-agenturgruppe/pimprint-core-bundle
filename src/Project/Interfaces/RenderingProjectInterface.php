@@ -12,26 +12,23 @@
  * @license   mds. Commercial License (MCL)
  */
 
-namespace Mds\PimPrint\CoreBundle\Service\AccessorTraits;
+namespace Mds\PimPrint\CoreBundle\Project\Interfaces;
 
 use Mds\PimPrint\CoreBundle\Service\ProjectsManager;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /**
- * Trait ProjectsManagerTrait
+ * Interface RenderingProjectInterface
  *
- * @package Mds\PimPrint\CoreBundle\Service\AccessorTraits
+ * @package Mds\PimPrint\CoreBundle\Project
  */
-trait ProjectsManagerTrait
+#[AutoconfigureTag(ProjectsManager::SERVICE_TAG)]
+interface RenderingProjectInterface
 {
     /**
-     * Returns ProjectsManager
+     * Generates InDesign Commands to build the selected publication in InDesign.
      *
-     * @return ProjectsManager
+     * @return void
      */
-    protected function getProjectsManager(): ProjectsManager
-    {
-        return \Pimcore::getKernel()
-                       ->getContainer()
-                       ->get(ProjectsManager::class);
-    }
+    public function buildPublication(): void;
 }

@@ -20,24 +20,12 @@ use Mds\PimPrint\CoreBundle\Service\PluginParameters;
 /**
  * Class MasterLocaleRenderingProject
  *
- * Rendering allows generation of document in a master locale. When rendering additional languages positions and
- * dimensions for elements can be used from the rendered master locale.
- *
- * Class is registered as abstract service in 'config/services.yaml' and aliased as
- * 'mds.pimprint.core.master_locale_rendering_project' to be used in concrete service definitions as parent.
- *
- * Example:
- * {code}
- * Mds\PimPrint\DemoBundle\Project\LocalizationDemo\LocalizationProject:
- *   parent: mds.pimprint.core.master_locale_rendering_project
- * {code}
- *
  * @package Mds\PimPrint\CoreBundle\Project
  */
 abstract class MasterLocaleRenderingProject extends AbstractProject
 {
     /**
-     * Default update modes, when no project specific config is defined.
+     * Default update modes, when no project-specific config is defined.
      *
      * @var array
      */

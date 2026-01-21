@@ -18,7 +18,7 @@ use Mds\PimPrint\CoreBundle\InDesign\Command\AbstractBox;
 
 /**
  * Trait to add params for resizing to a command.
- * The params width height are used to size a element in the document.
+ * The params width height is used to size an element in the document.
  *
  * @package Mds\PimPrint\CoreBundle\InDesign\Command\Traits
  */

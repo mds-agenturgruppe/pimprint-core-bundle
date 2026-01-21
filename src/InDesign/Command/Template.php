@@ -19,7 +19,7 @@ use Mds\PimPrint\CoreBundle\InDesign\Traits\BoxIdentBuilderTrait;
 
 /**
  * Command for creating page layout elements in InDesign. All commands added to a template are executed automatically
- * when a page is accessed in InDesign document.
+ * when a page is accessed in the InDesign document.
  * If a page is accessed multiple times and the template is already applied to the page
  * the commands aren't executed once again.
  *
@@ -45,7 +45,7 @@ class Template extends AbstractCommand implements ImageCollectorInterface
     const IDENT_PREFIX = 'T-AUTO-';
 
     /**
-     * Defines commands for use on single page documents.
+     * Defines commands for use on single-page documents.
      *
      * @var string
      */
@@ -84,7 +84,7 @@ class Template extends AbstractCommand implements ImageCollectorInterface
     ];
 
     /**
-     * Adds $commands to template.
+     * Adds $commands to the template.
      *
      * @param array  $commands
      * @param string $side Single/Facing page documents side
@@ -105,7 +105,7 @@ class Template extends AbstractCommand implements ImageCollectorInterface
     }
 
     /**
-     * Adds $command to template.
+     * Adds $command to the template.
      *
      * @param AbstractCommand $command
      * @param string          $side Single/Facing page documents side
@@ -147,7 +147,7 @@ class Template extends AbstractCommand implements ImageCollectorInterface
     }
 
     /**
-     * Clears all commands in template.
+     * Clears all commands in the template.
      *
      * @return Template
      */

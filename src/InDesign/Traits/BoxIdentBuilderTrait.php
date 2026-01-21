@@ -16,7 +16,8 @@ namespace Mds\PimPrint\CoreBundle\InDesign\Traits;
 
 use Mds\PimPrint\CoreBundle\InDesign\Command\AbstractBox;
 use Mds\PimPrint\CoreBundle\InDesign\Command\AbstractCommand;
-use Mds\PimPrint\CoreBundle\Project\Traits\ProjectAwareTrait;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 /**
  * Trait BoxIdentBuilderTrait
@@ -58,11 +59,11 @@ trait BoxIdentBuilderTrait
      */
     protected function ensureBoxIdent(AbstractCommand $command): void
     {
-        if (false === $command instanceof AbstractBox) {
+        if (!$command instanceof AbstractBox) {
             return;
         }
         $boxIdent = $command->getBoxIdent();
-        if (false === empty($boxIdent)) {
+        if (!empty($boxIdent)) {
             $command->setBoxIdent($this->appendLocaleToBoxIdent($command, $boxIdent));
             $this->ensureUniqueBoxIdent($command);
 
@@ -106,7 +107,7 @@ trait BoxIdentBuilderTrait
     }
 
     /**
-     * Builds unique index for $command on current page.
+     * Builds a unique index for $command on the current page.
      *
      * @param string $commandName
      *
@@ -115,10 +116,10 @@ trait BoxIdentBuilderTrait
     protected function buildIdentIndex(string $commandName): int
     {
         $page = $this->getPageNumber();
-        if (false === isset(self::$identIndexes[$page])) {
+        if (!isset(self::$identIndexes[$page])) {
             self::$identIndexes[$page] = [];
         }
-        if (false === isset(self::$identIndexes[$page][$commandName])) {
+        if (!isset(self::$identIndexes[$page][$commandName])) {
             self::$identIndexes[$page][$commandName] = 0;
         }
 
@@ -139,10 +140,12 @@ trait BoxIdentBuilderTrait
 
     /**
      * Ensured unique element names in InDesign.
-     * If a element ident is used multiple times an error PageMessage is generated.
+     * If an element ident is used multiple times, an error PageMessage is generated.
      *
      * @param AbstractBox $command
      *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      * @throws \Exception
      */
     private function ensureUniqueBoxIdent(AbstractBox $command): void
@@ -164,21 +167,24 @@ trait BoxIdentBuilderTrait
 
         $ident = $command->getElementName() . '#' . $boxIdent;
         if (isset(self::$generatedBoxes[$ident])) {
-            $this->getCommandQueue()
+            $this->commandQueue()
                  ->addPageMessage('Error: Duplicate BoxIdent found:' . $ident, true);
         }
         self::$generatedBoxes[$ident] = true;
     }
 
     /**
-     * Returns current page number from CommandQueue.
+     * Returns the current page number from CommandQueue.
+     * Only correct if no automatic pagination is used.
      *
      * @return int
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     private function getPageNumber(): int
     {
         try {
-            return $this->getCommandQueue()
+            return $this->commandQueue()
                         ->getPageNumber();
         } catch (\Exception) {
             return 0;
@@ -192,6 +198,8 @@ trait BoxIdentBuilderTrait
      * @param string      $ident
      *
      * @return string
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      * @throws \Exception
      */
     private function appendLocaleToBoxIdent(AbstractBox $abstractBox, string $ident): string

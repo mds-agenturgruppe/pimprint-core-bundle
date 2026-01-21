@@ -20,6 +20,8 @@ use Mds\PimPrint\CoreBundle\InDesign\Command\ImageCollectorInterface;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\ImageCollectorTrait;
 use Mds\PimPrint\CoreBundle\InDesign\Traits\BoxIdentBuilderTrait;
 use Mds\PimPrint\CoreBundle\Service\SpecialChars;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 /**
  * Class Paragraph
@@ -53,7 +55,7 @@ class Paragraph implements ImageCollectorInterface
     protected string $characterStyle = '';
 
     /**
-     * Components in paragraph.
+     * Components in a paragraph.
      *
      * @var ParagraphComponent[]
      */
@@ -120,7 +122,7 @@ class Paragraph implements ImageCollectorInterface
     }
 
     /**
-     * Clears all characters in paragraph.
+     * Clears all characters in the paragraph.
      *
      * @return Paragraph
      */
@@ -132,13 +134,15 @@ class Paragraph implements ImageCollectorInterface
     }
 
     /**
-     * Adds $component to paragraph.
-     * If $prependSpace is true a SpecialChars::SPACE will be pretended to textual components.
+     * Adds $component to a paragraph.
+     * If $prependSpace is true, a SpecialChars::SPACE will be pretended to textual components.
      *
      * @param ParagraphComponent $component
      * @param bool               $prependSpace
      *
      * @return Paragraph
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      * @throws \Exception
      */
     public function addComponent(ParagraphComponent $component, bool $prependSpace = false): Paragraph
@@ -156,7 +160,7 @@ class Paragraph implements ImageCollectorInterface
     }
 
     /**
-     * Convenience method that clears all components in paragraph and adds $text.
+     * Convenience method that clears all components in a paragraph and adds $text.
      *
      * @param string      $text
      * @param string|null $style
@@ -173,13 +177,14 @@ class Paragraph implements ImageCollectorInterface
     }
 
     /**
-     * Adds $text as characters with $style. If style is null characterStyle from paragraph is used.
+     * Adds $text as characters with $style. If style is null, characterStyle from the paragraph is used.
      *
      * @param string      $text
      * @param string|null $style
      *
      * @return Paragraph
-     * @throws \Exception
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function addText(string $text, string $style = null): Paragraph
     {
@@ -194,7 +199,7 @@ class Paragraph implements ImageCollectorInterface
     }
 
     /**
-     * Builds array that is sent as content parameter in TextBox commands to InDesign.
+     * Builds array that is sent as a content parameter in TextBox commands to InDesign.
      *
      * @return array
      * @throws \Exception

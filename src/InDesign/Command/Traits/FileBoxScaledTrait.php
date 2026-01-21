@@ -33,7 +33,7 @@ trait FileBoxScaledTrait
      * ImageBoxScaled does not support fitting.
      *
      * Fitting would be executed after the scroll, resetting the scroll.
-     * Assets are always placed in original size. Size of the asset must be set manually by scale percentage.
+     * Assets are always placed in the original size. The size of the asset must be set manually by scale percentage.
      *
      * @param string $fit
      *

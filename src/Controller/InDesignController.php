@@ -14,6 +14,7 @@
 
 namespace Mds\PimPrint\CoreBundle\Controller;
 
+use League\Flysystem\FilesystemException;
 use Mds\PimPrint\CoreBundle\InDesign\CustomField\Search;
 use Mds\PimPrint\CoreBundle\Service\JsonRequestDecoder;
 use Mds\PimPrint\CoreBundle\Service\PluginParameters;
@@ -22,6 +23,8 @@ use Mds\PimPrint\CoreBundle\Service\ProjectsManager;
 use Pimcore\Controller\FrontendController;
 use Pimcore\Http\RequestHelper;
 use Pimcore\Security\User\UserLoader;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\Stream;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -33,159 +36,152 @@ use Symfony\Component\Routing\Attribute\Route;
 /**
  * Class InDesignController
  *
+ * @SuppressWarnings("PHPMD.CouplingBetweenObjects")
+ *
  * @package Mds\PimPrint\CoreBundle\Controller
  */
 class InDesignController extends FrontendController
 {
     /**
-     * Pimcore RequestHelper service.
+     * {@inheritDoc}
      *
-     * @var RequestHelper
+     * @return array
      */
-    private RequestHelper $requestHelper;
+    public static function getSubscribedServices(): array
+    {
+        $services = parent::getSubscribedServices();
 
-    /**
-     * PimPrint ProjectsManager service.
-     *
-     * @var ProjectsManager
-     */
-    private ProjectsManager $projectsManager;
+        $services[UserLoader::class] = UserLoader::class;
+        $services[ProjectsManager::class] = ProjectsManager::class;
+        $services[PluginResponseCreator::class] = PluginResponseCreator::class;
 
-    /**
-     * PluginResponseCreator service.
-     *
-     * @var PluginResponseCreator
-     */
-    private PluginResponseCreator $pluginResponse;
-
-    /**
-     * Pimcore UserLoader
-     *
-     * @var UserLoader
-     */
-    private UserLoader $userLoader;
-
-    /**
-     * InDesignController constructor.
-     *
-     * @param RequestHelper         $requestHelper
-     * @param ProjectsManager       $projectsManager
-     * @param PluginResponseCreator $pluginResponse
-     * @param UserLoader            $userLoader
-     */
-    public function __construct(
-        RequestHelper $requestHelper,
-        ProjectsManager $projectsManager,
-        PluginResponseCreator $pluginResponse,
-        UserLoader $userLoader
-    ) {
-        $this->requestHelper = $requestHelper;
-        $this->projectsManager = $projectsManager;
-        $this->pluginResponse = $pluginResponse;
-        $this->userLoader = $userLoader;
+        return $services;
     }
 
     /**
-     * Returns list of registered projects.
-     *
-     * @Route("/projects")
+     * Returns a list of registered projects.
      *
      * @return JsonResponse
+     * @throws ContainerExceptionInterface
+     * @throws FilesystemException
+     * @throws NotFoundExceptionInterface
      */
+    #[Route("/projects")]
     public function projectsAction(): JsonResponse
     {
         try {
             $this->ensureUser();
 
-            return $this->pluginResponse->success(
-                [
-                    'projects' => $this->projectsManager->getProjectsInfo(),
-                ]
-            );
+            return $this->pluginResponseCreator()
+                        ->success(
+                            [
+                                'projects' => $this->projectsManager()
+                                                   ->getProjectsInfo(),
+                            ]
+                        );
         } catch (\Exception $exception) {
-            return $this->pluginResponse->error($exception);
+            return $this->pluginResponseCreator()
+                        ->error($exception);
         }
     }
 
     /**
-     * Returns details for project.
-     *
-     * @Route("/project/{identifier}")
+     * Returns details for a project.
      *
      * @param string $identifier
      *
      * @return JsonResponse
+     * @throws ContainerExceptionInterface
+     * @throws FilesystemException
+     * @throws NotFoundExceptionInterface
      */
+    #[Route("/project/{identifier}")]
     public function projectAction(string $identifier): JsonResponse
     {
         try {
             $this->ensureUser();
-            $project = $this->projectsManager->projectServiceFactory($identifier);
+            $project = $this->projectsManager()
+                            ->projectServiceFactory($identifier);
 
             $pluginElements = $project->config()
                                       ->offsetGet('plugin_elements');
 
-            return $this->pluginResponse->success(
-                [
-                    'formFields'   => $project->getFormFieldsConfig(),
-                    'languages'    => $project->getLanguages(),
-                    'publications' => $pluginElements['publications']['show'] ? $project->getPublicationsTree() : [],
-                ]
-            );
+            return $this->pluginResponseCreator()
+                        ->success(
+                            [
+                                'formFields'   => $project->getFormFieldsConfig(),
+                                'languages'    => $project->getLanguages(),
+                                'publications' => $pluginElements['publications']['show'] //
+                                    ? $project->getPublicationsTree() //
+                                    : [],
+                            ]
+                        );
         } catch (\Exception $exception) {
-            return $this->pluginResponse->error($exception);
+            return $this->pluginResponseCreator()
+                        ->error($exception);
         }
     }
 
     /**
      * Executes a project InDesign execution.
      *
-     * @Route("/project/{identifier}/run")
-     *
      * @param string           $identifier
+     * @param RequestHelper    $requestHelper
      * @param PluginParameters $pluginParams
      *
      * @return JsonResponse
+     * @throws ContainerExceptionInterface
+     * @throws FilesystemException
+     * @throws NotFoundExceptionInterface
      */
-    public function executeProjectAction(string $identifier, PluginParameters $pluginParams): JsonResponse
-    {
+    #[Route("/project/{identifier}/run")]
+    public function executeProjectAction(
+        string $identifier,
+        RequestHelper $requestHelper,
+        PluginParameters $pluginParams
+    ): JsonResponse {
         try {
             $this->ensureUser();
-            $this->requestHelper->getRequest()
-                                ->setLocale($pluginParams->get(PluginParameters::PARAM_LANGUAGE));
-            $project = $this->projectsManager->projectServiceFactory($identifier);
+            $requestHelper->getRequest()
+                          ->setLocale($pluginParams->get(PluginParameters::PARAM_LANGUAGE));
+            $project = $this->projectsManager()
+                            ->projectServiceFactory($identifier);
 
-            return $this->pluginResponse->success(
-                [
-                    'commands'    => $project->run(),
-                    'preProcess'  => [],
-                    'postProcess' => [],
-                ]
-            );
+            return $this->pluginResponseCreator()
+                        ->success(
+                            [
+                                'commands'    => $project->run(),
+                                'preProcess'  => [],
+                                'postProcess' => [],
+                            ]
+                        );
         } catch (\Exception $exception) {
-            return $this->pluginResponse->error($exception);
+            return $this->pluginResponseCreator()
+                        ->error($exception);
         }
     }
 
     /**
      * Delivers templateFile for project identifier.
      *
-     * @Route("/project/{identifier}/template/{templateFile}", name="mds_pimprint_downlaod_template")
-     *
      * @param string $identifier
      * @param string $templateFile
      *
      * @return BinaryFileResponse|NotFoundHttpException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
+    #[Route("/project/{identifier}/template/{templateFile}", name: 'mds_pimprint_downlaod_template')]
     public function downloadTemplateAction(
         string $identifier,
         string $templateFile
     ): BinaryFileResponse|NotFoundHttpException {
         try {
             $this->ensureUser();
-            $project = $this->projectsManager->projectServiceFactory($identifier);
+            $project = $this->projectsManager()
+                            ->projectServiceFactory($identifier);
             $filePath = $project->getTemplateFilePath($templateFile);
-            if (false === file_exists($filePath)) {
+            if (!file_exists($filePath)) {
                 throw new \Exception();
             }
             $stream = new Stream($filePath);
@@ -201,15 +197,17 @@ class InDesignController extends FrontendController
     /**
      * Generic end point for search custom fields search execution
      *
-     * @Route("/project/{identifier}/custom-search/{customField}", name="mds_pimprint_custom_search")
-     *
      * @param Request            $request
      * @param JsonRequestDecoder $requestDecoder
      * @param string             $identifier
      * @param string             $customField
      *
      * @return JsonResponse
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws FilesystemException
      */
+    #[Route("/project/{identifier}/custom-search/{customField}", name: 'mds_pimprint_custom_search')]
     public function customFieldSearchAction(
         Request $request,
         JsonRequestDecoder $requestDecoder,
@@ -219,16 +217,18 @@ class InDesignController extends FrontendController
         try {
             $this->ensureUser();
             $requestDecoder->decode($request);
-            $project = $this->projectsManager->projectServiceFactory($identifier);
+            $project = $this->projectsManager()
+                            ->projectServiceFactory($identifier);
 
             $field = $project->getCustomFormField($customField);
-            if (false === $field instanceof Search) {
+            if (!$field instanceof Search) {
                 throw new \Exception('Custom search field must be instance of: ' . Search::class);
             }
 
             return $this->json($field->getSearchResponse($request));
         } catch (\Exception $exception) {
-            return $this->pluginResponse->error($exception);
+            return $this->pluginResponseCreator()
+                        ->error($exception);
         }
     }
 
@@ -236,15 +236,54 @@ class InDesignController extends FrontendController
      * Ensures a user is logged in.
      *
      * @return void
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      * @throws \Exception
      */
     private function ensureUser(): void
     {
-        $user = $this->userLoader->getUser();
+        $user = $this->userLoader()
+                     ->getUser();
         if ($user) {
             return;
         }
 
         throw new \Exception('Unable to load user. PimPrint security firewall may not be configured correctly.');
+    }
+
+    /**
+     * Returns Pimcore UserLoader
+     *
+     * @return UserLoader
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    protected function userLoader(): UserLoader
+    {
+        return $this->container->get(UserLoader::class);
+    }
+
+    /**
+     * Returns ProjectsManager
+     *
+     * @return ProjectsManager
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    protected function projectsManager(): ProjectsManager
+    {
+        return $this->container->get(ProjectsManager::class);
+    }
+
+    /**
+     * Returns PluginResponseCreator
+     *
+     * @return PluginResponseCreator
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    protected function pluginResponseCreator(): PluginResponseCreator
+    {
+        return $this->container->get(PluginResponseCreator::class);
     }
 }

@@ -25,14 +25,14 @@ use Mds\PimPrint\CoreBundle\InDesign\Template\Concrete\A4PortraitTemplate;
 class ContentSizesPositions extends A4PortraitTemplate
 {
     /**
-     * Width of content area
+     * Width of the content area
      *
      * @var float
      */
     const CONTENT_WIDTH = self::PAGE_WIDTH - self::PAGE_MARGIN_LEFT - self::PAGE_MARGIN_RIGHT;
 
     /**
-     * Height of content area
+     * Height of the content area
      *
      * @var float
      */
