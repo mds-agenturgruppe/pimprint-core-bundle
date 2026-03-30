@@ -106,6 +106,7 @@ abstract class AbstractBox extends AbstractCommand implements DependentInterface
      */
     private array $availableParams = [
         'tid'                      => null,
+        'pageItemUniqueIdent'      => null,
         'cmdfilter'                => null,
         'localized'                => false,
         'locale'                   => null,
@@ -174,6 +175,21 @@ abstract class AbstractBox extends AbstractCommand implements DependentInterface
         } catch (\Exception) {
             return null;
         }
+    }
+
+    /**
+     * Set unique ident for page.
+     *
+     * @param string|null $ident
+     *
+     * @return $this
+     * @throws \Exception
+     */
+    public function setPageUniqueIdent(string $ident = null): AbstractBox
+    {
+        $this->setParam('pageItemUniqueIdent', $ident);
+
+        return $this;
     }
 
     /**
