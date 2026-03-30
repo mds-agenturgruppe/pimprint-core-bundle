@@ -96,13 +96,13 @@ class ImageBox extends FileBox implements ImageCollectorInterface
     /**
      * CopyBox constructor.
      *
-     * @param string     $elementName Name of the template element.
-     * @param float|null $left        Left position in mm.
-     * @param float|null $top         Top position in mm.
-     * @param float|null $width       Width of the element in mm.
-     * @param float|null $height      Height of the element in mm.
-     * @param Asset|null $asset       Asset to be placed.
-     * @param string     $fit         Fit mode of image in image-box. Use FIT class constants.
+     * @param string       $elementName Name of the template element.
+     * @param float|null   $left        Left position in mm.
+     * @param float|null   $top         Top position in mm.
+     * @param float|null   $width       Width of the element in mm.
+     * @param float|null   $height      Height of the element in mm.
+     * @param Asset|null   $asset       Asset to be placed.
+     * @param string|array $fit         Fit mode of image in image-box. Use FIT class constants.
      *
      * @throws ContainerExceptionInterface
      * @throws FilesystemException
@@ -116,7 +116,7 @@ class ImageBox extends FileBox implements ImageCollectorInterface
         float $width = null,
         float $height = null,
         Asset $asset = null,
-        string $fit = self::FIT_PROPORTIONALLY
+        string|array $fit = self::FIT_PROPORTIONALLY
     ) {
         $this->initBoxParams();
         $this->initParams($this->availableParams);
@@ -170,8 +170,8 @@ class ImageBox extends FileBox implements ImageCollectorInterface
         if (
             null !== $thumbnailName
             && !$this->getProject()
-                              ->config()
-                              ->isAssetDownloadEnabled()
+                     ->config()
+                     ->isAssetDownloadEnabled()
         ) {
             throw new \Exception(
                 'Usage of asset thumbnails is only possible when asset download is enabled for project.',

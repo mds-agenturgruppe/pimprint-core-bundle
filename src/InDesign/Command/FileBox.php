@@ -137,13 +137,13 @@ class FileBox extends AbstractBox implements ParagraphComponent
     /**
      * FileBox constructor.
      *
-     * @param string      $elementName Name of the template element.
-     * @param float|null  $left        Left position in mm.
-     * @param float|null  $top         Top position in mm.
-     * @param float|null  $width       Width of the element in mm.
-     * @param float|null  $height      Height of the element in mm.
-     * @param string|null $src         Relative file path from the plugin image directory to the file to be placed.
-     * @param string      $fit         Fit mode of image in image-box. Use FIT class constants.
+     * @param string       $elementName Name of the template element.
+     * @param float|null   $left        Left position in mm.
+     * @param float|null   $top         Top position in mm.
+     * @param float|null   $width       Width of the element in mm.
+     * @param float|null   $height      Height of the element in mm.
+     * @param string|null  $src         Relative file path from the plugin image directory to the file to be placed.
+     * @param string|array $fit         Fit mode of image in image-box. Use FIT class constants.
      *
      * @throws \Exception
      */
@@ -154,7 +154,7 @@ class FileBox extends AbstractBox implements ParagraphComponent
         float $width = null,
         float $height = null,
         string $src = null,
-        string $fit = self::FIT_PROPORTIONALLY
+        string|array $fit = self::FIT_PROPORTIONALLY
     ) {
         $this->initBoxParams();
         $this->initParams($this->availableParams);
@@ -191,5 +191,52 @@ class FileBox extends AbstractBox implements ParagraphComponent
         $this->setParam('src', $src);
 
         return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param string|array $fit
+     *
+     * @return ImageBox|Table|TextBox|$this
+     * @throws \Exception
+     */
+    public function setFit(string|array $fit): ImageBox|Table|TextBox|static
+    {
+        if (is_array($fit)) {
+            $fit = implode('|', $fit);
+        }
+
+        $this->setParam('fit', $fit);
+
+        return $this;
+    }
+
+    /**
+     * Validates $fit value.
+     *
+     * @param string|array $fit
+     *
+     * @return void
+     * @throws \Exception
+     */
+    protected function validateFit(string|array $fit): void
+    {
+        if (str_contains($fit, '|')) {
+            $res = array_intersect($this->allowedFits, explode('|', $fit));
+            if (empty($res)) {
+                throw new \Exception(
+                    sprintf("Invalid fit '%s'. Use '%s' FIT_ constants.", $fit, static::class)
+                );
+            }
+
+            return;
+        }
+
+        if (false === in_array($fit, $this->allowedFits)) {
+            throw new \Exception(
+                sprintf("Invalid fit '%s'. Use '%s' FIT_ constants.", $fit, static::class)
+            );
+        }
     }
 }
