@@ -19,6 +19,7 @@ use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\PositionTrait;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\SizeTrait;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Traits\VariableTrait;
 use Mds\PimPrint\CoreBundle\InDesign\Command\Variables\DependentInterface;
+use Mds\PimPrint\CoreBundle\InDesign\Preferences\BlendMode;
 use Mds\PimPrint\CoreBundle\InDesign\Traits\ProjectAwareTrait;
 
 /**
@@ -353,6 +354,53 @@ abstract class AbstractBox extends AbstractCommand implements DependentInterface
         $this->setParam('cmdfilter', $filter);
 
         return $this;
+    }
+
+    /**
+     * Sets box fill color
+     *
+     * RGB values will create a new color swatch labeled `R=[r] G=[g] B=[b]`.
+     *
+     * @param int[] $rgb  rbg values (range 0-255)
+     * @param int   $tint percentage of tint
+     *
+     * @return AbstractBox
+     * @throws \Exception
+     */
+    public function setFillColorRgb(array $rgb, int $tint = 100): AbstractBox
+    {
+        $this->setParam(
+            'fillColor',
+            [
+                'swatch' => '',
+                'tint'   => $tint,
+                'rgb'    => $rgb,
+            ]
+        );
+
+        return $this;
+    }
+
+    /**
+     * Sets the box opacity
+     *
+     * @param int          $opacity   Opacity value (range 0-100)
+     * @param BlendMode::* $blendMode The blending mode
+     *
+     * @return void
+     * @throws \Exception
+     */
+    public function setOpacity(
+        int $opacity = 100,
+        string $blendMode = BlendMode::NORMAL,
+    ): void {
+        $this->setParam(
+            'transparencySettings',
+            [
+                'opacity' => $opacity,
+                'blendMode' => $blendMode,
+            ]
+        );
     }
 
     /**
