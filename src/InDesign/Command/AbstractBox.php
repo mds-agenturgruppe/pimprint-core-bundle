@@ -357,7 +357,7 @@ abstract class AbstractBox extends AbstractCommand implements DependentInterface
     }
 
     /**
-     * Sets box fill color
+     * Sets box fill color RBG
      *
      * RGB values will create a new color swatch labeled `R=[r] G=[g] B=[b]`.
      *
@@ -382,6 +382,81 @@ abstract class AbstractBox extends AbstractCommand implements DependentInterface
     }
 
     /**
+     * Sets box fill color CMYK.
+     *
+     * CMYK values will create a new color swatch labeled `C=[c] M=[m] Y=[y] K=[k]`.
+     *
+     * @param int[] $cmyk CMYK values (each in range 0-100)
+     * @param int   $tint percentage of tint (0-100)
+     *
+     * @return AbstractBox
+     * @throws \Exception
+     */
+    public function setFillColorCmyk(array $cmyk, int $tint = 100): AbstractBox
+    {
+        $this->setParam(
+            'fillColor',
+            [
+                'swatch' => '',
+                'tint'   => $tint,
+                'cmyk'   => $cmyk,
+            ]
+        );
+
+        return $this;
+    }
+
+    /**
+     * Sets box fill color HSB
+     *
+     * HSB values will create a new color swatch labeled `H=[h] S=[s] B=[b]`.
+     *
+     * @param int[] $hsb HSB values H: 0-360, S: 0-100, B: 0-100
+     * @param int   $tint
+     *
+     * @return $this
+     * @throws \Exception
+     */
+    public function setFillColorHsb(array $hsb, int $tint = 100)
+    {
+        $this->setParam(
+            'fillColor',
+            [
+                'swatch' => '',
+                'tint'   => $tint,
+                'hsb'    => $hsb,
+            ]
+        );
+
+        return $this;
+    }
+
+    /**
+     * Sets box fill color LAB
+     *
+     * LAB values will create a new color swatch labeled `L=[l] A=[a] B=[b]`.
+     *
+     * @param int[] $lab LAB values L: 0-100, A: -128-127, B: -128-127
+     * @param int   $tint
+     *
+     * @return $this
+     * @throws \Exception
+     */
+    public function setFillColorLab(array $lab, int $tint = 100)
+    {
+        $this->setParam(
+            'fillColor',
+            [
+                'swatch' => '',
+                'tint'   => $tint,
+                'lab'    => $lab,
+            ]
+        );
+
+        return $this;
+    }
+
+    /**
      * Sets the box opacity
      *
      * @param int          $opacity   Opacity value (range 0-100)
@@ -397,7 +472,7 @@ abstract class AbstractBox extends AbstractCommand implements DependentInterface
         $this->setParam(
             'transparencySettings',
             [
-                'opacity' => $opacity,
+                'opacity'   => $opacity,
                 'blendMode' => $blendMode,
             ]
         );

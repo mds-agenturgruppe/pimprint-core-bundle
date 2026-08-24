@@ -33,11 +33,11 @@ trait FileBoxScaledTrait
      * Fitting would be executed after the scroll, resetting the scroll.
      * Assets are always placed in the original size. The size of the asset must be set manually by scale percentage.
      *
-     * @param string $fit
+     * @param string|array $fit
      *
      * @return ImageBox|Table|TextBox|FileBoxScaledTrait
      */
-    public function setFit(string $fit): ImageBox|Table|TextBox|static
+    public function setFit(string|array $fit): ImageBox|Table|TextBox|static
     {
         return $this;
     }
