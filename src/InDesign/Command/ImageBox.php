@@ -70,6 +70,8 @@ class ImageBox extends FileBox implements ImageCollectorInterface
         'application/postscript',
         'application/pdf',
         'application/ai',
+        'application/illustrator',
+        'application/vnd.adobe.illustrator',
     ];
 
     /**
